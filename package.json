@@ -1,6 +1,6 @@
 {
   "name": "c8ocaf",
-  "version": "1.0.0",
+  "version": "1.0.5",
   "description": "Convertigo Angular Framework",
   "main": "bundle/index.umd.js",
   "module": "src/index.js",
@@ -12,12 +12,12 @@
   "scripts": {
     "test": "karma start",
     "test-watch": "karma start --singleRun=false --autoWatch=true --captureExceptions",
-    "prepublish": "ngc && npm run build",
+    "prepublish": "npm run build",
     "build": "webpack && cp bundles/index.umd.js bundles/index.js"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/convertigo/"
+    "url": "git+https://github.com/convertigo/c8ocaf.git"
   },
   "keywords": [
     "TypeScript",
@@ -25,41 +25,27 @@
     "Ionic 2",
     "Convertigo"
   ],
-  "author": {
-    "name": "Convertigo",
-    "email": "info@convertigo.com",
-    "url": "http://www.convertigo.com/"
-  },
-  "license": "Apache License Version 2.0, January 2004",
+  "author": "Convertigo <info@convertigo.com> (http://www.convertigo.com/)",
+  "license": "Apache-2.0",
   "dependencies": {
-    "@angular/common": "2.2.1",
-    "@angular/compiler": "2.2.1",
-    "@angular/compiler-cli": "2.2.1",
-    "@angular/core": "2.2.1",
-    "@angular/forms": "2.2.1",
-    "@angular/http": "2.2.1",
-    "@angular/platform-browser": "2.2.1",
-    "@angular/platform-browser-dynamic": "2.2.1",
-    "@angular/platform-server": "2.2.1",
-    "@ionic/storage": "1.1.7",
-    "ionic-angular": "2.1.0",
+    "@angular/common": "2.4.8",
+    "@angular/compiler": "2.4.8",
+    "@angular/compiler-cli": "2.4.8",
+    "@angular/core": "2.4.8",
+    "@angular/forms": "2.4.8",
+    "@angular/http": "2.4.8",
+    "@angular/platform-browser": "2.4.8",
+    "@angular/platform-browser-dynamic": "2.4.8",
+    "@angular/platform-server": "2.4.8",
+    "@ionic/storage": "2.0.0",
+    "ionic-angular": "2.2.0",
     "ionic-native": "2.4.1",
     "ionicons": "3.0.0",
-    "rxjs": "5.0.0-beta.12",
+    "rxjs": "5.0.1",
     "sw-toolbox": "3.4.0",
-    "zone.js": "0.6.26",
-    "c8osdkangular2" : "1.0.145"
+    "zone.js": "0.7.2"
   },
   "devDependencies": {
-    "@angular/common": "2.2.1",
-    "@angular/compiler": "2.2.1",
-    "@angular/compiler-cli": "2.2.1",
-    "@angular/core": "2.2.1",
-    "@angular/forms": "2.2.1",
-    "@angular/http": "2.2.1",
-    "@angular/platform-browser": "2.2.1",
-    "@angular/platform-browser-dynamic": "2.2.1",
-    "@angular/platform-server": "2.2.1",
     "@types/hammerjs": "2.0.33",
     "@types/jasmine": "2.5.38",
     "@types/node": "6.0.52",
@@ -91,6 +77,11 @@
     "tslint-loader": "3.3.0",
     "typescript": "2.0.10",
     "typings": "^1.4.0",
-    "webpack": "2.1.0-beta.27"
-  }
+    "webpack": "2.2.1",
+    "c8osdkangular2": "1.0.145"
+  },
+  "bugs": {
+    "url": "https://github.com/convertigo/c8ocaf/issues"
+  },
+  "homepage": "https://github.com/convertigo/c8ocaf#readme"
 }
