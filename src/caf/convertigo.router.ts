@@ -10,7 +10,7 @@ import { C8o, C8oLogLevel, C8oException }                   from "c8osdkangular2
 /*
  * The C8oRouter class is responsible to route Convertigo responses to the according View. This ensures that navigation is done
  * Automatically from Convertigo server responses and avoids the programmer to handle the navigation by itself
- * 
+ *
  */
 @Injectable()
 export class C8oRouter{
@@ -18,10 +18,11 @@ export class C8oRouter{
 	 * An array holding for a view index the data attached to this view.
 	 */
     private c8oResponses : Array<Object>;
-    private _routerLogLevel : C8oLogLevel = C8oLogLevel.TRACE
-	
+    private _routerLogLevel : C8oLogLevel = C8oLogLevel.TRACE;
+    private static C8OCAF_SESSION_STORAGE_KEY = "_c8ocafsession_storage_data";
+
     constructor(private _c8o : C8o, private app: App, public toastCtrl: ToastController){
-        this.c8oResponses = new Array();
+        this.c8oResponses = JSON.parse(sessionStorage.getItem(C8oRouter.C8OCAF_SESSION_STORAGE_KEY));
     }
 
     get routerLogLevel(): C8oLogLevel {
@@ -60,17 +61,17 @@ export class C8oRouter{
     public get c8o():C8o{
         return this._c8o
     }
-    
+
     /**
      * Execute routing:
-     * 
-     * Routing works by analysing a Convertigo response. Each route is explored. for a given requestable and if the 
+     *
+     * Routing works by analysing a Convertigo response. Each route is explored. for a given requestable and if the
      * condition for the route matches, then the destination page is pushed or "rooted" in the navConsroller
-     * 
+     *
      * @param reponse 		the Convertigo server response
      * @param parameters	the requestable in discrete "__sequence", "__project" property form
      * @param exception     optional exception if it is a failed requestable call
-     *  
+     *
      */
     execute_route(response : any, parameters : Object, exception : Error = null){
         let isException = exception == null ? false:true;
@@ -135,21 +136,21 @@ export class C8oRouter{
                 }
             }
         }
-        
+
         /* No route found so we stay in the same page
-         * We store the response in the current page.. 
+         * We store the response in the current page..
          */
         if (activeView != null){
             this.storeResponseForView(activeView, requestable, response, navParams, null, null)
         }
-        	
+
     }
 
     /**
      * Calls a Convertigo requestable. When the response comes back we execute the routes to switch to the target page
-     * 
+     *
      * @param requestable as a "project.sequence" of as "fs://database.verb"
-     * @param data for the call 
+     * @param data for the call
      *
      */
     c8oCall(requestable:string, parameters?: Object, navParams?:any): Promise<any>{
@@ -167,15 +168,15 @@ export class C8oRouter{
                 reject();
             })
         })
-        
+
     }
 
-    
+
     /**
      * When a page is navigated to, it will get the response data passed in the Push() or setRoot() and will call this
      * method to store this data indexed by this page instance. This way each page can retrieve data from its instance index
      * to use Angular binding to its HTML.
-     * 
+     *
      *   @view 			the view index where the data will be stored
      *   @requestable	the requestable from where this data was responded
      *   @data			the data
@@ -194,16 +195,18 @@ export class C8oRouter{
     		"view": view,
     		"requestable": requestable,
     		"data":data,
-            "navParams" : navParams 
-    	})
+            "navParams" : navParams
+    	});
+    	// session storage for c8ocaf refresh keep state data
+      sessionStorage.setItem(C8oRouter.C8OCAF_SESSION_STORAGE_KEY, JSON.stringify(this.c8oResponses));
     }
 
     /**
      * When a page(view) is displayed it will call this method to retreive the data that was stored for this view
-     * 
+     *
      *   @param 		the view we must restore data from
      *   @requestables	an array of requestables from where the data was responded
-     *   
+     *
      *   @return 		the data
      */
     public  getResponseForView(view :any, requestables: string[]) : any {
@@ -222,16 +225,16 @@ export class C8oRouter{
             console.log(error)
         }
 
-        
-    	
+
+
     }
 
     /**
      * When a page(view) is displayed it will call this method to retreive the data that was stored for this view
-     * 
+     *
      *   @param 		the view we must restore data from
      *   @requestables	a requestable from where the data was responded
-     *   
+     *
      *   @return 		the data
      */
     public  getParamForView(view :any, requestable: string) : any {
@@ -240,18 +243,18 @@ export class C8oRouter{
 	    		if (item["view"] == view && item["requestable"] == requestable)
 	    			return (item["navParams"])
 	    	}
-    	
+
     	return(new Object())
     }
 
 
     /**
      * Check if the current view is the same as the one we should route to
-     * 
+     *
      *   @param 		activeView, the view we must search
      *   @param			targetView, the view we should route to
      *   @requestable 	The requestable for this view
-     *   
+     *
      *   @return 		true if the view is found
      */
     public  findView(view :any, targetView : any, requestable : string) : boolean {
@@ -269,7 +272,7 @@ export class C8oRouter{
 
     /**
      * Utility routine to push on the nav stack a view with data to be passed to the view
-     * 
+     *
      * @param		the view
      * @param		data to be passed to the view
      * @options		transition options
@@ -280,12 +283,12 @@ export class C8oRouter{
 
     /**
      * Utility routine to root a view on the nav stack with data to be passed to the view
-     * 
+     *
      * @param		the view
      * @param		data to be passed to the view
      */
     public setRoot(view : any, data: any, options: Object) : Promise<any>{
         return this.app.getActiveNav().setRoot(view, data, options);
     }
- 
+
 }
