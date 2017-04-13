@@ -47,7 +47,9 @@ export class C8oPage {
     public listenNavParams(requestable : string) : any {
     	return(this.router.getParamForView(this.constructor.name, requestable));
     }
-
+     callForm(requestable:string, id: string){
+      this.call(requestable, this.form[id]);
+     }
     /**
      * Calls a Convertigo requestable with parameters as Object
      *
