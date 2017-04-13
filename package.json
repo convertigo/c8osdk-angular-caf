@@ -1,6 +1,6 @@
 {
   "name": "c8ocaf",
-  "version": "1.0.19",
+  "version": "1.0.20",
   "description": "Convertigo Angular Framework",
   "main": "bundle/index.umd.js",
   "module": "src/index.js",
@@ -11,7 +11,7 @@
   ],
   "scripts": {
     "clean": "rimraf bundles coverage src/**/*.d.ts src/**/*.metadata.json src/**/*.js src/**/*.js.map src/**/*.ngsummary.json",
-    "prepublish": "ngc && npm run build",
+    "prepublish": "npm run clean && ngc && npm run build",
     "build": "webpack && cp bundles/index.umd.js bundles/index.js"
   },
   "repository": {

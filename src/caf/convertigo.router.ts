@@ -17,12 +17,37 @@ export class C8oRouter{
 	/**
 	 * An array holding for a view index the data attached to this view.
 	 */
-    private c8oResponses : Array<Object>;
+    private c8oResponses : Array<Object> = null;
     private _routerLogLevel : C8oLogLevel = C8oLogLevel.TRACE;
-    private static C8OCAF_SESSION_STORAGE_KEY = "_c8ocafsession_storage_data";
+    private static C8OCAF_SESSION_STORAGE_DATA = "_c8ocafsession_storage_data";
+    private static C8OCAF_SESSION_STORAGE_MODE = "_c8ocafsession_storage_mode";
+    private static C8OCAF_SESSION_STORAGE_CLEAR = "_c8ocafsession_storage_clear";
+    private storage : any;
+
 
     constructor(private _c8o : C8o, private app: App, public toastCtrl: ToastController){
-        this.c8oResponses = JSON.parse(sessionStorage.getItem(C8oRouter.C8OCAF_SESSION_STORAGE_KEY));
+      //detect if we are in mobile builder mode and get the mode of storage to use
+      switch (sessionStorage.getItem(C8oRouter.C8OCAF_SESSION_STORAGE_MODE))
+      {
+        case "local" :
+          this.storage = localStorage;
+          break;
+        case "session" :
+          this.storage = sessionStorage;
+          break;
+        default :
+          this.storage = null;
+      }
+
+      // if we are in mobile builder mode
+      if(this.storage !== null){
+        if(sessionStorage.getItem(C8oRouter.C8OCAF_SESSION_STORAGE_CLEAR) === "true"){// clear flag
+          this.storage.removeItem(C8oRouter.C8OCAF_SESSION_STORAGE_DATA);
+          sessionStorage.removeItem(C8oRouter.C8OCAF_SESSION_STORAGE_CLEAR);
+        }
+        this.c8oResponses = JSON.parse(this.storage.getItem(C8oRouter.C8OCAF_SESSION_STORAGE_DATA));
+      }
+        // if c8oResponses is null then instanciate an empty array
         if(this.c8oResponses === null){
           this.c8oResponses = new Array();
         }
@@ -200,8 +225,11 @@ export class C8oRouter{
     		"data":data,
             "navParams" : navParams
     	});
-    	// session storage for c8ocaf refresh keep state data
-      sessionStorage.setItem(C8oRouter.C8OCAF_SESSION_STORAGE_KEY, JSON.stringify(this.c8oResponses));
+      // if we are in mobile builder mode
+      if(this.storage !== null){
+        // storage for c8ocaf refresh keep state data
+        this.storage.setItem(C8oRouter.C8OCAF_SESSION_STORAGE_DATA, JSON.stringify(this.c8oResponses));
+      }
     }
 
     /**
