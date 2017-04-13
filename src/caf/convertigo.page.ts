@@ -9,14 +9,14 @@ export class C8oPage {
     public navParams;
     private loader;
     private didLoad;
-    private imgCache : Object = new Object()
+    private imgCache : Object = new Object();
     private prefixId : string;
     public form = {};
 
     constructor(public routerProvider : C8oRouter, private navParam: NavParams, public loadingCtrl: LoadingController, private sanitizer : DomSanitizer){
-	    this.router = routerProvider;
-        this.navParams = (navParam.get("navParams") != undefined && navParam.get("navParams") != null) ? navParam.get("navParams") : ""
-        this.router.storeResponseForView(this, navParam.get("requestable"), navParam.get("data"), this.navParams, navParam.get("didEnter") ,navParam.get("didLeave"))
+	      this.router = routerProvider;
+        this.navParams = (navParam.get("navParams") != undefined && navParam.get("navParams") != null) ? navParam.get("navParams") : "";
+        this.router.storeResponseForView(this.constructor.name, navParam.get("requestable"), navParam.get("data"), this.navParams, navParam.get("didEnter") ,navParam.get("didLeave"));
         this.prefixId = "_C8o" + new Date().getTime().toString();
     }
 
@@ -31,7 +31,7 @@ export class C8oPage {
      * @return the data for one of the requestables in the list.
      */
     public listen(requestables : string[]) : any {
-    	return(this.router.getResponseForView(this, requestables));
+    	return(this.router.getResponseForView(this.constructor.name, requestables));
     }
 
     /**
@@ -45,7 +45,7 @@ export class C8oPage {
      * @return the data for one of the requestables in the list.
      */
     public listenNavParams(requestable : string) : any {
-    	return(this.router.getParamForView(this, requestable));
+    	return(this.router.getParamForView(this.constructor.name, requestable));
     }
 
     /**
@@ -59,64 +59,64 @@ export class C8oPage {
         if(this.form != {} && data == null){
             data = this.form;
         }
-        let shown = false
-        let finish = false
+        let shown = false;
+        let finish = false;
         setTimeout(()=> {
             if(finish == false){
                 this.loader = this.loadingCtrl.create({
-                })
+                });
                 this.loader.present();
-                shown = true
+                shown = true;
             }
-        }, timeout)
+        }, timeout);
         this.router.c8oCall(requestable, data, navParams).then(()=>{
-            finish = true
+            finish = true;
             if(shown == true) {
                 this.loader.dismiss();
                 shown = false;
             }
         }).catch(()=>{
-            finish = true
+            finish = true;
             if(shown == true) this.loader.dismiss();
-        })
+        });
 
     }
 
     public ionViewDidLoad(){
 
         if(!(this.navParam.get("didLoad") == null || this.navParam.get("didLoad") == undefined || this.navParam.get("didLoad") == '')){
-           this.navParam.get("didLoad")(this, this.router.c8o)
+           this.navParam.get("didLoad")(this, this.router.c8o);
         }
     }
 
     public ionViewWillEnter(){
         if(!(this.navParam.get("willEnter") == null || this.navParam.get("willEnter") == undefined || this.navParam.get("willEnter") == '')){
-           this.navParam.get("willEnter")(this, this.router.c8o)
+           this.navParam.get("willEnter")(this, this.router.c8o);
         }
     }
 
     public ionViewDidEnter(){
         this.didLoad = true;
         if(!(this.navParam.get("didEnter") == null || this.navParam.get("didEnter") == undefined || this.navParam.get("didEnter") == '')){
-           this.navParam.get("didEnter")(this, this.router.c8o)
+           this.navParam.get("didEnter")(this, this.router.c8o);
         }
     }
 
     public ionViewWillLeave(){
         if(!(this.navParam.get("willLeave") == null || this.navParam.get("willLeave") == undefined || this.navParam.get("willLeave") == '')){
-           this.navParam.get("willLeave")(this, this.router.c8o)
+           this.navParam.get("willLeave")(this, this.router.c8o);
         }
     }
 
     public ionViewDidLeave(){
         if(!(this.navParam.get("didLeave") == null || this.navParam.get("didLeave") == undefined || this.navParam.get("didLeave") == '')){
-           this.navParam.get("didLeave")(this, this.router.c8o)
+           this.navParam.get("didLeave")(this, this.router.c8o);
         }
     }
 
     public ionViewWillUnload(){
         if(!(this.navParam.get("willUnLoad") == null || this.navParam.get("willUnLoad") == undefined || this.navParam.get("willUnLoad") == '')){
-           this.navParam.get("willUnLoad")(this, this.router.c8o)
+           this.navParam.get("willUnLoad")(this, this.router.c8o);
         }
     }
 

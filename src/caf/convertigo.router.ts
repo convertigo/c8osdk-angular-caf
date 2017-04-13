@@ -23,6 +23,9 @@ export class C8oRouter{
 
     constructor(private _c8o : C8o, private app: App, public toastCtrl: ToastController){
         this.c8oResponses = JSON.parse(sessionStorage.getItem(C8oRouter.C8OCAF_SESSION_STORAGE_KEY));
+        if(this.c8oResponses === null){
+          this.c8oResponses = new Array();
+        }
     }
 
     get routerLogLevel(): C8oLogLevel {
@@ -76,7 +79,7 @@ export class C8oRouter{
     execute_route(response : any, parameters : Object, exception : Error = null){
         let isException = exception == null ? false:true;
         let requestable : string = (parameters["__project"] == undefined ?"": parameters["__project"]) + "." + parameters["__sequence"];
-    	let activeView : any = this.app.getActiveNav().getViews().slice(-1)[0] != undefined ? this.app.getActiveNav().getViews().slice(-1)[0].instance:null;
+    	let activeView : any = this.app.getActiveNav().getViews().slice(-1)[0] != undefined ? this.app.getActiveNav().getViews().slice(-1)[0].constructor.name:null;
         let navParams : any = (parameters["_navParams"] == {}) ? "" : parameters["_navParams"]
         for(var item of this.routing_table){
         	for(var itemRequestable of item.requestable) {
@@ -184,10 +187,10 @@ export class C8oRouter{
     public storeResponseForView(view :any, requestable: string, data: any, navParams: any, didEnter: any, didLeave: any) {
     	for( var i=0; i < this.c8oResponses.length; i++) {
     		if (this.c8oResponses[i]["view"] == view && this.c8oResponses[i]["requestable"] == requestable) {
-    			this.c8oResponses[i]["data"] = data
-                this.c8oResponses[i]["navParams"] = navParams
-                this.c8oResponses[i]["DidEnter"] = didEnter
-                this.c8oResponses[i]["DidLeave"] = didLeave
+    			this.c8oResponses[i]["data"] = data;
+                this.c8oResponses[i]["navParams"] = navParams;
+                this.c8oResponses[i]["DidEnter"] = didEnter;
+                this.c8oResponses[i]["DidLeave"] = didLeave;
     			return
     		}
     	}
