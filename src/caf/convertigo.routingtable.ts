@@ -1,6 +1,6 @@
 
 import { C8oPage }                  from './convertigo.page';
-import {C8o}                        from "c8osdkangular2";
+import {C8o}                        from "c8osdkangular";
 
 
 export class C8oRouteOptions{
@@ -20,7 +20,7 @@ export class C8oRouteOptions{
     protected _page : typeof C8oPage
     protected _action : C8oAction
     protected _alwaysNewPage : boolean
-    
+
     //taget options
     protected _animate : boolean
     protected _animation : string
@@ -40,7 +40,7 @@ export class C8oRouteOptions{
 
     /**
      * C8oRouteOptions constructor
-     *  
+     *
      */
     constructor(c8oTableOptions?: C8oRouteOptions){
         this.clone(c8oTableOptions)
@@ -51,9 +51,9 @@ export class C8oRouteOptions{
 
     /**
      * This function return condition:
-     * 
+     *
      * @returns     The current condition
-     *  
+     *
      */
     public get condition():C8oConditionFunction{
         return this._condition;
@@ -63,9 +63,9 @@ export class C8oRouteOptions{
 
     /**
      * This function return target:
-     * 
+     *
      * @returns     The current target
-     *  
+     *
      */
     public get target():C8oTarget{
         return new C8oTarget(this._page, this._action, this._alwaysNewPage)
@@ -73,7 +73,7 @@ export class C8oRouteOptions{
 
     /**
      * This function set the target:
-     * 
+     *
      * @param page	The target for this route
      * @param action      The condition to trigger route (examples : (data :any )=>{
      *                                                                      if(data.rows != undefined){
@@ -81,11 +81,11 @@ export class C8oRouteOptions{
      *                                                                      }
      *                                                                       else{
      *                                                                           return false;
-     *                                                                       }   
+     *                                                                       }
      *                                                                   }
      * @param alwaysNewPage	        (optional: false by default) The current alwaysNewPage parameter
      * @returns             The instance of this Object
-     *  
+     *
      */
     public setTarget(action : C8oAction, page : typeof C8oPage = null, alwaysNewPage: boolean = false): C8oRouteOptions{
         this._page = page;
@@ -272,22 +272,22 @@ export class C8oRouteOptions{
     /*** TARGET_OPTION***/
         /**
          * This function return the animate parameters :
-         * 
+         *
          * @returns     The current animate parameters
-         *  
+         *
          */
         /*public get targetOption():C8oNavOptions{
             return new C8oNavOptions()
             .setAnimate(this._a)
         }*/
-        
+
         /*** ANIMATE***/
 
         /**
          * This function return the animate parameters :
-         * 
+         *
          * @returns     The current animate parameters
-         *  
+         *
          */
         public get targetAnimate():boolean{
             return this._animate
@@ -295,10 +295,10 @@ export class C8oRouteOptions{
 
         /**
          * This function set the animate parameters :
-         * 
+         *
          * @param animate       Whether or not the transition should animate.
          * @returns             The instance of this Object
-         *  
+         *
          */
         public setTargetAnimate(animate: boolean) : C8oRouteOptions{
             this._animate = animate;
@@ -309,9 +309,9 @@ export class C8oRouteOptions{
 
         /**
          * This function return the animation parameters :
-         * 
+         *
          * @returns     The current animation parameters
-         *  
+         *
          */
         public get targetAnimation():string{
             return this._animation
@@ -319,12 +319,12 @@ export class C8oRouteOptions{
 
         /**
          * This function set the animation parameters :
-         * 
+         *
          * @param animation     What kind of animation should be used.
          *                      The property 'animation' understands the following values:
          *                      md-transition, ios-transition and wp-transition.
          * @returns             The instance of this Object
-         *  
+         *
          */
         public setTargetAnimation(animation: string) : C8oRouteOptions{
             this._animation = animation;
@@ -335,9 +335,9 @@ export class C8oRouteOptions{
 
         /**
          * This function return the direction parameters :
-         * 
+         *
          * @returns     The current direction parameters
-         *  
+         *
          */
         public get targetDirection():string{
             return this._direction
@@ -345,10 +345,10 @@ export class C8oRouteOptions{
 
         /**
          * This function set the direction parameters :
-         * 
+         *
          * @param direction       The conceptual direction the user is navigating. For example, is the user navigating forward, or back?
          * @returns             The instance of this Object
-         *  
+         *
          */
         public setTargetDirection(direction: string) : C8oRouteOptions{
             this._direction = direction;
@@ -359,9 +359,9 @@ export class C8oRouteOptions{
 
         /**
          * This function return the duration parameters :
-         * 
+         *
          * @returns     The current duration parameters
-         *  
+         *
          */
         public get targetDuration():number{
             return this._duration
@@ -369,10 +369,10 @@ export class C8oRouteOptions{
 
         /**
          * This function set the direction parameters :
-         * 
+         *
          * @param duration      The length in milliseconds the animation should take.
          * @returns             The instance of this Object
-         *  
+         *
          */
         public setTargetDuration(duration: number) : C8oRouteOptions{
             this._duration = duration;
@@ -383,9 +383,9 @@ export class C8oRouteOptions{
 
         /**
          * This function return the easing parameters :
-         * 
+         *
          * @returns     The current easing parameters
-         *  
+         *
          */
         public get targetEasing():string{
             return this._easing
@@ -393,10 +393,10 @@ export class C8oRouteOptions{
 
         /**
          * This function set the easing parameters :
-         * 
+         *
          * @param easing        The easing for the animation.
          * @returns             The instance of this Object
-         *  
+         *
          */
         public setTargetEasing(easing: string) : C8oRouteOptions{
             this._easing = easing;
@@ -407,9 +407,9 @@ export class C8oRouteOptions{
 
     /**
      * This function return beforeCall function:
-     * 
+     *
      * @returns     The current beforeCall function
-     *  
+     *
      */
     public get beforeCall():C8oCallFunction{
         return this._beforeCall;
@@ -417,10 +417,10 @@ export class C8oRouteOptions{
 
     /**
      * This function set the beforeCall function:
-     * 
+     *
      * @param beforeCall	The beforeCall function for this route
      * @returns             The instance of this Object
-     *  
+     *
      */
     public setBeforeCall(beforeCall: C8oCallFunction): C8oRouteOptions{
         this._beforeCall = beforeCall;
@@ -431,9 +431,9 @@ export class C8oRouteOptions{
 
     /**
      * This function return afterCall function:
-     * 
+     *
      * @returns     The current afterCall function
-     *  
+     *
      */
     public get afterCall():C8oCallFunction{
         return this._afterCall;
@@ -441,10 +441,10 @@ export class C8oRouteOptions{
 
     /**
      * This function set the afterCall function:
-     * 
+     *
      * @param afterCall	The afterCall function for this route
      * @returns             The instance of this Object
-     *  
+     *
      */
     public setAfterCall(afterCall: C8oCallFunction): C8oRouteOptions{
         this._afterCall = afterCall;
@@ -455,9 +455,9 @@ export class C8oRouteOptions{
 
     /**
      * This function return didEnter function:
-     * 
+     *
      * @returns     The current didEnter function
-     *  
+     *
      */
     public get didEnter():C8oLifeCycleFunction{
         return this._didEnter;
@@ -465,10 +465,10 @@ export class C8oRouteOptions{
 
     /**
      * This function set the didEnter function:
-     * 
+     *
      * @param didEnter	The didEnter function for this route
      * @returns             The instance of this Object
-     *  
+     *
      */
     public setDidEnter(didEnter: C8oLifeCycleFunction) : C8oRouteOptions{
         this._didEnter = didEnter;
@@ -479,9 +479,9 @@ export class C8oRouteOptions{
 
     /**
      * This function return didLeave function:
-     * 
+     *
      * @returns     The current didLeave function
-     *  
+     *
      */
     public get didLeave():C8oLifeCycleFunction{
         return this._didLeave;
@@ -489,10 +489,10 @@ export class C8oRouteOptions{
 
     /**
      * This function set the didLeave function:
-     * 
+     *
      * @param didLeave	The didLeave function for this route
      * @returns             The instance of this Object
-     *  
+     *
      */
     public setDidLeave(didLeave: C8oLifeCycleFunction) : C8oRouteOptions{
         this._didLeave = didLeave;
@@ -533,9 +533,9 @@ export class C8oRouteOptions{
     }
     /**
      * This function clone a C8oRouteOptions into this C8oRouteOptions:
-     * 
+     *
      * @param c8oTableOptions	any C8oRouteOptions
-     *  
+     *
      */
     public clone(c8oTableOptions : C8oRouteOptions){
         if(c8oTableOptions != undefined){
@@ -563,13 +563,13 @@ export class C8oRouteOptions{
 /*
  * The C8oRoute class is responsible to generate route for Convertigo. This will allow Convertigo to  manage navigation
  * Automatically from Convertigo server responses and avoids the programmer to handle the navigation by itself
- * 
+ *
  */
 export class C8oRoute extends C8oRouteOptions{
 
     /**
      * C8oRoute constructor
-     * 
+     *
      * @param requestable    The requestable to wrap (examples : "Myproject.MySequence#view1" or "fs://MyLocalDataBase.get")
      * @param condition      The condition to trigger route (examples : (data :any )=>{
      *                                                                      if(data.rows != undefined){
@@ -577,10 +577,10 @@ export class C8oRoute extends C8oRouteOptions{
      *                                                                      }
      *                                                                       else{
      *                                                                           return false;
-     *                                                                       }   
+     *                                                                       }
      *                                                                   }
      * @param c8oTableOptions   (optional) The c8oTableOptions allow you to clone genreal parameters defined in c8oTableOptions in C8oRoute
-     * 
+     *
      */
     constructor(/*requestable : string,*/ condition : C8oConditionFunction, c8oTableOptions? : C8oRouteOptions){
         super();
@@ -589,7 +589,7 @@ export class C8oRoute extends C8oRouteOptions{
         this._condition = condition
     }
 
-    
+
 }
 
 export class C8oRouteListener{
@@ -662,7 +662,7 @@ export class C8oRouteListener{
 
 /*
  * The C8oTarget class is responsible to generate a complex target object for C8oRoute
- * 
+ *
  */
 export class C8oTarget {
     _page : typeof C8oPage
@@ -671,7 +671,7 @@ export class C8oTarget {
     _options : C8oNavOptions
     /**
      * C8oTarget constructor
-     * 
+     *
      * @param page                  The C8oPage to navigate
      * @param action                The condition to trigger route (examples : (data :any )=>{
      *                                                                      if(data.rows != undefined){
@@ -679,7 +679,7 @@ export class C8oTarget {
      *                                                                      }
      *                                                                       else{
      *                                                                           return false;
-     *                                                                       }   
+     *                                                                       }
      *                                                                   }
      * @param alwaysNewPage	        (optional: false by default) The current alwaysNewPage parameter
      * @param options               (optional: empty by default) the current C8oNavOptions parameter
@@ -695,9 +695,9 @@ export class C8oTarget {
 
     /**
      * This function return Page:
-     * 
+     *
      * @returns     The current Page
-     *  
+     *
      */
     public get page():typeof C8oPage{
         return this._page;
@@ -705,10 +705,10 @@ export class C8oTarget {
 
     /**
      * This function set the Page:
-     * 
+     *
      * @param page	        The page choosen
      * @returns             The instance of this Object
-     *  
+     *
      */
     public setPage(page: typeof C8oPage): C8oTarget{
         this._page = page;
@@ -719,9 +719,9 @@ export class C8oTarget {
 
     /**
      * This function return page action to execute :
-     * 
+     *
      * @returns     The current action
-     *  
+     *
      */
     public get action():C8oAction{
         return this._action;
@@ -729,10 +729,10 @@ export class C8oTarget {
 
     /**
      * This function set the page action to execute:
-     * 
+     *
      * @param action	    The current action
      * @returns             The instance of this Object
-     *  
+     *
      */
     public setAction(action: C8oAction): C8oTarget{
         this._action = action;
@@ -743,9 +743,9 @@ export class C8oTarget {
 
     /**
      * This function return the action to execute in case of choosing the same page than the precedent :
-     * 
+     *
      * @returns     The current alwaysNewPage parameters
-     *  
+     *
      */
     public get alwaysNewPage():boolean{
         return this._alwaysNewPage;
@@ -753,10 +753,10 @@ export class C8oTarget {
 
     /**
      * This function set the action to execute in case of choosing the same page than the precedent :
-     * 
+     *
      * @param alwaysNewPage	        The current alwaysNewPage parameters
      * @returns             The instance of this Object
-     *  
+     *
      */
     public setAlwaysNewPage(alwaysNewPage: boolean): C8oTarget{
         this._alwaysNewPage = alwaysNewPage;
@@ -767,9 +767,9 @@ export class C8oTarget {
 
     /**
      * This function return navOptions :
-     * 
+     *
      * @returns     The current navOptions
-     *  
+     *
      */
     public get options():C8oNavOptions{
         return this._options;
@@ -777,10 +777,10 @@ export class C8oTarget {
 
     /**
      * This function set the navOptions :
-     * 
+     *
      * @param page	        The current alwaysNewPage parameters
      * @returns             The instance of this Object
-     *  
+     *
      */
     public setOptions(navOptions: C8oNavOptions) : C8oTarget{
         this._options = navOptions;
@@ -801,9 +801,9 @@ export class C8oNavOptions{
 
     /**
      * This function return the animate parameters :
-     * 
+     *
      * @returns     The current animate parameters
-     *  
+     *
      */
     public getAnimate():boolean{
         return this._animate
@@ -811,10 +811,10 @@ export class C8oNavOptions{
 
     /**
      * This function set the animate parameters :
-     * 
+     *
      * @param animate       Whether or not the transition should animate.
      * @returns             The instance of this Object
-     *  
+     *
      */
     public setAnimate(animate: boolean) : C8oNavOptions{
         this._animate = animate;
@@ -825,9 +825,9 @@ export class C8oNavOptions{
 
     /**
      * This function return the animation parameters :
-     * 
+     *
      * @returns     The current animation parameters
-     *  
+     *
      */
     public getAnimation():string{
         return this._animation
@@ -835,12 +835,12 @@ export class C8oNavOptions{
 
     /**
      * This function set the animation parameters :
-     * 
+     *
      * @param animation     What kind of animation should be used.
      *                      The property 'animation' understands the following values:
      *                      md-transition, ios-transition and wp-transition.
      * @returns             The instance of this Object
-     *  
+     *
      */
     public setAnimation(animation: string) : C8oNavOptions{
         this._animation = animation;
@@ -851,9 +851,9 @@ export class C8oNavOptions{
 
     /**
      * This function return the direction parameters :
-     * 
+     *
      * @returns     The current direction parameters
-     *  
+     *
      */
     public getDirection():string{
         return this._direction
@@ -861,10 +861,10 @@ export class C8oNavOptions{
 
     /**
      * This function set the direction parameters :
-     * 
+     *
      * @param direction       The conceptual direction the user is navigating. For example, is the user navigating forward, or back?
      * @returns             The instance of this Object
-     *  
+     *
      */
     public setDirection(direction: string) : C8oNavOptions{
         this._direction = direction;
@@ -875,9 +875,9 @@ export class C8oNavOptions{
 
     /**
      * This function return the duration parameters :
-     * 
+     *
      * @returns     The current duration parameters
-     *  
+     *
      */
     public getDuration():number{
         return this._duration
@@ -885,10 +885,10 @@ export class C8oNavOptions{
 
     /**
      * This function set the direction parameters :
-     * 
+     *
      * @param duration      The length in milliseconds the animation should take.
      * @returns             The instance of this Object
-     *  
+     *
      */
     public setDuration(duration: number) : C8oNavOptions{
         this._duration = duration;
@@ -899,9 +899,9 @@ export class C8oNavOptions{
 
     /**
      * This function return the easing parameters :
-     * 
+     *
      * @returns     The current easing parameters
-     *  
+     *
      */
     public getEasing():string{
         return this._easing
@@ -909,10 +909,10 @@ export class C8oNavOptions{
 
     /**
      * This function set the easing parameters :
-     * 
+     *
      * @param easing        The easing for the animation.
      * @returns             The instance of this Object
-     *  
+     *
      */
     public setEasing(easing: string) : C8oNavOptions{
         this._easing = easing;
@@ -921,7 +921,7 @@ export class C8oNavOptions{
 }
 /*
  * The conditionFunction will allow Convertigo to execute conditional function to access or not to a page
- * 
+ *
  */
 export interface C8oConditionFunction {
     (data:any) : boolean;
@@ -929,7 +929,7 @@ export interface C8oConditionFunction {
 
 /*
  * The C8oCallFunction interface will allow Convertigo to execute function before or after a Call
- * 
+ *
  */
 export interface C8oCallFunction {
     ();
@@ -937,8 +937,8 @@ export interface C8oCallFunction {
 
 /*
  * The C8oLifeCycleFunction interface will allow Convertigo to execute function at each state of ionic lifecycle
- * With object such as C8oPage or C8o  
- * 
+ * With object such as C8oPage or C8o
+ *
  */
 export interface C8oLifeCycleFunction {
     (page:C8oPage, c8o : C8o);
@@ -946,7 +946,7 @@ export interface C8oLifeCycleFunction {
 
 /*
  * The C8oAction type interface will allow Convertigo to map Action
- * 
+ *
  */
 export type C8oAction =
      "push"

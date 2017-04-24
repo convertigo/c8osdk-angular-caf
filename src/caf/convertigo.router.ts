@@ -4,7 +4,7 @@ import {Injectable} 		                                from '@angular/core';
 
 import { C8oRouteListener }                                 from './convertigo.routingtable';
 
-import { C8o, C8oLogLevel, C8oException }                   from "c8osdkangular2";
+import { C8o, C8oLogLevel, C8oException }                   from "c8osdkangular";
 
 
 /*
