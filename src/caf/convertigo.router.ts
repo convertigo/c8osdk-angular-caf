@@ -104,7 +104,7 @@ export class C8oRouter{
     execute_route(response : any, parameters : Object, exception : Error = null){
         let isException = exception == null ? false:true;
         let requestable : string = (parameters["__project"] == undefined ?"": parameters["__project"]) + "." + parameters["__sequence"];
-    	let activeView : any = this.app.getActiveNav().getViews().slice(-1)[0] != undefined ? this.app.getActiveNav().getViews().slice(-1)[0].constructor.name:null;
+    	  let activeView : any = this.app.getActiveNav().getViews().slice(-1)[0] != undefined ? this.app.getActiveNav().getViews().slice(-1)[0].component.name:null;
         let navParams : any = (parameters["_navParams"] == {}) ? "" : parameters["_navParams"]
         for(var item of this.routing_table){
         	for(var itemRequestable of item.requestable) {
@@ -121,7 +121,7 @@ export class C8oRouter{
                                     route.afterCall();
                                 }
                                 // test to see if we are already on the target page
-                                if (this.findView(activeView, route.target.page, requestable) && !route.target.alwaysNewPage) {
+                                if (this.findView(activeView, route.target.page.name, requestable) && !route.target.alwaysNewPage) {
                                     this.log("Route for Requestable '" + item.requestable + "', the view is already displayed, using curent view");
                                     this.storeResponseForView(activeView, requestable, response, navParams, route.didEnter, route.didLeave);
                                     return;
@@ -290,7 +290,7 @@ export class C8oRouter{
      */
     public  findView(view :any, targetView : any, requestable : string) : boolean {
         if(targetView != undefined){
-            if(view instanceof (targetView)){
+          if(view == targetView){
                 return (true)
             }
             return(false)
@@ -298,7 +298,6 @@ export class C8oRouter{
         else{
             return false
         }
-
     }
 
     /**
