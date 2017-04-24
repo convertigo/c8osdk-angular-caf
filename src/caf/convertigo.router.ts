@@ -272,10 +272,10 @@ export class C8oRouter{
 
 	    	for( var item of this.c8oResponses) {
 	    		if (item["view"] == view && item["requestable"] == requestable)
-	    			return (item["navParams"])
+	    			return (item["navParams"]);
 	    	}
 
-    	return(new Object())
+    	return(new Object());
     }
 
 
@@ -291,12 +291,12 @@ export class C8oRouter{
     public  findView(view :any, targetView : any, requestable : string) : boolean {
         if(targetView != undefined){
           if(view == targetView){
-                return (true)
+                return true;
             }
-            return(false)
+            return false;
         }
         else{
-            return false
+            return false;
         }
     }
 
@@ -308,7 +308,7 @@ export class C8oRouter{
      * @options		transition options
      */
     public push(view : any, data: any, options: Object): Promise<any>{
-        return this.app.getActiveNav().push(view, data , options )
+        return this.app.getActiveNav().push(view, data , options);
     }
 
     /**
@@ -320,5 +320,62 @@ export class C8oRouter{
     public setRoot(view : any, data: any, options: Object) : Promise<any>{
         return this.app.getActiveNav().setRoot(view, data, options);
     }
+
+  public doOAuthLogin(url : String)  {
+    this.openOAuthLogin(url).then((parsedResponse)=> {
+      this.c8o.log.debug("Parsed response is : " + JSON.stringify(parsedResponse))
+      this.c8o.callJsonObject(".loginToken", parsedResponse)
+    })
+  }
+
+
+  public openOAuthLogin(url : String) : Promise<any> {
+    var myC8o = this.c8o;
+    return new Promise(function(resolve, reject) {
+      /*
+       const clientId = "693828295623-he7m18picm1rl5e5q52lu55jh4e1clb5.apps.googleusercontent.com";
+       const url = "https://accounts.google.com/o/oauth2/auth?client_id=${clientId}" +
+       "&redirect_uri=http://localhost/callback" +
+       "&scope=https://www.googleapis.com/auth/youtube" +
+       "&response_type=token";
+       */
+
+      if (window["cordova"] != undefined) {
+        const browserRef = window["cordova"].InAppBrowser.open(
+          url,
+          "_blank",
+          "location=no, clearsessioncache=yes, clearcache=yes"
+        );
+        let responseParams : string;
+        let parsedResponse : Object = {};
+        browserRef.addEventListener("loadstart", (evt) => {
+          myC8o.log.debug("Auth Page loaded")
+          if ((evt.url).indexOf("https://login.live.com/oauth20_desktop.srf") === 0) {
+            browserRef.removeEventListener("exit", (evt) => {});
+            myC8o.log.debug("Exit Listener removed")
+            browserRef.close();
+            responseParams = ((evt.url).split("#")[1]).split("&");
+            for (var i = 0; i < responseParams.length; i++) {
+              parsedResponse[responseParams[i].split("=")[0]] = responseParams[i].split("=")[1];
+            }
+            if (parsedResponse["access_token"] !== undefined &&
+              parsedResponse["access_token"] !== null) {
+              resolve(parsedResponse);
+            } else {
+              myC8o.log.error("oAuthClient : oAuth authentication error")
+              reject("oAuth authentication error");
+            }
+          }
+        });
+        browserRef.addEventListener("exit", function(evt) {
+          myC8o.log.debug("Auth Page closed")
+          // reject("An error has occured when connecting to oAuth service");
+        });
+      }
+      else {
+        myC8o.log.error("oAuthClient : Cordova is missing, This can only work in a Built application running on a device")
+      }
+    });
+  }
 
 }
