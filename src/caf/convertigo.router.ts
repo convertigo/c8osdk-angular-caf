@@ -121,10 +121,12 @@ export class C8oRouter{
                                     route.afterCall();
                                 }
                                 // test to see if we are already on the target page
-                                if (this.findView(activeView, route.target.page.name, requestable) && !route.target.alwaysNewPage) {
+                                if(route.target.page != null) {
+                                  if (this.findView(activeView, route.target.page.name, requestable) && !route.target.alwaysNewPage) {
                                     this.log("Route for Requestable '" + item.requestable + "', the view is already displayed, using curent view");
                                     this.storeResponseForView(activeView, requestable, response, navParams, route.didEnter, route.didLeave);
                                     return;
+                                  }
                                 }
 
                                 // We are not already on the page, switch to it using the correct animation options...
