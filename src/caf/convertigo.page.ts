@@ -1,6 +1,7 @@
 import { C8oRouter }                                    from './convertigo.router'
 import { NavParams, LoadingController  }                from 'ionic-angular';
 import { DomSanitizer }                                 from '@angular/platform-browser';
+import {ChangeDetectorRef} from "@angular/core";
 
 
 
@@ -13,7 +14,7 @@ export class C8oPage {
     private prefixId : string;
     public form = {};
 
-    constructor(public routerProvider : C8oRouter, private navParam: NavParams, public loadingCtrl: LoadingController, private sanitizer : DomSanitizer){
+    constructor(public routerProvider : C8oRouter, private navParam: NavParams, public loadingCtrl: LoadingController, private sanitizer : DomSanitizer, private ref: ChangeDetectorRef){
 	      this.router = routerProvider;
         this.navParams = (navParam.get("navParams") != undefined && navParam.get("navParams") != null) ? navParam.get("navParams") : "";
         this.router.storeResponseForView(this.constructor.name, navParam.get("requestable"), navParam.get("data"), this.navParams, navParam.get("didEnter") ,navParam.get("didLeave"));
@@ -31,7 +32,7 @@ export class C8oPage {
      * @return the data for one of the requestables in the list.
      */
     public listen(requestables : string[]) : any {
-    	return(this.router.getResponseForView(this.constructor.name, requestables));
+    	return this.router.getResponseForView(this.constructor.name, requestables);
     }
 
     /**
@@ -71,7 +72,7 @@ export class C8oPage {
                 shown = true;
             }
         }, timeout);
-        this.router.c8oCall(requestable, data, navParams).then(()=>{
+        this.router.c8oCall(requestable, data, navParams, this).then(()=>{
             finish = true;
             if(shown == true) {
                 this.loader.dismiss();
@@ -83,6 +84,10 @@ export class C8oPage {
         });
 
     }
+  public tick(){
+    this.ref.detectChanges();
+    this.ref.markForCheck();
+  }
 
     public ionViewDidLoad(){
 

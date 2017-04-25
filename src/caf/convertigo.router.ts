@@ -5,6 +5,7 @@ import {Injectable} 		                                from '@angular/core';
 import { C8oRouteListener }                                 from './convertigo.routingtable';
 
 import { C8o, C8oLogLevel, C8oException }                   from "c8osdkangular";
+import {C8oPage} from "./convertigo.page";
 
 
 /*
@@ -183,10 +184,14 @@ export class C8oRouter{
      * @param data for the call
      *
      */
-    c8oCall(requestable:string, parameters?: Object, navParams?:any): Promise<any>{
+    c8oCall(requestable:string, parameters?: Object, navParams?:any, page?: C8oPage): Promise<any>{
         return new Promise((resolve, reject)=>{
             this.c8o.callJsonObject(requestable, parameters)
             .then((response : any, parameters:Object)=>{
+                    // check for live tag in order to order to page to reload new results ..
+                    if("__live" in parameters || "__fromLive" in parameters){
+                      page.tick();
+                    }
                     parameters['_navParams'] = navParams;
                     this.execute_route(response, parameters)
                     resolve();
