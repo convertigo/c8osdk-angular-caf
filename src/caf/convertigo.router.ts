@@ -188,12 +188,12 @@ export class C8oRouter{
         return new Promise((resolve, reject)=>{
             this.c8o.callJsonObject(requestable, parameters)
             .then((response : any, parameters:Object)=>{
+                    parameters['_navParams'] = navParams;
+                    this.execute_route(response, parameters);
                     // check for live tag in order to order to page to reload new results ..
                     if("__live" in parameters || "__fromLive" in parameters){
                       page.tick();
                     }
-                    parameters['_navParams'] = navParams;
-                    this.execute_route(response, parameters)
                     resolve();
                     return null;
             })
