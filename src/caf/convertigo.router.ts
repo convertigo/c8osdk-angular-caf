@@ -19,7 +19,7 @@ export class C8oRouter{
 	 * An array holding for a view index the data attached to this view.
 	 */
     private c8oResponses : Array<Object> = null;
-    private _routerLogLevel : C8oLogLevel = C8oLogLevel.TRACE;
+    private _routerLogLevel : C8oLogLevel;
     private static C8OCAF_SESSION_STORAGE_DATA = "_c8ocafsession_storage_data";
     private static C8OCAF_SESSION_STORAGE_MODE = "_c8ocafsession_storage_mode";
     private static C8OCAF_SESSION_STORAGE_CLEAR = "_c8ocafsession_storage_clear";
@@ -28,6 +28,7 @@ export class C8oRouter{
 
     constructor(private _c8o : C8o, private app: App, public toastCtrl: ToastController){
       //detect if we are in mobile builder mode and get the mode of storage to use
+      this._routerLogLevel = this._c8o.logLevelLocal;
       switch (sessionStorage.getItem(C8oRouter.C8OCAF_SESSION_STORAGE_MODE))
       {
         case "local" :
