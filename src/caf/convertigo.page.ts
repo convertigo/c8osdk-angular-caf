@@ -85,8 +85,12 @@ export class C8oPage {
 
     }
   public tick(){
-    this.ref.detectChanges();
     this.ref.markForCheck();
+  }
+
+  ngOnDestroy() {
+    //supposed to detach mark from view to avoid 'ViewDestroyedError: Attempt to use a destroyed view: detectChanges' error
+    this.ref.detach();
   }
 
     public ionViewDidLoad(){
