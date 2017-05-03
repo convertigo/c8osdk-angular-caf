@@ -64,8 +64,8 @@ export class C8oRouter{
     }
 
     private log(message:string){
-        this.c8o.log[this._routerLogLevel.name](message)
-
+        if (this._routerLogLevel.name != "none")
+            this.c8o.log[this._routerLogLevel.name](message)
     }
 
     /**
@@ -329,61 +329,75 @@ export class C8oRouter{
         return this.app.getActiveNav().setRoot(view, data, options);
     }
 
-  public doOAuthLogin(url : String)  {
-    this.openOAuthLogin(url).then((parsedResponse)=> {
-      this.c8o.log.debug("Parsed response is : " + JSON.stringify(parsedResponse))
-      this.c8o.callJsonObject(".loginToken", parsedResponse)
-    })
-  }
+    /**
+     * Client Side OAuth Login. Calling this method will display the OAuth provider's 
+     * login page. When the users authentifies, the login page will be closed and a
+     * Server sequence will be called with the acess token provided. The server is responsible
+     * for validating the token and to return some user information. The server also uses 
+     * Set_Authenticated_User step to flag the curent session authenticated.
+     * 
+     * This is a generic client OAuth. each OAuth provider has a specific url to call to trigger
+     * the OAuth implicit flow. Here are somme common providers URLs:
+     * 
+     * - Microsoft Azure V2.0 endpoint
+     *      url : https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=<your registred app client id>&response_type=id_token+token&scope=openid%20https%3A%2F%2Fgraph.microsoft.com%2FUser.Read&response_mode=fragment&state=12345&nonce=678910
+     *      redirectUri : "https://login.live.com/oauth20_desktop.srf"
+     * 
+     * Notes : 
+     *  This function requires the cordova-plugin-inappbrowser.
+     *  This will only work for cordova installed apps. 
+     * 
+     * @param url               The OAuth provider url
+     * @param redirectUri       The redirect URI to check
+     * @param loginSequence     The server Sequence to be launched to login (Project.Sequence)
+     */
+    public doOAuthLogin(url : String, redirectUri: String, loginSequence: string)  {
+        this.openOAuthLogin(url, redirectUri).then((parsedResponse)=> {
+            this.c8o.log.debug("Parsed response is : " + JSON.stringify(parsedResponse))
+            this.c8oCall(loginSequence, parsedResponse)
+        })
+    }
 
-
-  public openOAuthLogin(url : String) : Promise<any> {
-    var myC8o = this.c8o;
-    return new Promise(function(resolve, reject) {
-      /*
-       const clientId = "693828295623-he7m18picm1rl5e5q52lu55jh4e1clb5.apps.googleusercontent.com";
-       const url = "https://accounts.google.com/o/oauth2/auth?client_id=${clientId}" +
-       "&redirect_uri=http://localhost/callback" +
-       "&scope=https://www.googleapis.com/auth/youtube" +
-       "&response_type=token";
-       */
-
-      if (window["cordova"] != undefined) {
-        const browserRef = window["cordova"].InAppBrowser.open(
-          url,
-          "_blank",
-          "location=no, clearsessioncache=yes, clearcache=yes"
-        );
-        let responseParams : string;
-        let parsedResponse : Object = {};
-        browserRef.addEventListener("loadstart", (evt) => {
-          myC8o.log.debug("Auth Page loaded")
-          if ((evt.url).indexOf("https://login.live.com/oauth20_desktop.srf") === 0) {
-            browserRef.removeEventListener("exit", (evt) => {});
-            myC8o.log.debug("Exit Listener removed")
-            browserRef.close();
-            responseParams = ((evt.url).split("#")[1]).split("&");
-            for (var i = 0; i < responseParams.length; i++) {
-              parsedResponse[responseParams[i].split("=")[0]] = responseParams[i].split("=")[1];
-            }
-            if (parsedResponse["access_token"] !== undefined &&
-              parsedResponse["access_token"] !== null) {
-              resolve(parsedResponse);
-            } else {
-              myC8o.log.error("oAuthClient : oAuth authentication error")
-              reject("oAuth authentication error");
-            }
-          }
-        });
-        browserRef.addEventListener("exit", function(evt) {
-          myC8o.log.debug("Auth Page closed")
-          // reject("An error has occured when connecting to oAuth service");
-        });
-      }
-      else {
-        myC8o.log.error("oAuthClient : Cordova is missing, This can only work in a Built application running on a device")
-      }
+    public openOAuthLogin(url : String, redirectUri: String) : Promise<any> {
+        var myC8o = this.c8o;
+        return new Promise(function(resolve, reject) {
+        if (window["cordova"] != undefined) {
+            url += "&redirect_uri=" + redirectUri
+            const browserRef = window["cordova"].InAppBrowser.open(
+                url,
+                "_blank",
+                "location=no, clearsessioncache=yes, clearcache=yes"
+            );
+            let responseParams : string;
+            let parsedResponse : Object = {};
+            browserRef.addEventListener("loadstart", (evt) => {
+                myC8o.log.debug("Auth Page loaded")
+                if ((evt.url).indexOf(redirectUri) === 0) {
+                    browserRef.removeEventListener("exit", (evt) => {});
+                    myC8o.log.debug("Exit Listener removed")
+                    browserRef.close();
+                    responseParams = ((evt.url).split("#")[1]).split("&");
+                    for (var i = 0; i < responseParams.length; i++) {
+                        parsedResponse[responseParams[i].split("=")[0]] = responseParams[i].split("=")[1];
+                    }
+                    if (parsedResponse["access_token"] !== undefined &&
+                        parsedResponse["access_token"] !== null) {
+                        resolve(parsedResponse);
+                    } else {
+                        myC8o.log.error("oAuthClient : oAuth authentication error:" + evt.url)
+                        reject("oAuth authentication error");
+                    }
+                }
+            });
+            browserRef.addEventListener("exit", function(evt) {
+                myC8o.log.debug("Auth Page closed")
+            });
+        }
+        else {
+            const redirectUri = "http://localhost:18080/convertigo/projects/lib_OAuth/getToken.html"
+            url += "&redirect_uri=" + redirectUri
+            var authw = window.open(url.toString(), "_blank", "location=no, clearsessioncache=yes, clearcache=yes")
+        }
     });
   }
-
 }
