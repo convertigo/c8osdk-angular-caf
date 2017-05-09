@@ -353,7 +353,7 @@ export class C8oRouter{
    * @param checkTokenSequence    The server Sequence to be used to check if user session is already autenticated (Project.Sequence)
    */
   public doOAuthLogin(url : String, redirectUri: String, loginSequence: string, checkTokenSequence: string) : Promise<any> {
-    return new Promise(function(resolve, reject) {
+    return new Promise((resolve, reject)=> {
       this.c8o.callJson(checkTokenSequence).then((data, params) => {
         if (data["notoken"] == "true") {
           this.openOAuthLogin(url, redirectUri).then((parsedResponse) => {
@@ -381,8 +381,7 @@ export class C8oRouter{
   }
 
   public openOAuthLogin(url : String, redirectUri: String) : Promise<any> {
-    var myC8o = this.c8o;
-    return new Promise(function(resolve, reject) {
+    return new Promise((resolve, reject) =>{
       if (window["cordova"] != undefined) {
         url += "&redirect_uri=" + redirectUri
         const browserRef = window["cordova"].InAppBrowser.open(
@@ -393,10 +392,10 @@ export class C8oRouter{
         let responseParams : string;
         let parsedResponse : Object = {};
         browserRef.addEventListener("loadstart", (evt) => {
-          myC8o.log.debug("Auth Page loaded")
+          this.c8o.log.debug("Auth Page loaded")
           if ((evt.url).indexOf(redirectUri) === 0) {
             browserRef.removeEventListener("exit", (evt) => {});
-            myC8o.log.debug("Exit Listener removed")
+            this.c8o.log.debug("Exit Listener removed")
             browserRef.close();
             responseParams = ((evt.url).split("#")[1]).split("&");
             for (var i = 0; i < responseParams.length; i++) {
@@ -406,13 +405,13 @@ export class C8oRouter{
               parsedResponse["access_token"] !== null) {
               resolve(parsedResponse);
             } else {
-              myC8o.log.error("oAuthClient : oAuth authentication error:" + evt.url)
+              this.c8o.log.error("oAuthClient : oAuth authentication error:" + evt.url)
               reject("oAuth authentication error");
             }
           }
         });
         browserRef.addEventListener("exit", function(evt) {
-          myC8o.log.debug("Auth Page closed")
+          this.c8o.log.debug("Auth Page closed")
         });
       }
       else {
