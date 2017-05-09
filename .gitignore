@@ -29,6 +29,8 @@ plugins/ios.json
 www/
 $RECYCLE.BIN/
 
+src/caf/convertigo.*.ngsummary.json
+src/index.ngsummary.json
 .DS_Store
 Thumbs.db
 UserInterfaceState.xcuserstate
