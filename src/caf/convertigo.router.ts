@@ -191,10 +191,7 @@ export class C8oRouter{
             .then((response : any, parameters:Object)=>{
                     parameters['_navParams'] = navParams;
                     this.execute_route(response, parameters);
-                    // check for live tag in order to order to page to reload new results ..
-                    if("__live" in parameters || "__fromLive" in parameters){
-                      page.tick();
-                    }
+                    page.tick();
                     resolve();
                     return null;
             })
