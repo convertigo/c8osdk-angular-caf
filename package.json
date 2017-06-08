@@ -1,6 +1,6 @@
 {
   "name": "c8ocaf",
-  "version": "1.0.43",
+  "version": "1.0.44",
   "description": "Convertigo Angular Framework",
   "main": "bundle/index.umd.js",
   "module": "src/index.js",
@@ -33,7 +33,7 @@
     "@angular/common": "4.1.2",
     "@angular/compiler": "4.1.2",
     "@angular/compiler-cli": "4.1.2",
-    "@angular/core": "4.1.2",
+    "@angular/core": ">=4.1.2",
     "@angular/forms": "4.1.2",
     "@angular/http": "4.1.2",
     "@angular/platform-browser": "4.1.2",
@@ -71,7 +71,7 @@
     "tslint-loader": "3.3.0",
     "typings": "^1.4.0",
     "webpack": "2.2.1",
-    "c8osdkangular": "2.1.21",
+    "c8osdkangular": "latest",
     "rimraf": "2.6.1"
   },
   "bugs": {
