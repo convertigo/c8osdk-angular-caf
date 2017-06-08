@@ -2,6 +2,7 @@ import { C8oRouter }                                    from './convertigo.route
 import { NavParams, LoadingController  }                from 'ionic-angular';
 import { DomSanitizer }                                 from '@angular/platform-browser';
 import {ChangeDetectorRef} from "@angular/core";
+import {C8o} from "c8osdkangular";
 
 
 
@@ -13,9 +14,11 @@ export class C8oPage {
     private imgCache : Object = new Object();
     private prefixId : string;
     public form = {};
+    public c8o : C8o;
 
     constructor(public routerProvider : C8oRouter, private navParam: NavParams, public loadingCtrl: LoadingController, private sanitizer : DomSanitizer, private ref: ChangeDetectorRef){
 	      this.router = routerProvider;
+        this.c8o = this.router.c8o;
         this.navParams = (navParam.get("navParams") != undefined && navParam.get("navParams") != null) ? navParam.get("navParams") : "";
         this.router.storeResponseForView(this.constructor.name, navParam.get("requestable"), navParam.get("data"), this.navParams, navParam.get("didEnter") ,navParam.get("didLeave"));
         this.prefixId = "_C8o" + new Date().getTime().toString();
