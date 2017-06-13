@@ -1,8 +1,8 @@
 import { C8oRouter }                                    from './convertigo.router'
 import { NavParams, LoadingController  }                from 'ionic-angular';
 import { DomSanitizer }                                 from '@angular/platform-browser';
-import {ChangeDetectorRef} from "@angular/core";
-import {C8o} from "c8osdkangular";
+import {ChangeDetectorRef, InjectionToken, Injector, Type } from "@angular/core";
+import { C8o } from "c8osdkangular";
 
 
 
@@ -16,12 +16,28 @@ export class C8oPage {
     public form = {};
     public c8o : C8o;
 
-    constructor(public routerProvider : C8oRouter, private navParam: NavParams, public loadingCtrl: LoadingController, private sanitizer : DomSanitizer, private ref: ChangeDetectorRef){
+    constructor(public routerProvider : C8oRouter, private navParam: NavParams, public loadingCtrl: LoadingController, private sanitizer : DomSanitizer, private ref: ChangeDetectorRef, private injector: Injector){
 	      this.router = routerProvider;
         this.c8o = this.router.c8o;
         this.navParams = (navParam.get("navParams") != undefined && navParam.get("navParams") != null) ? navParam.get("navParams") : "";
         this.router.storeResponseForView(this.constructor.name, navParam.get("requestable"), navParam.get("data"), this.navParams, navParam.get("didEnter") ,navParam.get("didLeave"));
         this.prefixId = "_C8o" + new Date().getTime().toString();
+    }
+
+  /**
+   * Retrieves an instance from the injector based on the provided token.
+   * If not found:
+   * - Throws an error if no `notFoundValue` that is not equal to
+   * Injector.THROW_IF_NOT_FOUND is given
+   * - Returns the `notFoundValue` otherwise
+   *
+   * @param token: Type<T>|InjectionToken<T>,  A token with the needed type
+   * @param notFoundValue: T
+   *
+   * @return An instance of the given token, or an error if not found
+   */
+    public getInstance<T>(token: Type<T>|InjectionToken<T>, notFoundValue?: T): T{
+      return this.injector.get(token, notFoundValue);
     }
 
     /**
