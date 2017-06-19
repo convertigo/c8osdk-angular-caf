@@ -4,7 +4,7 @@ import {Injectable}                                         from '@angular/core'
 
 import { C8oRouteListener }                                 from './convertigo.routingtable';
 
-import { C8o, C8oLogLevel, C8oException }                   from "c8osdkangular";
+import {C8o, C8oLogLevel, C8oException, C8oLocalCache, Priority}                   from "c8osdkangular";
 import {C8oPage} from "./convertigo.page";
 
 
@@ -187,6 +187,18 @@ export class C8oRouter{
    */
   c8oCall(requestable:string, parameters?: Object, navParams?:any, page?: C8oPage): Promise<any>{
     return new Promise((resolve, reject)=>{
+      if(parameters["__localCache_priority"] != undefined && (parameters["__localCache_priority"] == "priority_server" || parameters["__localCache_priority"] == "priority_local")){
+        let localCache_priority;
+        if(parameters["__localCache_priority"] == "priority_server"){
+          localCache_priority = Priority.SERVER;
+        }
+        else {
+          localCache_priority = Priority.LOCAL;
+        }
+        parameters[C8oLocalCache.PARAM] = new C8oLocalCache(localCache_priority,  parameters["__localCache_ttl"]);
+        delete parameters["__localCache_priority"];
+        delete parameters["__localCache_ttl"];
+      }
       this.c8o.callJsonObject(requestable, parameters)
         .then((response : any, parameters:Object)=>{
           parameters['_navParams'] = navParams;
