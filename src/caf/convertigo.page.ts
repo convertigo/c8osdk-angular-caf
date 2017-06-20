@@ -150,11 +150,14 @@ export class C8oPage {
         }
     }
 
-
-
-
-
-
+    public virtualListen(arg: any){
+      if(arg == undefined){
+        return [];
+      }
+      else{
+        return arg;
+      }
+    }
 
     /**
      * Get attachment data url a requestable response
