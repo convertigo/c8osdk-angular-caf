@@ -365,28 +365,46 @@ export class C8oRouter{
   public doOAuthLogin(url : String, redirectUri: String, loginSequence: string, checkTokenSequence: string) : Promise<any> {
     return new Promise((resolve, reject)=> {
       this.c8o.callJson(checkTokenSequence).then((data, params) => {
+        console.log("caf.router => first then");
         if (data["notoken"] == "true") {
+          console.log("caf.router => data['notoken'] == true");
           this.openOAuthLogin(url, redirectUri).then((parsedResponse) => {
+            console.log("caf.router => parsedresponse.then")
             this.c8o.log.debug("Parsed response is : " + JSON.stringify(parsedResponse));
-            return this.c8oCall(loginSequence, parsedResponse)
-          });
+
+            this.c8o.callJsonObject(loginSequence, parsedResponse)
+              .then((data: any)=>{
+                console.log("caf.router => second then");
+                if(data["login"] != "ko") {
+                  console.log("caf.router => login != ko")
+                  resolve(data);
+                }
+                else{
+                  console.log("caf.router => login == ko")
+                  reject(data);
+                }
+                return null;
+              }).fail((err)=>{
+              console.log("fail");
+              reject(err);
+            })
+
+
+          }).catch((err)=>{
+            console.log("catch");
+            reject(err);
+          })
         }
         else{
+          console.log("caf.router => data['notoken'] == false");
           resolve(data);
           return null;
         }
-      })
-        .then((data, params) => {
-          if(data["login"] !== "ko") {
-            resolve(data);
-          }
-          else{
-            reject(data);
-          }
-        })
-        .fail((err)=>{
-          reject(err);
-        })
+      }).fail((err)=>{
+        reject(err);
+      });
+
+
     });
   }
 
@@ -425,9 +443,19 @@ export class C8oRouter{
         });
       }
       else {
-        const redirectUri = "http://localhost:18080/convertigo/projects/lib_OAuth/getToken.html"
-        url += "&redirect_uri=" + redirectUri
-        var authw = window.open(url.toString(), "_blank", "location=no, clearsessioncache=yes, clearcache=yes")
+        const redirectUri = "http://localhost:18080/convertigo/projects/lib_OAuth/getToken.html";
+        url += "&redirect_uri=" + redirectUri;
+        var authw = window.open(url.toString(), "_blank", "location=no, clearsessioncache=yes, clearcache=yes");
+        authw.onload = function(evt) {
+          console.log('onload');
+          console.log(JSON.stringify(evt))
+        }
+        var timer = setInterval(function() {
+
+          if (authw.closed) {
+            resolve();
+          }
+        }, 500);
       }
     });
   }
