@@ -1,5 +1,7 @@
 import { OAuthService } from 'angular2-oauth2/oauth-service';
+import {Injectable} from "@angular/core";
 
+@Injectable()
 export class C8oOAuth{
   constructor(private oauthService: OAuthService){
 
