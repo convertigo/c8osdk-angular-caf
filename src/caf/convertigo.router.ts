@@ -368,25 +368,32 @@ export class C8oRouter{
         if (data["notoken"] == "true") {
           this.openOAuthLogin(url, redirectUri).then((parsedResponse) => {
             this.c8o.log.debug("Parsed response is : " + JSON.stringify(parsedResponse));
-            return this.c8oCall(loginSequence, parsedResponse)
-          });
+
+            this.c8o.callJsonObject(loginSequence, parsedResponse)
+              .then((data: any)=>{
+                if(data["login"] != "ko") {
+                  resolve(data);
+                }
+                else{
+                  reject(data);
+                }
+                return null;
+              }).fail((err)=>{
+              reject(err);
+            })
+          }).catch((err)=>{
+            reject(err);
+          })
         }
         else{
           resolve(data);
           return null;
         }
-      })
-        .then((data, params) => {
-          if(data["login"] !== "ko") {
-            resolve(data);
-          }
-          else{
-            reject(data);
-          }
-        })
-        .fail((err)=>{
-          reject(err);
-        })
+      }).fail((err)=>{
+        reject(err);
+      });
+
+
     });
   }
 
@@ -425,9 +432,18 @@ export class C8oRouter{
         });
       }
       else {
-        const redirectUri = "http://localhost:18080/convertigo/projects/lib_OAuth/getToken.html"
-        url += "&redirect_uri=" + redirectUri
-        var authw = window.open(url.toString(), "_blank", "location=no, clearsessioncache=yes, clearcache=yes")
+        const redirectUri = "http://localhost:18080/convertigo/projects/lib_OAuth/getToken.html";
+        url += "&redirect_uri=" + redirectUri;
+        window.open(url.toString(), "_blank", "location=no, clearsessioncache=yes, clearcache=yes");
+        window.addEventListener('message', (parsedResponse) =>{
+          if (parsedResponse.data["access_token"] != undefined &&
+            parsedResponse.data["access_token"] != null) {
+            resolve(parsedResponse.data);
+          } else {
+            this.c8o.log.error("oAuthClient : oAuth authentication error");
+            reject("oAuth authentication error");
+          }
+        });
       }
     });
   }
