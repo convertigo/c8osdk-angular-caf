@@ -195,6 +195,9 @@ export class C8oPage {
             return {}
         }
     }
+    public merge(firstObj: Object, secondObj): Object{
+      return Object.assign(firstObj, secondObj);
+    }
 
 }
 
