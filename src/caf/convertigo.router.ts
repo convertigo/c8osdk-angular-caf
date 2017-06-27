@@ -432,9 +432,10 @@ export class C8oRouter{
         });
       }
       else {
+        //
         const redirectUri = "http://localhost:18080/convertigo/projects/lib_OAuth/getToken.html";
         url += "&redirect_uri=" + redirectUri;
-        window.open(url.toString(), "_blank", "location=no, clearsessioncache=yes, clearcache=yes");
+        window.open(url.toString(), "cafLogin", "location=no, clearsessioncache=yes, clearcache=yes");
         window.addEventListener('message', (parsedResponse) =>{
           if (parsedResponse.data["access_token"] != undefined &&
             parsedResponse.data["access_token"] != null) {
