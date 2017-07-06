@@ -199,6 +199,14 @@ export class C8oPage {
       return Object.assign(firstObj, secondObj);
     }
 
+    public getPageByName(page:string){
+      for(var p of this.router.pagesArray){
+        if(p["title"] == page){
+          return p.component;
+        }
+      }
+    }
+
 }
 
 
