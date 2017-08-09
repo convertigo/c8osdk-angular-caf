@@ -185,26 +185,34 @@ export class C8oPage {
         return String.fromCharCode(code);
     }
 
-    public wordPlusOne(word :string) : any{
-        if(word != undefined) {
+    public wordPlusOne(word: string): any {
+        if (word != undefined) {
             let word1 = word.slice(0, -1)
             let word2 = this.getNextLetter(word)
-            return word1 + word2
+            return word1 + word2;
         }
-        else{
-            return {}
+        else {
+            return {};
         }
     }
     public merge(firstObj: Object, secondObj): Object{
       return Object.assign(firstObj, secondObj);
     }
 
-    public getPageByName(page:string){
-      for(var p of this.router.pagesArray){
-        if(p["title"] == page){
-          return p.component;
+    public getPageByTitle(pageTitle: string) {
+        for (let p of this.router.pagesArray){
+            if (p["title"] == pageTitle) {
+                return p.component;
+            }
         }
-      }
+    }
+
+    public getPageByName(pageName: string) {
+        for (let p of this.router.pagesArray){
+            if (p["component"].name == pageName) {
+                return p.component;
+            }
+        }
     }
 
 }
