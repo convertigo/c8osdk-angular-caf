@@ -1,6 +1,7 @@
 # Specifies intentionally untracked files to ignore when using Git
 # http://git-scm.com/docs/gitignore
 
+package-lock.json
 *~
 *.sw[mnpcod]
 *.log
@@ -43,9 +44,6 @@ nbproject
 manifest.mf
 build.xml
 
-!config/*
-!karma.conf.js
-!webpack.config.js
 !make.js
 !examples/**/*.js
 .editorconfig
