@@ -107,7 +107,7 @@ export class C8oRouter{
   execute_route(response : any, parameters : Object, exception : Error = null){
     let isException = exception == null ? false:true;
     let requestable : string = (parameters["__project"] == undefined ?"": parameters["__project"]) + "." + parameters["__sequence"];
-    let activeView : any = this.app.getActiveNav().getViews().slice(-1)[0] != undefined ? this.app.getActiveNav().getViews().slice(-1)[0].component.name:null;
+    let activeView : any = this.app.getActiveNavs()[0].getViews().slice(-1)[0] != undefined ? this.app.getActiveNavs()[0].getViews().slice(-1)[0].component.name:null;
     let navParams : any = (parameters["_navParams"] == {}) ? "" : parameters["_navParams"]
     for(var item of this.routing_table){
       for(var itemRequestable of item.requestable) {
@@ -327,7 +327,7 @@ export class C8oRouter{
    * @options     transition options
    */
   public push(view : any, data: any, options: Object): Promise<any>{
-    return this.app.getActiveNav().push(view, data , options);
+    return this.app.getActiveNavs()[0].push(view, data , options);
   }
 
   /**
@@ -337,7 +337,7 @@ export class C8oRouter{
    * @param       data to be passed to the view
    */
   public setRoot(view : any, data: any, options: Object) : Promise<any>{
-    return this.app.getActiveNav().setRoot(view, data, options);
+    return this.app.getActiveNavs()[0].setRoot(view, data, options);
   }
 
   /**
