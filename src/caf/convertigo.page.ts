@@ -1,5 +1,5 @@
 import { C8oRouter }                                    from './convertigo.router'
-import { NavParams, LoadingController  }                from 'ionic-angular';
+import {NavParams, LoadingController, MenuController}                from 'ionic-angular';
 import { DomSanitizer }                                 from '@angular/platform-browser';
 import {ChangeDetectorRef, InjectionToken, Injector, Type } from "@angular/core";
 import { C8o } from "c8osdkangular";
@@ -15,8 +15,9 @@ export class C8oPage {
     private prefixId : string;
     public form = {};
     public c8o : C8o;
+    public menuId : string;
 
-    constructor(public routerProvider : C8oRouter, private navParam: NavParams, public loadingCtrl: LoadingController, private sanitizer : DomSanitizer, private ref: ChangeDetectorRef, private injector: Injector){
+    constructor(public routerProvider : C8oRouter, private navParam: NavParams, public loadingCtrl: LoadingController, private sanitizer : DomSanitizer, private ref: ChangeDetectorRef, private injector: Injector, private menuCtrl: MenuController){
 	      this.router = routerProvider;
         this.c8o = this.router.c8o;
         this.navParams = (navParam.get("navParams") != undefined && navParam.get("navParams") != null) ? navParam.get("navParams") : "";
@@ -126,6 +127,9 @@ export class C8oPage {
     }
 
     public ionViewDidEnter(){
+        if(!(this.menuId == null || this.menuId == undefined || this.menuId == '')) {
+          this.menuCtrl.enable(true, this.menuId);
+        }
         this.didLoad = true;
         if(!(this.navParam.get("didEnter") == null || this.navParam.get("didEnter") == undefined || this.navParam.get("didEnter") == '')){
            this.navParam.get("didEnter")(this, this.router.c8o);
@@ -139,6 +143,9 @@ export class C8oPage {
     }
 
     public ionViewDidLeave(){
+        if(!(this.menuId == null || this.menuId == undefined || this.menuId == '')) {
+          this.menuCtrl.enable(false, this.menuId);
+        }
         if(!(this.navParam.get("didLeave") == null || this.navParam.get("didLeave") == undefined || this.navParam.get("didLeave") == '')){
            this.navParam.get("didLeave")(this, this.router.c8o);
         }
