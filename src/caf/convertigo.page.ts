@@ -81,7 +81,7 @@ export class C8oPage {
    * @param	data , the data to send to the requestable (for example {"var1" : "value1, ..., "var2" : "value2})
    *
    */
-  public call(requestable, data: any = null, navParams : any = null, timeout : number = 500) {
+  public call(requestable, data: any = null, navParams : any = null, timeout : number = 500): Promise<any> {
     if(this.form != {} && data == null){
       data = this.form;
     }
@@ -96,23 +96,28 @@ export class C8oPage {
         this.count ++;
       }
     }, timeout);
-    this.router.c8oCall(requestable, data, navParams, this).then(()=>{
-      this.finish = true;
-      if(this.shown == true) {
-        this.count --;
-        if(this.count == 0) {
-          this.shown = false;
-          this.loader.dismiss();
+
+    return new Promise((resolve, reject) => {
+      this.router.c8oCall(requestable, data, navParams, this).then(() => {
+        this.finish = true;
+        if (this.shown == true) {
+          this.count--;
+          if (this.count == 0) {
+            this.shown = false;
+            this.loader.dismiss();
+          }
+          resolve();
         }
-      }
-    }).catch(()=>{
-      this.finish = true;
-      if(this.shown == true){
-        this.count --;
-        if(this.count == 0){
-          this.loader.dismiss();
+      }).catch(() => {
+        this.finish = true;
+        if (this.shown == true) {
+          this.count--;
+          if (this.count == 0) {
+            this.loader.dismiss();
+          }
+          resolve();
         }
-      }
+      });
     });
 
   }
