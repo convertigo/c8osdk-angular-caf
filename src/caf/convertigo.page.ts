@@ -133,15 +133,16 @@ export class C8oPage {
   }
 
   public ionViewWillEnter(){
+    let pageMenu = this.menuCtrl.get(this.menuId);
+    if(pageMenu){
+      this.menuCtrl.enable(true, pageMenu.id);
+    }
     if(!(this.navParam.get("willEnter") == null || this.navParam.get("willEnter") == undefined || this.navParam.get("willEnter") == '')){
       this.navParam.get("willEnter")(this, this.router.c8o);
     }
   }
 
   public ionViewDidEnter(){
-    if(!(this.menuId == null || this.menuId == undefined || this.menuId == '')) {
-      this.menuCtrl.enable(true, this.menuId);
-    }
     this.didLoad = true;
     if(!(this.navParam.get("didEnter") == null || this.navParam.get("didEnter") == undefined || this.navParam.get("didEnter") == '')){
       this.navParam.get("didEnter")(this, this.router.c8o);
@@ -149,15 +150,15 @@ export class C8oPage {
   }
 
   public ionViewWillLeave(){
+    if(!(this.menuId == null || this.menuId == undefined || this.menuId == '')) {
+      this.menuCtrl.enable(false, this.menuId);
+    }
     if(!(this.navParam.get("willLeave") == null || this.navParam.get("willLeave") == undefined || this.navParam.get("willLeave") == '')){
       this.navParam.get("willLeave")(this, this.router.c8o);
     }
   }
 
   public ionViewDidLeave(){
-    if(!(this.menuId == null || this.menuId == undefined || this.menuId == '')) {
-      this.menuCtrl.enable(false, this.menuId);
-    }
     if(!(this.navParam.get("didLeave") == null || this.navParam.get("didLeave") == undefined || this.navParam.get("didLeave") == '')){
       this.navParam.get("didLeave")(this, this.router.c8o);
     }
