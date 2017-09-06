@@ -106,8 +106,8 @@ export class C8oPage {
             this.shown = false;
             this.loader.dismiss();
           }
-          resolve();
         }
+        resolve();
       }).catch(() => {
         this.finish = true;
         if (this.shown == true) {
