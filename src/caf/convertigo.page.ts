@@ -191,14 +191,14 @@ export class C8oPage {
    * @param	attachmentName , the name of the attachment to get
    *
    */
-  public getAttachmentUrl(id: string, attachmentName: string, placeholderURL : string): Object{
+  public getAttachmentUrl(id: string, attachmentName: string, placeholderURL : string, databaseName?: string): Object{
 
     if(id != null){
       if(this.imgCache[id+"/"+attachmentName] == undefined){
         this.imgCache[id+"/"+attachmentName] = placeholderURL
-        this.router.c8o.get_attachment(id, attachmentName).then((response)=>{
+        this.router.c8o.get_attachment(id, attachmentName, databaseName).then((response)=>{
           this.imgCache[id+"/"+attachmentName] = this.sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(response))
-        })
+        });
       }
     }
     return this.imgCache[id+"/"+attachmentName]
