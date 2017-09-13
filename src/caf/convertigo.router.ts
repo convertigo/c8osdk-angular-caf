@@ -104,9 +104,9 @@ export class C8oRouter{
    * @param exception     optional exception if it is a failed requestable call
    *
    */
-  execute_route(response : any, parameters : Object, exception : Error = null){
+  execute_route(response : any, parameters : Object, requestable:string, exception : Error = null){
     let isException = exception == null ? false:true;
-    let requestable : string = (parameters["__project"] == undefined ?"": parameters["__project"]) + "." + parameters["__sequence"];
+    //let requestable : string = (parameters["__project"] == undefined ?"": parameters["__project"]) + "." + parameters["__sequence"];
     let activeView : any = this.app.getActiveNavs()[0].getViews().slice(-1)[0] != undefined ? this.app.getActiveNavs()[0].getViews().slice(-1)[0].component.name:null;
     let navParams : any = (parameters["_navParams"] == {}) ? "" : parameters["_navParams"]
     for(var item of this.routing_table){
@@ -203,7 +203,7 @@ export class C8oRouter{
       this.c8o.callJsonObject(requestable, parameters)
         .then((response : any, parameters:Object)=>{
           parameters['_navParams'] = navParams;
-          this.execute_route(response, parameters);
+          this.execute_route(response, parameters, requestable);
           // check for live tag in order to order to page to reload new results ..
             page.tick()
           resolve();
@@ -211,7 +211,7 @@ export class C8oRouter{
         })
         .fail((exception: C8oException, parametersF : Object )=>{
           this.c8o.log.error("Error occured when calling " + requestable + ":" + exception)
-          this.execute_route(requestable, parametersF, exception)
+          this.execute_route(requestable, parametersF, requestable, exception)
           reject();
         })
     })
