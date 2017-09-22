@@ -56,6 +56,7 @@ export class C8oPage {
      */
     public listen(requestables : string[]) : any {
         return this.router.getResponseForView(this.constructor.name, requestables);
+        //this.router.getResponseForView(this.constructor.name, requestables);
     }
 
     /**
