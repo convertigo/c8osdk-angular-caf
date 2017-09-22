@@ -107,7 +107,17 @@ export class C8oRouter{
     execute_route(response : any, parameters : Object, exception : Error = null){
         let isException = exception == null ? false:true;
         let requestable : string = (parameters["__project"] == undefined ?"": parameters["__project"]) + "." + parameters["__sequence"];
-        let activeView : any = this.app.getActiveNavs()[0] != undefined ? this.app.getActiveNavs()[0].getViews().slice(-1)[0].component.name:null;
+        let errors: any = null;
+        let activeView : any = null;
+        try{
+            this.app.getActiveNavs()[0].getViews().slice(-1)[0].component.name
+        }
+        catch (e){
+            errors = e;
+        }
+        if(errors == null){
+            activeView = this.app.getActiveNavs()[0].getViews() != undefined ? this.app.getActiveNavs()[0].getViews().slice(-1)[0].component.name:null;
+        }
         let navParams : any = (parameters["_navParams"] == {}) ? "" : parameters["_navParams"]
         for(var item of this.routing_table){
             for(var itemRequestable of item.requestable) {
