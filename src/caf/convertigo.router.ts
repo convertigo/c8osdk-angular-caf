@@ -134,11 +134,7 @@ export class C8oRouter{
                                     route.afterCall();
                                 }
                                 // test to see if we are already on the target page
-                                if(activeView == null){
-                                    this.log("Route for Requestable '" + item.requestable + "', the view is already displayed, using _C80_GeneralView view");
-                                    this.storeResponseForView("_C80_GeneralView", requestable, response, navParams, route.didEnter, route.didLeave);
-                                    return;
-                                }
+
                                 if(route.target.page != null) {
                                     if (this.findView(activeView, route.target.page.name, requestable) && !route.target.alwaysNewPage) {
                                         this.log("Route for Requestable '" + item.requestable + "', the view is already displayed, using curent view");
@@ -172,6 +168,10 @@ export class C8oRouter{
                                 if (route.target.action.toString() == "toast") {
                                     let toast = this.toastCtrl.create(route.toastOptions);
                                     toast.present();
+                                }
+                                if(activeView == null){
+                                    this.log("Route for Requestable '" + item.requestable + "', the view is already displayed, using _C80_GeneralView view");
+                                    this.storeResponseForView("_C80_GeneralView", requestable, response, navParams, route.didEnter, route.didLeave);
                                 }
                                 return;
                             }
@@ -279,7 +279,8 @@ export class C8oRouter{
             if(requestables != undefined){
                 for (var requestable of requestables) {
                     for(var item of this.c8oResponses) {
-                        if (item["view"] == view && item["requestable"] == requestable)
+                        //if (item["view"] == view && item["requestable"] == requestable)
+                        if (item["requestable"] == requestable)
                             return (item["data"])
                     }
                 }

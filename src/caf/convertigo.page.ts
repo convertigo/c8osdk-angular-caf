@@ -56,7 +56,7 @@ export class C8oPage {
      */
     public listen(requestables : string[]) : any {
         return this.router.getResponseForView(this.constructor.name, requestables);
-        //this.router.getResponseForView(this.constructor.name, requestables);
+        //this.router.getResponseForView('_C80_GeneralView', ['fs://fs_monmobile.view');
     }
 
     /**
