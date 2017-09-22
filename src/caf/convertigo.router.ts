@@ -141,6 +141,13 @@ export class C8oRouter{
                                         return;
                                     }
                                 }
+                                else {
+
+                                        this.log("Route for Requestable '" + item.requestable + "', the view is already displayed, using _C80_GeneralView view");
+                                        this.storeResponseForView("_C80_GeneralView", requestable, response, navParams, route.didEnter, route.didLeave);
+                                        return;
+
+                                }
 
                                 // We are not already on the page, switch to it using the correct animation options...
                                 if (route.target.action == "push") {
