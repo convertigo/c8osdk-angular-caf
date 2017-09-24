@@ -25,6 +25,7 @@ export class C8oRouter{
     private static C8OCAF_SESSION_STORAGE_CLEAR = "_c8ocafsession_storage_clear";
     private storage : any;
     public pagesArray = [];
+    public sharedObject: any;
 
 
     constructor(private _c8o : C8o, private app: App, public toastCtrl: ToastController){
