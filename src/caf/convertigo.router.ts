@@ -157,7 +157,7 @@ export class C8oRouter{
                                             this.log("Page '" + route.target.page.name + "' Pushed")
                                         })
                                 }
-                                if (route.target.action.toString() == "root") {
+                                if (route.target.action.toString() == "setRoot") {
                                     this.setRoot(route.target.page, {
                                         "requestable": requestable,
                                         "data": response,
