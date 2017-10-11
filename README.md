@@ -2,7 +2,7 @@
 
 # Convertigo Angular Framework (CAF) [![npm version](https://img.shields.io/npm/v/c8ocaf.svg)](https://www.npmjs.com/package/c8ocaf) #
 
-  CAF brings to Angular / Ionic 2 the same functionalities that CTF (Convertigo Templating Framework)  brings to JQuery.  The goal is to add Convertigo back end support directly in to the Ionic HTML templates without having to program complex TypeScript. For example calling a Convertigo sequence from a button is as simple as that:
+  CAF brings to Angular / Ionic 2+ the same functionalities that CTF (Convertigo Templating Framework)  brings to JQuery.  The goal is to add Convertigo back end support directly in to the Ionic HTML templates without having to program complex TypeScript. For example calling a Convertigo sequence from a button is as simple as that:
   
   	<button ion-button full (click)="call('.Login')">Click Me</button>
   
