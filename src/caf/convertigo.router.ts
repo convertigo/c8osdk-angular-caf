@@ -6,6 +6,8 @@ import { C8oRouteListener }                                 from './convertigo.r
 
 import {C8o, C8oLogLevel, C8oException, C8oLocalCache, Priority}                   from "c8osdkangular";
 import {C8oPage} from "./convertigo.page";
+import {C8oExceptionMessage} from "c8osdkangular/src/c8o/Exception/c8oExceptionMessage.service";
+import {Observable} from "rxjs/Observable";
 
 
 /*
@@ -462,6 +464,42 @@ export class C8oRouter{
                         reject("oAuth authentication error");
                     }
                 });
+            }
+        });
+    }
+
+    /**
+     * fileUpload allow to upload file to a Convertigo Sequence
+     *
+     * @param requestable           @param requestable - Contains the Convertigo Sequence (Syntax: "<project>.<sequence>")
+     * @param fileList              File to upload
+     * @param endpoint?             optional endpoint to fetch. if not defined c8o default endpoint will be used
+     */
+    public fileUpload(requestable: string, fileList: FileList, endpoint?:string):Promise<any>{
+        let RE_REQUESTABLE = /^([^.]*)\.(?:([^.]+)|(?:([^.]+)\.([^.]+)))$/;
+        let regex = RE_REQUESTABLE.exec(requestable)
+        if (regex[0] === null || regex === undefined) {
+            //noinspection ExceptionCaughtLocallyJS
+            throw new C8oException(C8oExceptionMessage.InvalidArgumentInvalidEndpoint(this.c8o.endpoint));
+        }
+        return new Promise((resolve,reject)=>{
+            if(fileList.length > 0) {
+                let file: File = fileList[0];
+                let formData:FormData = new FormData();
+                formData.append('uploadFile', file, file.name);
+                let headers = new Headers();
+                headers.append('Content-Type', 'multipart/form-data');
+                headers.append('Accept', 'application/json');
+                if(endpoint == null){
+                    endpoint = this.c8o.endpoint;
+                }
+                this.c8o.httpPublic.post(endpoint + "/.json?__sequence="+regex[2]+"&__project=" +regex[1], formData, {headers: headers, withCredentials: true})
+                    .map(res => res.json())
+                    .catch(err=> Observable.throw(err))
+                    .subscribe(
+                        data => resolve(),
+                        error => reject(error)
+                    )
             }
         });
     }
