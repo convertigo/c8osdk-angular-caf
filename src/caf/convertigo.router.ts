@@ -1,7 +1,7 @@
 import {App }                                               from 'ionic-angular';
 import {ToastController }                                   from 'ionic-angular';
 import {Injectable}                                         from '@angular/core';
-
+import {Headers}                                            from "@angular/http";
 import { C8oRouteListener }                                 from './convertigo.routingtable';
 
 import {C8o, C8oLogLevel, C8oException, C8oLocalCache, Priority}                   from "c8osdkangular";
@@ -484,9 +484,10 @@ export class C8oRouter{
         }
         return new Promise((resolve,reject)=>{
             if(fileList.length > 0) {
-                let file: File = fileList[0];
                 let formData:FormData = new FormData();
-                formData.append('uploadFile', file, file.name);
+                for (var i = 0; i < fileList.length; i++) {
+                    formData.append("MultiVar", fileList[i], fileList[i].name);
+                }
                 let headers = new Headers();
                 headers.append('Content-Type', 'multipart/form-data');
                 headers.append('Accept', 'application/json');
