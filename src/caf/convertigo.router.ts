@@ -475,7 +475,7 @@ export class C8oRouter{
      * @param fileList              File to upload
      * @param endpoint?             optional endpoint to fetch. if not defined c8o default endpoint will be used
      */
-    public fileUpload(requestable: string, fileList: FileList, endpoint?:string):Promise<any>{
+    public fileUpload(requestable: string, fileList: FileList, variableName:string, endpoint?:string):Promise<any>{
         let RE_REQUESTABLE = /^([^.]*)\.(?:([^.]+)|(?:([^.]+)\.([^.]+)))$/;
         let regex = RE_REQUESTABLE.exec(requestable)
         if (regex[0] === null || regex === undefined) {
@@ -486,7 +486,7 @@ export class C8oRouter{
             if(fileList.length > 0) {
                 let formData:FormData = new FormData();
                 for (var i = 0; i < fileList.length; i++) {
-                    formData.append("MultiVar", fileList[i], fileList[i].name);
+                    formData.append(variableName, fileList[i], fileList[i].name);
                 }
                 let headers = new Headers();
                 headers.append('Content-Type', 'multipart/form-data');
