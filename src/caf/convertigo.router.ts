@@ -350,7 +350,7 @@ export class C8oRouter{
     public push(view : any, data: any, options: Object): Promise<any>{
         return this.app.getActiveNavs()[0].push(view, data , options);
     }
-    
+
     /**
      * Utility routine to pop on the nav stack a view with data to be passed to the view
      *
