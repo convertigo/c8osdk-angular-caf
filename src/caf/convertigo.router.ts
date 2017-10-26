@@ -1,13 +1,11 @@
 import {App }                                               from 'ionic-angular';
 import {ToastController }                                   from 'ionic-angular';
 import {Injectable}                                         from '@angular/core';
-import {Headers}                                            from "@angular/http";
 import { C8oRouteListener }                                 from './convertigo.routingtable';
 
 import {C8o, C8oLogLevel, C8oException, C8oLocalCache, Priority}                   from "c8osdkangular";
 import {C8oPage} from "./convertigo.page";
-import {C8oExceptionMessage} from "c8osdkangular/src/c8o/Exception/c8oExceptionMessage.service";
-import {Observable} from "rxjs/Observable";
+
 
 
 /*
@@ -27,7 +25,7 @@ export class C8oRouter{
     private static C8OCAF_SESSION_STORAGE_CLEAR = "_c8ocafsession_storage_clear";
     private storage : any;
     public pagesArray = [];
-    public sharedObject: any;
+    public sharedObject: any = {};
 
 
     constructor(private _c8o : C8o, private app: App, public toastCtrl: ToastController){
@@ -282,10 +280,14 @@ export class C8oRouter{
             if(requestables != undefined){
                 for (var requestable of requestables) {
                     for(var item of this.c8oResponses) {
-                        //if (item["view"] == view && item["requestable"] == requestable)
+                        if (item["view"] == view && item["requestable"] == requestable)
+                            return (item["data"])
+                    }
+                    for(var item of this.c8oResponses) {
                         if (item["requestable"] == requestable)
                             return (item["data"])
                     }
+
                 }
                 return(new Object())
             }
@@ -347,6 +349,14 @@ export class C8oRouter{
      */
     public push(view : any, data: any, options: Object): Promise<any>{
         return this.app.getActiveNavs()[0].push(view, data , options);
+    }
+    
+    /**
+     * Utility routine to pop on the nav stack a view with data to be passed to the view
+     *
+     */
+    public pop(): Promise<any>{
+        return this.app.getActiveNavs()[0].pop();
     }
 
     /**
@@ -468,40 +478,5 @@ export class C8oRouter{
         });
     }
 
-    /**
-     * fileUpload allow to upload file to a Convertigo Sequence
-     *
-     * @param requestable           @param requestable - Contains the Convertigo Sequence (Syntax: "<project>.<sequence>")
-     * @param fileList              File to upload
-     * @param endpoint?             optional endpoint to fetch. if not defined c8o default endpoint will be used
-     */
-    public fileUpload(requestable: string, fileList: FileList, variableName:string, endpoint?:string):Promise<any>{
-        let RE_REQUESTABLE = /^([^.]*)\.(?:([^.]+)|(?:([^.]+)\.([^.]+)))$/;
-        let regex = RE_REQUESTABLE.exec(requestable)
-        if (regex[0] === null || regex === undefined) {
-            //noinspection ExceptionCaughtLocallyJS
-            throw new C8oException(C8oExceptionMessage.InvalidArgumentInvalidEndpoint(this.c8o.endpoint));
-        }
-        return new Promise((resolve,reject)=>{
-            if(fileList.length > 0) {
-                let formData:FormData = new FormData();
-                for (var i = 0; i < fileList.length; i++) {
-                    formData.append(variableName, fileList[i], fileList[i].name);
-                }
-                let headers = new Headers();
-                headers.append('Content-Type', 'multipart/form-data');
-                headers.append('Accept', 'application/json');
-                if(endpoint == null){
-                    endpoint = this.c8o.endpoint;
-                }
-                this.c8o.httpPublic.post(endpoint + "/.json?__sequence="+regex[2]+"&__project=" +regex[1], formData, {headers: headers, withCredentials: true})
-                    .map(res => res.json())
-                    .catch(err=> Observable.throw(err))
-                    .subscribe(
-                        data => resolve(),
-                        error => reject(error)
-                    )
-            }
-        });
-    }
+
 }
