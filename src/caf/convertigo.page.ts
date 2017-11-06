@@ -124,6 +124,7 @@ export class C8oPage {
     }
     public tick(){
         this.ref.markForCheck();
+        this.ref.detectChanges()
     }
 
     ngOnDestroy() {
