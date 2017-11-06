@@ -112,13 +112,13 @@ export class C8oRouter{
         let errors: any = null;
         let activeView : any = null;
         try{
-            this.app.getActiveNavs()[0].getViews().slice(-1)[0].component.name
+            this.app.getActiveNavs()[0].getViews().slice(-1)[0].component["nameStatic"]
         }
         catch (e){
             errors = e;
         }
         if(errors == null){
-            activeView = this.app.getActiveNavs()[0].getViews() != undefined ? this.app.getActiveNavs()[0].getViews().slice(-1)[0].component.name:null;
+            activeView = this.app.getActiveNavs()[0].getViews() != undefined ? this.app.getActiveNavs()[0].getViews().slice(-1)[0].component["nameStatic"]:null;
         }
         let navParams : any = (parameters["_navParams"] == {}) ? "" : parameters["_navParams"]
         for(var item of this.routing_table){
@@ -138,7 +138,7 @@ export class C8oRouter{
                                 // test to see if we are already on the target page
 
                                 if(route.target.page != null) {
-                                    if (this.findView(activeView, route.target.page.name, requestable) && !route.target.alwaysNewPage) {
+                                    if (this.findView(activeView, route.target.page["nameStatic"], requestable) && !route.target.alwaysNewPage) {
                                         this.log("Route for Requestable '" + item.requestable + "', the view is already displayed, using curent view");
                                         this.storeResponseForView(activeView, requestable, response, navParams, route.didEnter, route.didLeave);
                                         return;
@@ -155,7 +155,7 @@ export class C8oRouter{
                                         "didLeave": route.didLeave
                                     }, route.options)
                                         .then((obj: any) => {
-                                            this.log("Page '" + route.target.page.name + "' Pushed")
+                                            this.log("Page '" + route.target.page["nameStatic"] + "' Pushed")
                                         })
                                 }
                                 if (route.target.action.toString() == "setRoot") {
@@ -164,7 +164,7 @@ export class C8oRouter{
                                         "data": response,
                                         "navParams": navParams
                                     }, route.options).then(() => {
-                                        this.log("Page '" + route.target.page.name + "' set to root")
+                                        this.log("Page '" + route.target.page["nameStatic"] + "' set to root")
                                     })
                                 }
                                 if (route.target.action.toString() == "toast") {
