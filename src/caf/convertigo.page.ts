@@ -236,7 +236,7 @@ export class C8oPage {
 
     public getPageByName(pageName: string) {
         for (let p of this.router.pagesArray){
-            if (p["component"].name == pageName) {
+            if (p["component"].nameStatic == pageName || p["component"].name) {
                 return p.component;
             }
         }
