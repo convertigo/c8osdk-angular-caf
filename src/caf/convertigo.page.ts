@@ -19,6 +19,7 @@ export class C8oPage {
     private shown: boolean = false;
     private finish: boolean = false;
     private count: number = 0;
+    public didleave: boolean = false;
 
     constructor(public routerProvider : C8oRouter, private navParam: NavParams, public loadingCtrl: LoadingController, private sanitizer : DomSanitizer, private ref: ChangeDetectorRef, private injector: Injector, private menuCtrl: MenuController){
         this.router = routerProvider;
@@ -166,6 +167,7 @@ export class C8oPage {
     }
 
     public ionViewDidLeave(){
+        this.didleave = true;
         if(!(this.navParam.get("didLeave") == null || this.navParam.get("didLeave") == undefined || this.navParam.get("didLeave") == '')){
             this.navParam.get("didLeave")(this, this.router.c8o);
         }
