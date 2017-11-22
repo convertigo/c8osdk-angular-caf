@@ -19,9 +19,9 @@ export class C8oPage {
     private count: number = 0;
     public didleave: boolean = false;
 
-    constructor(public router : C8oRouter, public navParams: NavParams, public loadingCtrl: LoadingController, public sanitizer : DomSanitizer, public ref: ChangeDetectorRef, public injector: Injector, public menuCtrl: MenuController){
-        this.c8o = this.router.c8o;
-        this.router.storeResponseForView(this.constructor.name, navParams.get("requestable"), navParams.get("data"), this.navParams, navParams.get("didEnter") ,navParams.get("didLeave"));
+    constructor(public routerProvider : C8oRouter, public navParams: NavParams, public loadingCtrl: LoadingController, public sanitizer : DomSanitizer, public ref: ChangeDetectorRef, public injector: Injector, public menuCtrl: MenuController){
+        this.c8o = this.routerProvider.c8o;
+        this.routerProvider.storeResponseForView(this.constructor.name, navParams.get("requestable"), navParams.get("data"), this.navParams, navParams.get("didEnter") ,navParams.get("didLeave"));
         this.prefixId = "_C8o" + new Date().getTime().toString();
     }
 
@@ -52,7 +52,7 @@ export class C8oPage {
      * @return the data for one of the requestables in the list.
      */
     public listen(requestables : string[]) : any {
-        return this.router.getResponseForView(this.constructor.name, requestables);
+        return this.routerProvider.getResponseForView(this.constructor.name, requestables);
         //this.router.getResponseForView('_C80_GeneralView', ['fs://fs_monmobile.view');
     }
 
@@ -67,7 +67,7 @@ export class C8oPage {
      * @return the data for one of the requestables in the list.
      */
     public listenNavParams(requestable : string) : any {
-        return(this.router.getParamForView(this.constructor.name, requestable));
+        return(this.routerProvider.getParamForView(this.constructor.name, requestable));
     }
     callForm(requestable:string, id: string){
         this.call(requestable, this.form[id]);
@@ -96,7 +96,7 @@ export class C8oPage {
         }, timeout);
 
         return new Promise((resolve, reject) => {
-            this.router.c8oCall(requestable, data, navParams, this).then(() => {
+            this.routerProvider.c8oCall(requestable, data, navParams, this).then(() => {
                 this.finish = true;
                 if (this.shown == true) {
                     this.count--;
@@ -132,7 +132,7 @@ export class C8oPage {
     public ionViewDidLoad(){
 
         if(!(this.navParams.get("didLoad") == null || this.navParams.get("didLoad") == undefined || this.navParams.get("didLoad") == '')){
-            this.navParams.get("didLoad")(this, this.router.c8o);
+            this.navParams.get("didLoad")(this, this.routerProvider.c8o);
         }
     }
 
@@ -142,14 +142,14 @@ export class C8oPage {
             this.menuCtrl.enable(true, pageMenu.id);
         }
         if(!(this.navParams.get("willEnter") == null || this.navParams.get("willEnter") == undefined || this.navParams.get("willEnter") == '')){
-            this.navParams.get("willEnter")(this, this.router.c8o);
+            this.navParams.get("willEnter")(this, this.routerProvider.c8o);
         }
     }
 
     public ionViewDidEnter(){
         this.didLoad = true;
         if(!(this.navParams.get("didEnter") == null || this.navParams.get("didEnter") == undefined || this.navParams.get("didEnter") == '')){
-            this.navParams.get("didEnter")(this, this.router.c8o);
+            this.navParams.get("didEnter")(this, this.routerProvider.c8o);
         }
     }
 
@@ -158,20 +158,20 @@ export class C8oPage {
             this.menuCtrl.enable(false, this.menuId);
         }
         if(!(this.navParams.get("willLeave") == null || this.navParams.get("willLeave") == undefined || this.navParams.get("willLeave") == '')){
-            this.navParams.get("willLeave")(this, this.router.c8o);
+            this.navParams.get("willLeave")(this, this.routerProvider.c8o);
         }
     }
 
     public ionViewDidLeave(){
         this.didleave = true;
         if(!(this.navParams.get("didLeave") == null || this.navParams.get("didLeave") == undefined || this.navParams.get("didLeave") == '')){
-            this.navParams.get("didLeave")(this, this.router.c8o);
+            this.navParams.get("didLeave")(this, this.routerProvider.c8o);
         }
     }
 
     public ionViewWillUnload(){
         if(!(this.navParams.get("willUnLoad") == null || this.navParams.get("willUnLoad") == undefined || this.navParams.get("willUnLoad") == '')){
-            this.navParams.get("willUnLoad")(this, this.router.c8o);
+            this.navParams.get("willUnLoad")(this, this.routerProvider.c8o);
         }
     }
 
@@ -196,7 +196,7 @@ export class C8oPage {
         if(id != null){
             if(this.imgCache[id+"/"+attachmentName] == undefined){
                 this.imgCache[id+"/"+attachmentName] = placeholderURL
-                this.router.c8o.get_attachment(id, attachmentName, databaseName).then((response)=>{
+                this.routerProvider.c8o.get_attachment(id, attachmentName, databaseName).then((response)=>{
                     this.imgCache[id+"/"+attachmentName] = this.sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(response))
                 });
             }
@@ -225,7 +225,7 @@ export class C8oPage {
     }
 
     public getPageByTitle(pageTitle: string) {
-        for (let p of this.router.pagesArray){
+        for (let p of this.routerProvider.pagesArray){
             if (p["title"] == pageTitle) {
                 return p.component;
             }
@@ -233,7 +233,7 @@ export class C8oPage {
     }
 
     public getPageByName(pageName: string) {
-        for (let p of this.router.pagesArray){
+        for (let p of this.routerProvider.pagesArray){
             if (p["component"].nameStatic == pageName || p["component"].name == pageName) {
                 return p.component;
             }
