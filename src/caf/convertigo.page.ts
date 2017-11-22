@@ -3,11 +3,13 @@ import {NavParams, LoadingController, MenuController}                from 'ionic
 import { DomSanitizer }                                 from '@angular/platform-browser';
 import {ChangeDetectorRef, InjectionToken, Injector, Type } from "@angular/core";
 import { C8o } from "c8osdkangular";
+import * as ts from 'typescript';
 
 
 
 export class C8oPage {
     private loader;
+    public router: C8oRouter;
     private didLoad;
     private imgCache : Object = new Object();
     private prefixId : string;
@@ -23,6 +25,8 @@ export class C8oPage {
         this.c8o = this.routerProvider.c8o;
         this.routerProvider.storeResponseForView(this.constructor.name, navParams.get("requestable"), navParams.get("data"), this.navParams, navParams.get("didEnter") ,navParams.get("didLeave"));
         this.prefixId = "_C8o" + new Date().getTime().toString();
+        //shortcut
+        this.router = this.routerProvider;
     }
 
     /**
@@ -238,6 +242,17 @@ export class C8oPage {
                 return p.component;
             }
         }
+    }
+
+    public safeEval(key: any, origin: string) {
+        let val;
+        try {
+            val=eval(ts.transpile(key));
+        }
+        catch(e){
+            this.c8o.log.warn(origin + ": " + e.message);
+        }
+        return val;
     }
 
 }
