@@ -7,8 +7,6 @@ import { C8o } from "c8osdkangular";
 
 
 export class C8oPage {
-    public router;
-    public navParams;
     private loader;
     private didLoad;
     private imgCache : Object = new Object();
@@ -21,11 +19,9 @@ export class C8oPage {
     private count: number = 0;
     public didleave: boolean = false;
 
-    constructor(public routerProvider : C8oRouter, private navParam: NavParams, public loadingCtrl: LoadingController, private sanitizer : DomSanitizer, private ref: ChangeDetectorRef, private injector: Injector, private menuCtrl: MenuController){
-        this.router = routerProvider;
+    constructor(public router : C8oRouter, public navParams: NavParams, public loadingCtrl: LoadingController, public sanitizer : DomSanitizer, public ref: ChangeDetectorRef, public injector: Injector, public menuCtrl: MenuController){
         this.c8o = this.router.c8o;
-        this.navParams = (navParam.get("navParams") != undefined && navParam.get("navParams") != null) ? navParam.get("navParams") : "";
-        this.router.storeResponseForView(this.constructor.name, navParam.get("requestable"), navParam.get("data"), this.navParams, navParam.get("didEnter") ,navParam.get("didLeave"));
+        this.router.storeResponseForView(this.constructor.name, navParams.get("requestable"), navParams.get("data"), this.navParams, navParams.get("didEnter") ,navParams.get("didLeave"));
         this.prefixId = "_C8o" + new Date().getTime().toString();
     }
 
@@ -135,8 +131,8 @@ export class C8oPage {
 
     public ionViewDidLoad(){
 
-        if(!(this.navParam.get("didLoad") == null || this.navParam.get("didLoad") == undefined || this.navParam.get("didLoad") == '')){
-            this.navParam.get("didLoad")(this, this.router.c8o);
+        if(!(this.navParams.get("didLoad") == null || this.navParams.get("didLoad") == undefined || this.navParams.get("didLoad") == '')){
+            this.navParams.get("didLoad")(this, this.router.c8o);
         }
     }
 
@@ -145,15 +141,15 @@ export class C8oPage {
         if(pageMenu){
             this.menuCtrl.enable(true, pageMenu.id);
         }
-        if(!(this.navParam.get("willEnter") == null || this.navParam.get("willEnter") == undefined || this.navParam.get("willEnter") == '')){
-            this.navParam.get("willEnter")(this, this.router.c8o);
+        if(!(this.navParams.get("willEnter") == null || this.navParams.get("willEnter") == undefined || this.navParams.get("willEnter") == '')){
+            this.navParams.get("willEnter")(this, this.router.c8o);
         }
     }
 
     public ionViewDidEnter(){
         this.didLoad = true;
-        if(!(this.navParam.get("didEnter") == null || this.navParam.get("didEnter") == undefined || this.navParam.get("didEnter") == '')){
-            this.navParam.get("didEnter")(this, this.router.c8o);
+        if(!(this.navParams.get("didEnter") == null || this.navParams.get("didEnter") == undefined || this.navParams.get("didEnter") == '')){
+            this.navParams.get("didEnter")(this, this.router.c8o);
         }
     }
 
@@ -161,21 +157,21 @@ export class C8oPage {
         if(!(this.menuId == null || this.menuId == undefined || this.menuId == '')) {
             this.menuCtrl.enable(false, this.menuId);
         }
-        if(!(this.navParam.get("willLeave") == null || this.navParam.get("willLeave") == undefined || this.navParam.get("willLeave") == '')){
-            this.navParam.get("willLeave")(this, this.router.c8o);
+        if(!(this.navParams.get("willLeave") == null || this.navParams.get("willLeave") == undefined || this.navParams.get("willLeave") == '')){
+            this.navParams.get("willLeave")(this, this.router.c8o);
         }
     }
 
     public ionViewDidLeave(){
         this.didleave = true;
-        if(!(this.navParam.get("didLeave") == null || this.navParam.get("didLeave") == undefined || this.navParam.get("didLeave") == '')){
-            this.navParam.get("didLeave")(this, this.router.c8o);
+        if(!(this.navParams.get("didLeave") == null || this.navParams.get("didLeave") == undefined || this.navParams.get("didLeave") == '')){
+            this.navParams.get("didLeave")(this, this.router.c8o);
         }
     }
 
     public ionViewWillUnload(){
-        if(!(this.navParam.get("willUnLoad") == null || this.navParam.get("willUnLoad") == undefined || this.navParam.get("willUnLoad") == '')){
-            this.navParam.get("willUnLoad")(this, this.router.c8o);
+        if(!(this.navParams.get("willUnLoad") == null || this.navParams.get("willUnLoad") == undefined || this.navParams.get("willUnLoad") == '')){
+            this.navParams.get("willUnLoad")(this, this.router.c8o);
         }
     }
 

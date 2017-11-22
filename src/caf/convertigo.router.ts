@@ -106,94 +106,96 @@ export class C8oRouter{
      * @param exception     optional exception if it is a failed requestable call
      *
      */
-    execute_route(response : any, parameters : Object, exception : Error = null){
-        let isException = exception == null ? false:true;
-        let requestable : string = (parameters["__project"] == undefined ?"": parameters["__project"]) + "." + parameters["__sequence"];
-        let errors: any = null;
-        let activeView : any = null;
-        try{
-            this.app.getActiveNavs()[0].getViews().slice(-1)[0].component["nameStatic"]
-        }
-        catch (e){
-            errors = e;
-        }
-        if(errors == null){
-            activeView = this.app.getActiveNavs()[0].getViews() != undefined ? this.app.getActiveNavs()[0].getViews().slice(-1)[0].component["nameStatic"]:null;
-        }
-        let navParams : any = (parameters["_navParams"] == {}) ? "" : parameters["_navParams"]
-        for(var item of this.routing_table){
-            for(var itemRequestable of item.requestable) {
-                this.log("Exploring route for Requestable '" + itemRequestable + "'");
-                if (itemRequestable == requestable || itemRequestable == "*") {
+    execute_route(response : any, parameters : Object, exception : Error = null) : Promise<any> {
+        return new Promise((resolve)=> {
+            let isException = exception == null ? false:true;
+            let requestable : string = (parameters["__project"] == undefined ?"": parameters["__project"]) + "." + parameters["__sequence"];
+            let errors: any = null;
+            let activeView : any = null;
+            try{
+                this.app.getActiveNavs()[0].getViews().slice(-1)[0].component["nameStatic"]
+            }
+            catch (e){
+                errors = e;
+            }
+            if(errors == null){
+                activeView = this.app.getActiveNavs()[0].getViews() != undefined ? this.app.getActiveNavs()[0].getViews().slice(-1)[0].component["nameStatic"]:null;
+            }
+            let navParams : any = (parameters["_navParams"] == {}) ? "" : parameters["_navParams"]
+            for(var item of this.routing_table){
+                for(var itemRequestable of item.requestable) {
+                    this.log("Exploring route for Requestable '" + itemRequestable + "'");
+                    if (itemRequestable == requestable || itemRequestable == "*") {
 
-                    for (var route of (isException == true ? item.routesFail : item.routes)) {
-                        // the requestable matches...
-                        try {
-                            if ((isException == false ? route.condition(response) : route.condition(exception))) {
-                                // Conditions to switch to the page are met....
-                                this.log("Route for Requestable '" + item.requestable + "' matches");
-                                if (route.afterCall != undefined) {
-                                    route.afterCall();
-                                }
-                                // test to see if we are already on the target page
-
-                                if(route.target.page != null) {
-                                    if (this.findView(activeView, route.target.page["nameStatic"], requestable) && !route.target.alwaysNewPage) {
-                                        this.log("Route for Requestable '" + item.requestable + "', the view is already displayed, using curent view");
-                                        this.storeResponseForView(activeView, requestable, response, navParams, route.didEnter, route.didLeave);
-                                        return;
+                        for (var route of (isException == true ? item.routesFail : item.routes)) {
+                            // the requestable matches...
+                            try {
+                                if ((isException == false ? route.condition(response) : route.condition(exception))) {
+                                    // Conditions to switch to the page are met....
+                                    this.log("Route for Requestable '" + item.requestable + "' matches");
+                                    if (route.afterCall != undefined) {
+                                        route.afterCall();
                                     }
-                                }
+                                    // test to see if we are already on the target page
 
-                                // We are not already on the page, switch to it using the correct animation options...
-                                if (route.target.action == "push") {
-                                    this.push(route.target.page, {
-                                        "requestable": requestable,
-                                        "data": response,
-                                        "navParams": navParams,
-                                        "didEnter": route.didEnter,
-                                        "didLeave": route.didLeave
-                                    }, route.options)
-                                        .then((obj: any) => {
-                                            this.log("Page '" + route.target.page["nameStatic"] + "' Pushed")
+                                    if(route.target.page != null) {
+                                        if (this.findView(activeView, route.target.page["nameStatic"], requestable) && !route.target.alwaysNewPage) {
+                                            this.log("Route for Requestable '" + item.requestable + "', the view is already displayed, using curent view");
+                                            this.storeResponseForView(activeView, requestable, response, navParams, route.didEnter, route.didLeave);
+                                            resolve();
+                                        }
+                                    }
+
+                                    // We are not already on the page, switch to it using the correct animation options...
+                                    if (route.target.action == "push") {
+                                        this.push(route.target.page, {
+                                            "requestable": requestable,
+                                            "data": response,
+                                            "navParams": navParams,
+                                            "didEnter": route.didEnter,
+                                            "didLeave": route.didLeave
+                                        }, route.options)
+                                            .then((obj: any) => {
+                                                this.log("Page '" + route.target.page["nameStatic"] + "' Pushed")
+                                            })
+                                    }
+                                    if (route.target.action.toString() == "setRoot") {
+                                        this.setRoot(route.target.page, {
+                                            "requestable": requestable,
+                                            "data": response,
+                                            "navParams": navParams
+                                        }, route.options).then(() => {
+                                            this.log("Page '" + route.target.page["nameStatic"] + "' set to root")
                                         })
+                                    }
+                                    if (route.target.action.toString() == "toast") {
+                                        let toast = this.toastCtrl.create(route.toastOptions);
+                                        toast.present();
+                                    }
+                                    if(activeView == null){
+                                        this.log("Route for Requestable '" + item.requestable + "', the view is already displayed, using _C80_GeneralView view");
+                                        this.storeResponseForView("_C80_GeneralView", requestable, response, navParams, route.didEnter, route.didLeave);
+                                    }
+                                    resolve();
                                 }
-                                if (route.target.action.toString() == "setRoot") {
-                                    this.setRoot(route.target.page, {
-                                        "requestable": requestable,
-                                        "data": response,
-                                        "navParams": navParams
-                                    }, route.options).then(() => {
-                                        this.log("Page '" + route.target.page["nameStatic"] + "' set to root")
-                                    })
-                                }
-                                if (route.target.action.toString() == "toast") {
-                                    let toast = this.toastCtrl.create(route.toastOptions);
-                                    toast.present();
-                                }
-                                if(activeView == null){
-                                    this.log("Route for Requestable '" + item.requestable + "', the view is already displayed, using _C80_GeneralView view");
-                                    this.storeResponseForView("_C80_GeneralView", requestable, response, navParams, route.didEnter, route.didLeave);
-                                }
-                                return;
                             }
-                        }
-                        catch (err) {
-                            this.c8o.log.warn("Route did not match because of exception", err)
-                        }
+                            catch (err) {
+                                this.c8o.log.warn("Route did not match because of exception", err)
+                            }
 
+                        }
                     }
                 }
             }
-        }
 
-        /* No route found so we stay in the same page
-         * We store the response in the current page..
-         */
-        if (activeView != null){
-            this.storeResponseForView(activeView, requestable, response, navParams, null, null)
-        }
-
+            /* No route found so we stay in the same page
+             * We store the response in the current page..
+             */
+            if (activeView != null){
+                this.storeResponseForView(activeView, requestable, response, navParams, null, null);
+            }
+            resolve();
+        });
     }
 
     /**
@@ -220,18 +222,25 @@ export class C8oRouter{
             this.c8o.callJsonObject(requestable, parameters)
                 .then((response : any, parameters:Object)=>{
                     parameters['_navParams'] = navParams;
-                    this.execute_route(response, parameters);
-                    // check for live tag in order to order to page to reload new results ..
-                    page.tick()
-                    resolve();
+                    this.execute_route(response, parameters)
+                        .then(()=>{
+                            // check for live tag in order to order to page to reload new results ..
+                            page.tick()
+                            resolve();
+                        });
                     return null;
                 })
                 .fail((exception: C8oException, parametersF : Object )=>{
                     this.c8o.log.error("Error occured when calling " + requestable + ":" + exception)
                     this.execute_route(requestable, parametersF, exception)
-                    reject();
-                })
-        })
+                        .then(()=>{
+                            reject();
+                        })
+                        .catch(()=>{
+                            reject();
+                        });
+                });
+        });
 
     }
 
