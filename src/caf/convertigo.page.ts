@@ -250,7 +250,7 @@ export class C8oPage {
             val=eval(ts.transpile(key));
         }
         catch(e){
-            this.c8o.log.warn(origin + ": " + e.message);
+
         }
         return val;
     }
