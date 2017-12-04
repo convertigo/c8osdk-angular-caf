@@ -1,6 +1,6 @@
 {
   "name": "c8ocaf",
-  "version": "1.0.83",
+  "version": "1.0.85",
   "description": "Convertigo Angular Framework",
   "main": "bundle/index.umd.js",
   "module": "src/index.js",
@@ -72,7 +72,7 @@
     "tslint-loader": "3.5.3",
     "typings": "2.1.1",
     "webpack": "3.0.0",
-    "typescript": "2.4.2"
+    "typescript": "2.6.1"
   },
   "bugs": {
     "url": "https://github.com/convertigo/c8ocaf/issues"
