@@ -73,6 +73,7 @@ export class C8oPage {
     public listenNavParams(requestable : string) : any {
         return(this.routerProvider.getParamForView(this.constructor.name, requestable));
     }
+
     callForm(requestable:string, id: string){
         this.call(requestable, this.form[id]);
     }
@@ -100,7 +101,7 @@ export class C8oPage {
         }, timeout);
 
         return new Promise((resolve, reject) => {
-            this.routerProvider.c8oCall(requestable, data, navParams, this).then(() => {
+            this.routerProvider.c8oCall(requestable, data, navParams, this).then((response) => {
                 this.finish = true;
                 if (this.shown == true) {
                     this.count--;
@@ -109,7 +110,7 @@ export class C8oPage {
                         this.loader.dismiss();
                     }
                 }
-                resolve();
+                resolve(response);
             }).catch(() => {
                 this.finish = true;
                 if (this.shown == true) {

@@ -31,7 +31,7 @@ export class C8oRouter{
 
     constructor(private _c8o : C8o, private app: App, public toastCtrl: ToastController){
         //detect if we are in mobile builder mode and get the mode of storage to use
-        this._routerLogLevel = this._c8o.logLevelLocal;
+        this._routerLogLevel = C8oLogLevel.DEBUG;
         switch (sessionStorage.getItem(C8oRouter.C8OCAF_SESSION_STORAGE_MODE))
         {
             case "local" :
@@ -119,7 +119,17 @@ export class C8oRouter{
                 errors = e;
             }
             if(errors == null){
-                activeView = this.app.getActiveNavs()[0].getViews() != undefined ? this.app.getActiveNavs()[0].getViews().slice(-1)[0].component["nameStatic"]:null;
+                if(this.app.getActiveNavs()[0].getViews() != undefined){
+                    if(this.app.getActiveNavs()[0].getViews().slice(-1)[0].component.name === "ModalCmp"){
+                        activeView = this.app.getActiveNavs()[0].getViews().slice(-1)[0].data.component["nameStatic"];
+                    }
+                    else{
+                        activeView = this.app.getActiveNavs()[0].getViews().slice(-1)[0].component["nameStatic"];
+                    }
+                }
+                else{
+                    activeView = null;
+                }
             }
             let navParams : any = (parameters["_navParams"] == {}) ? "" : parameters["_navParams"]
             for(var item of this.routing_table){
@@ -175,8 +185,8 @@ export class C8oRouter{
                                     if(activeView == null){
                                         this.log("Route for Requestable '" + item.requestable + "', the view is already displayed, using _C80_GeneralView view");
                                         this.storeResponseForView("_C80_GeneralView", requestable, response, navParams, route.didEnter, route.didLeave);
+                                        resolve();
                                     }
-                                    resolve();
                                 }
                             }
                             catch (err) {
@@ -226,7 +236,7 @@ export class C8oRouter{
                         .then(()=>{
                             // check for live tag in order to order to page to reload new results ..
                             page.tick()
-                            resolve();
+                            resolve(response);
                         });
                     return null;
                 })
@@ -234,10 +244,10 @@ export class C8oRouter{
                     this.c8o.log.error("Error occured when calling " + requestable + ":" + exception)
                     this.execute_route(requestable, parametersF, exception)
                         .then(()=>{
-                            reject();
+                            reject(exception);
                         })
                         .catch(()=>{
-                            reject();
+                            reject(exception);
                         });
                 });
         });
