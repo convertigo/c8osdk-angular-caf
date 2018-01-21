@@ -464,12 +464,17 @@ export class C8oRouter{
                         browserRef.removeEventListener("exit", (evt) => {});
                         this.c8o.log.debug("Exit Listener removed")
                         browserRef.close();
-                        responseParams = ((evt.url).split("#")[1]).split("&");
+                        if (evt.url.indexOf("#") != -1)     // Microsoft Azure
+                            responseParams = ((evt.url).split("#")[1]).split("&");
+                        else                            // LinkedIN
+                            responseParams = ((evt.url).split("?")[1]).split("&");
+
                         for (var i = 0; i < responseParams.length; i++) {
                             parsedResponse[responseParams[i].split("=")[0]] = responseParams[i].split("=")[1];
                         }
-                        if (parsedResponse["access_token"] !== undefined &&
-                            parsedResponse["access_token"] !== null) {
+                        if ((parsedResponse["access_token"] !== undefined &&
+                            parsedResponse["access_token"] !== null) || (parsedResponse["code"] !== undefined &&
+                            parsedResponse["code"] !== null)) {
                             resolve(parsedResponse);
                         } else {
                             this.c8o.log.error("oAuthClient : oAuth authentication error:" + evt.url)
@@ -497,6 +502,4 @@ export class C8oRouter{
             }
         });
     }
-
-
 }
