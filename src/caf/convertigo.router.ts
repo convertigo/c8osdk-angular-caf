@@ -157,7 +157,7 @@ export class C8oRouter{
                                     }
 
                                     // We are not already on the page, switch to it using the correct animation options...
-                                    if (route.target.action == "push") {
+                                    if (route.target.action == "push" && ! parameters[C8o.ENGINE_PARAMETER_FROM_LIVE]) {
                                         this.push(route.target.page, {
                                             "requestable": requestable,
                                             "data": response,
@@ -169,7 +169,7 @@ export class C8oRouter{
                                                 this.log("Page '" + route.target.page["nameStatic"] + "' Pushed")
                                             })
                                     }
-                                    if (route.target.action.toString() == "setRoot") {
+                                    if (route.target.action.toString() == "setRoot" && ! parameters[C8o.ENGINE_PARAMETER_FROM_LIVE]) {
                                         this.setRoot(route.target.page, {
                                             "requestable": requestable,
                                             "data": response,
