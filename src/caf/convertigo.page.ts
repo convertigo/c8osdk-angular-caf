@@ -190,23 +190,27 @@ export class C8oPage {
     }
 
     /**
-     * Get attachment data url a requestable response
+     * Get attachment data url a requestable response to be displayed
      *
-     * @param	requestables, target requestable list to listen to and build attachment urls (examples : "Myproject.MySequence" or "fs://MyLocalDataBase.get")
-     * @param	attachmentName , the name of the attachment to get
+     * @param	id              the DocumentID to get the attachment from
+     * @param   attachmentName  name of the attachment to display (eg: image.jpg)
+     * @param   placeholderUrl  the url to display while we get the attachment (This is an Async process)
+     * @param   databaseName    the Qname of a FS database (eg project.fsdatabase) to get the attachment from.
      *
      */
     public getAttachmentUrl(id: string, attachmentName: string, placeholderURL : string, databaseName?: string): Object{
-
-        if(id != null){
+        if(id != null && attachmentName && databaseName){
+            databaseName = databaseName.split('.')[1]
             if(this.imgCache[id+"/"+attachmentName] == undefined){
                 this.imgCache[id+"/"+attachmentName] = placeholderURL
                 this.routerProvider.c8o.get_attachment(id, attachmentName, databaseName).then((response)=>{
                     this.imgCache[id+"/"+attachmentName] = this.sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(response))
                 });
             }
+            return this.imgCache[id+"/"+attachmentName]
+        } else {
+            this.c8o.log.error("[MB] getAttachmentUrl Missing parameters...")
         }
-        return this.imgCache[id+"/"+attachmentName]
     }
 
     public getNextLetter(char: String): String {
@@ -254,6 +258,21 @@ export class C8oPage {
 
         }
         return val;
+    }
+
+    /**
+     * Handles automatically Errors coming from called promises
+     * @param p The promise returned by a CAF function eg : (click)="resolveError(actionBeans.CallSequenceAction(this,{cacheTtl: 3000, ...},{}))
+     */
+    public resolveError(p: Promise<any>):Promise<any> {
+        return new Promise((resolve, reject) => {
+          p.then((res) => {
+             resolve(res);
+          }).catch((err) => {
+             this.c8o.log.error("[MB] Resolve Error : " + err)
+             resolve(err);
+          });
+        });
     }
 
 }
