@@ -111,7 +111,7 @@ export class C8oPage {
                     }
                 }
                 resolve(response);
-            }).catch(() => {
+            }).catch((error) => {
                 this.finish = true;
                 if (this.shown == true) {
                     this.count--;
@@ -120,6 +120,7 @@ export class C8oPage {
                     }
                     resolve();
                 }
+                reject(error)
             });
         });
 
