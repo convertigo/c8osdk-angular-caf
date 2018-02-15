@@ -284,10 +284,16 @@ export class C8oRouter{
         if(this.storage !== null){
             //delete rootNavCtrl present in navParams to prevent from cyclic JSON issues
             for(let val in this.c8oResponses){
-                if(this.c8oResponses[val]["navParams"]["data"]["rootNavCtrl"] instanceof Nav){
+                try{
+                    if(this.c8oResponses[val]["navParams"]["data"]["rootNavCtrl"] instanceof Nav){
 
-                    delete this.c8oResponses[val]["navParams"]["data"]["rootNavCtrl"];
+                        delete this.c8oResponses[val]["navParams"]["data"]["rootNavCtrl"];
+                    }
                 }
+                catch(err){
+
+                }
+
             }
             // storage for c8ocaf refresh keep state data
             this.storage.setItem(C8oRouter.C8OCAF_SESSION_STORAGE_DATA, JSON.stringify(this.c8oResponses));
