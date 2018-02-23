@@ -20,6 +20,7 @@ export class C8oPage {
     private finish: boolean = false;
     private count: number = 0;
     public didleave: boolean = false;
+    public window: Window;
 
     constructor(public routerProvider : C8oRouter, public navParams: NavParams, public loadingCtrl: LoadingController, public sanitizer : DomSanitizer, public ref: ChangeDetectorRef, public injector: Injector, public menuCtrl: MenuController){
         this.c8o = this.routerProvider.c8o;
@@ -27,6 +28,7 @@ export class C8oPage {
         this.prefixId = "_C8o" + new Date().getTime().toString();
         //shortcut
         this.router = this.routerProvider;
+        this.window = window
     }
 
     /**
@@ -277,4 +279,18 @@ export class C8oPage {
         });
     }
 
+   /**
+     * Creates a new Date Object, useful when called from a template as new operator is not allowed
+     */ 
+    public Date(year :any, month:any, day:any, hours:any, minutes:any, seconds:any, milliseconds:any) {
+        if (year && month && day && hours && minutes && seconds && milliseconds)
+            // all arguments are there , so use the Complete Date() constructor with 7 arguments
+            return new Date(year, month, day, hours, minutes, seconds, milliseconds)
+        if (year)
+            // Only one , so it can be Date(millisecs) or Date(DateString)
+            return new Date(year)
+
+        // No Arguments, so use Date()
+        return new Date()
+    }
 }
