@@ -73,6 +73,6 @@
           )
       )
   
-  CAF is still under development but 1.0.x brings most of the functionnalities. Please use support forum as documentation is not yet ready.
+  CAF is used as the base framework for Convertigo Mobile Builder, the Visual Drag & Drop Mobile RAD Ionic / Angular Builder.. https://www.convertigo.com/document/latest/reference-manual/convertigo-mobile-builder/
   
 
