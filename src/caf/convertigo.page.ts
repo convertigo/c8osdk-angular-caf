@@ -221,6 +221,22 @@ export class C8oPage {
         }
     }
 
+     /**
+     * Reset Image Cache.
+     *
+     *
+     *
+     * @param cacheEntry : the name of the Entry to clear. If not provided, clears all the entries
+     *
+     */
+    public resetImageCache(cacheEntry: string= null ) {
+        if (cacheEntry) {
+            delete this.imgCache[cacheEntry]
+            return;
+        }
+        this.imgCache = []
+    }
+
     public getNextLetter(char: String): String {
         let code: number = char.charCodeAt(0);
         code ++;
