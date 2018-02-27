@@ -1,7 +1,7 @@
 import { C8oRouter }                                    from './convertigo.router'
 import {NavParams, LoadingController, MenuController}                from 'ionic-angular';
 import { DomSanitizer }                                 from '@angular/platform-browser';
-import {ChangeDetectorRef, InjectionToken, Injector, Type } from "@angular/core";
+import {ApplicationRef, ChangeDetectorRef, InjectionToken, Injector, Type} from "@angular/core";
 import { C8o } from "c8osdkangular";
 import * as ts from 'typescript';
 
@@ -21,6 +21,7 @@ export class C8oPage {
     private count: number = 0;
     public didleave: boolean = false;
     public window: Window;
+    private appRef: ApplicationRef;
 
     constructor(public routerProvider : C8oRouter, public navParams: NavParams, public loadingCtrl: LoadingController, public sanitizer : DomSanitizer, public ref: ChangeDetectorRef, public injector: Injector, public menuCtrl: MenuController){
         this.c8o = this.routerProvider.c8o;
@@ -29,6 +30,7 @@ export class C8oPage {
         //shortcut
         this.router = this.routerProvider;
         this.window = window
+        this.appRef = this.getInstance(ApplicationRef);
     }
 
     /**
@@ -129,8 +131,10 @@ export class C8oPage {
     }
     public tick(){
         this.ref.markForCheck();
-        if (!this.ref["destroyed"])
-            this.ref.detectChanges()
+        if (!this.ref["destroyed"]) {
+            this.ref.detectChanges();
+            this.appRef.tick();
+        }
     }
 
     ngOnDestroy() {
