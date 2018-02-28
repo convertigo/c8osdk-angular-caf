@@ -22,6 +22,7 @@ export class C8oPage {
     public didleave: boolean = false;
     public window: Window;
     public global;
+    private local: any = {};
     private appRef: ApplicationRef;
 
     constructor(public routerProvider : C8oRouter, public navParams: NavParams, public loadingCtrl: LoadingController, public sanitizer : DomSanitizer, public ref: ChangeDetectorRef, public injector: Injector, public menuCtrl: MenuController){
