@@ -204,29 +204,14 @@ export class C8oPage {
     /**
      * Get attachment data url a requestable response to be displayed
      *
-     * @param	id              the DocumentID to get the attachment from
-     * @param   attachmentName  name of the attachment to display (eg: image.jpg)
-     * @param   placeholderUrl  the url to display while we get the attachment (This is an Async process)
-     * @param   databaseName    the Qname of a FS database (eg project.fsdatabase) to get the attachment from.
+     * @param id             the DocumentID to get the attachment from
+     * @param attachmentName  name of the attachment to display (eg: image.jpg)
+     * @param placeholderURL  the url to display while we get the attachment (This is an Async process)
+     * @param databaseName    the Qname of a FS database (ex project.fsdatabase) to get the attachment from.
      *
      */
     public getAttachmentUrl(id: string, attachmentName: string, placeholderURL : string, databaseName?: string): Object{
-        if(id != null && attachmentName && databaseName){
-            databaseName = databaseName.split('.')[1]
-            if(this.imgCache[id+"/"+attachmentName] == undefined){
-                this.imgCache[id+"/"+attachmentName] = placeholderURL
-                this.routerProvider.c8o.get_attachment(id, attachmentName, databaseName).then((response)=>{
-                    this.imgCache[id+"/"+attachmentName] = this.sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(response))
-                });
-            }
-            return this.imgCache[id+"/"+attachmentName]
-        }  else {
-            if(!this.imgCache["c8o__errorslogs"]){
-                this.imgCache["c8o__errorslogs"] = true;
-                this.c8o.log.error("[MB] getAttachmentUrl Missing parameters...");
-            }
-            return "";
-        }
+        return this.router.getAttachmentUrl(id, attachmentName, placeholderURL, this.imgCache, databaseName);
     }
 
      /**

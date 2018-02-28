@@ -5,6 +5,7 @@ import { C8oRouteListener }                                 from './convertigo.r
 
 import {C8o, C8oLogLevel, C8oException, C8oLocalCache, Priority}                   from "c8osdkangular";
 import {C8oPage} from "./convertigo.page";
+import {DomSanitizer} from "@angular/platform-browser";
 
 
 
@@ -29,7 +30,7 @@ export class C8oRouter{
     public sharedObject: any = {};
 
 
-    constructor(private _c8o : C8o, private app: App, public toastCtrl: ToastController){
+    constructor(private _c8o : C8o, private app: App, public toastCtrl: ToastController, public sanitizer : DomSanitizer){
         //detect if we are in mobile builder mode and get the mode of storage to use
         this._routerLogLevel = C8oLogLevel.DEBUG;
         switch (sessionStorage.getItem(C8oRouter.C8OCAF_SESSION_STORAGE_MODE))
@@ -514,5 +515,34 @@ export class C8oRouter{
                 });
             }
         });
+    }
+
+    /**
+     * Get attachment data url a requestable response to be displayed
+     *
+     * @param	id              the DocumentID to get the attachment from
+     * @param   attachmentName  name of the attachment to display (eg: image.jpg)
+     * @param   placeholderUrl  the url to display while we get the attachment (This is an Async process)
+     * @param   imgCache        An array that contains cache.
+     * @param   databaseName    the Qname of a FS database (eg project.fsdatabase) to get the attachment from.
+     *
+     */
+    public getAttachmentUrl(id: string, attachmentName: string, placeholderURL : string, imgCache: Object, databaseName?: string): Object{
+        if(id != null && attachmentName && databaseName){
+            databaseName = databaseName.split('.')[1]
+            if(imgCache[id+"/"+attachmentName] == undefined){
+                imgCache[id+"/"+attachmentName] = placeholderURL
+                this.c8o.get_attachment(id, attachmentName, databaseName).then((response)=>{
+                    imgCache[id+"/"+attachmentName] = this.sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(response))
+                });
+            }
+            return imgCache[id+"/"+attachmentName]
+        } else {
+            if(!imgCache["c8o__errorslogs"]){
+                imgCache["c8o__errorslogs"] = true;
+                this.c8o.log.error("[MB] getAttachmentUrl Missing parameters...");
+            }
+            return "";
+        }
     }
 }
