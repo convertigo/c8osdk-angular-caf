@@ -21,6 +21,7 @@ export class C8oPage {
     private count: number = 0;
     public didleave: boolean = false;
     public window: Window;
+    public global;
     private appRef: ApplicationRef;
 
     constructor(public routerProvider : C8oRouter, public navParams: NavParams, public loadingCtrl: LoadingController, public sanitizer : DomSanitizer, public ref: ChangeDetectorRef, public injector: Injector, public menuCtrl: MenuController){
@@ -31,6 +32,8 @@ export class C8oPage {
         this.router = this.routerProvider;
         this.window = window
         this.appRef = this.getInstance(ApplicationRef);
+        //shortcut
+        this.global = this.router.sharedObject;
     }
 
     /**
