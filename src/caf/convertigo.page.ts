@@ -220,8 +220,12 @@ export class C8oPage {
                 });
             }
             return this.imgCache[id+"/"+attachmentName]
-        } else {
-            this.c8o.log.error("[MB] getAttachmentUrl Missing parameters...")
+        }  else {
+            if(!this.imgCache["c8o__errorslogs"]){
+                this.imgCache["c8o__errorslogs"] = true;
+                this.c8o.log.error("[MB] getAttachmentUrl Missing parameters...");
+            }
+            return "";
         }
     }
 
