@@ -35,6 +35,7 @@ export class C8oPage {
         this.appRef = this.getInstance(ApplicationRef);
         //shortcut
         this.global = this.router.sharedObject;
+        this.appRef = this.getInstance(ApplicationRef);
     }
 
     /**
