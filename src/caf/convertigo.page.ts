@@ -125,9 +125,9 @@ export class C8oPage {
                 if (this.shown == true) {
                     this.count--;
                     if (this.count == 0) {
+                        this.shown = false;
                         this.loader.dismiss();
                     }
-                    resolve();
                 }
                 reject(error)
             });
