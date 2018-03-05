@@ -530,10 +530,14 @@ export class C8oRouter{
     public getAttachmentUrl(id: string, attachmentName: string, placeholderURL : string, imgCache: Object, databaseName?: string): Object{
         if(id != null && attachmentName && databaseName){
             databaseName = databaseName.split('.')[1]
+            // If no place holder has been defined, define one White 1x1 pixel.
+            placeholderURL = placeholderURL ? placeholderURL : "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII="
             if(imgCache[id+"/"+attachmentName] == undefined){
                 imgCache[id+"/"+attachmentName] = placeholderURL
                 this.c8o.get_attachment(id, attachmentName, databaseName).then((response)=>{
                     imgCache[id+"/"+attachmentName] = this.sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(response))
+                }).catch((err) => {
+                    // this.c8o.log.error("Error getting attachment name: " + attachmentName, err)
                 });
             }
             return imgCache[id+"/"+attachmentName]
