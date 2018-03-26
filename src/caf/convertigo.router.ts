@@ -165,19 +165,17 @@ export class C8oRouter{
                                             "navParams": navParams,
                                             "didEnter": route.didEnter,
                                             "didLeave": route.didLeave
-                                        }, route.options)
-                                            .then((obj: any) => {
-                                                this.log("Page '" + route.target.page["nameStatic"] + "' Pushed")
-                                            })
+                                        }, route.options);
+                                        this.log("Page '" + route.target.page["nameStatic"] + "' Pushed");
+
                                     }
                                     if (route.target.action.toString() == "setRoot" && ! parameters[C8o.ENGINE_PARAMETER_FROM_LIVE]) {
                                         this.setRoot(route.target.page, {
                                             "requestable": requestable,
                                             "data": response,
                                             "navParams": navParams
-                                        }, route.options).then(() => {
-                                            this.log("Page '" + route.target.page["nameStatic"] + "' set to root")
-                                        })
+                                        }, route.options);
+                                        this.log("Page '" + route.target.page["nameStatic"] + "' set to root");
                                     }
                                     if (route.target.action.toString() == "toast") {
                                         let toast = this.toastCtrl.create(route.toastOptions);
