@@ -2,67 +2,26 @@ import { C8oRouter }                                    from './convertigo.route
 import {NavParams, LoadingController, MenuController}                from 'ionic-angular';
 import { DomSanitizer }                                 from '@angular/platform-browser';
 import {ApplicationRef, ChangeDetectorRef, InjectionToken, Injector, Type} from "@angular/core";
-import { C8o } from "c8osdkangular";
-import * as ts from 'typescript';
-import {C8oBase} from "./convertigo.base";
+import {C8oPageBase} from "./convertigo.base";
 
 
 
-export class C8oPage extends C8oBase{
-    public router: C8oRouter;
+export class C8oPage extends C8oPageBase{
+
+    public menuId : string;
     private didLoad;
-    private imgCache : Object = new Object();
     private prefixId : string;
 
-    public c8o : C8o;
-    public menuId : string;
+    constructor(routerProvider : C8oRouter, public navParams: NavParams, loadingCtrl: LoadingController, sanitizer: DomSanitizer,
+                ref: ChangeDetectorRef,injector: Injector, public menuCtrl: MenuController){
 
-    public didleave: boolean = false;
-    public window: Window;
-    public global;
-    private local: any = {};
-    private appRef: ApplicationRef;
-
-    constructor(public injector: Injector, public routerProvider : C8oRouter, public loadingCtrl: LoadingController, public navParams: NavParams,  public sanitizer : DomSanitizer, public ref: ChangeDetectorRef, public menuCtrl: MenuController){
-
-        super(injector, routerProvider, loadingCtrl);
-
-
-        this.c8o = this.routerProvider.c8o;
+        super(injector, routerProvider, loadingCtrl, ref);
         this.routerProvider.storeResponseForView(this.constructor.name, navParams.get("requestable"), navParams.get("data"), this.navParams, navParams.get("didEnter") ,navParams.get("didLeave"));
         this.prefixId = "_C8o" + new Date().getTime().toString();
-
-        //shortcuts
-        this.router = this.routerProvider;
-        this.window = window
-        this.appRef = this.getInstance(ApplicationRef);
-        this.global = this.router.sharedObject;
-        this.appRef = this.getInstance(ApplicationRef);
     }
 
-
-
-
-
-
-
-
-
-    public tick(){
-        this.ref.markForCheck();
-        if (!this.ref["destroyed"]) {
-            this.ref.detectChanges();
-            this.appRef.tick();
-        }
-    }
-
-    ngOnDestroy() {
-        //supposed to detach mark from view to avoid 'ViewDestroyedError: Attempt to use a destroyed view: detectChanges' error
-        this.ref.detach();
-    }
 
     public ionViewDidLoad(){
-
         if(!(this.navParams.get("didLoad") == null || this.navParams.get("didLoad") == undefined || this.navParams.get("didLoad") == '')){
             this.navParams.get("didLoad")(this, this.routerProvider.c8o);
         }
@@ -107,6 +66,22 @@ export class C8oPage extends C8oBase{
         }
     }
 
+    public getPageByTitle(pageTitle: string) {
+      for (let p of this.routerProvider.pagesArray){
+        if (p["title"] == pageTitle) {
+          return p.component;
+        }
+      }
+    }
+
+    public getPageByName(pageName: string) {
+      for (let p of this.routerProvider.pagesArray){
+        if (p["component"].nameStatic == pageName || p["component"].name == pageName) {
+          return p.component;
+        }
+      }
+    }
+
     public virtualListen(arg: any){
         if(arg == undefined){
             return [];
@@ -117,38 +92,14 @@ export class C8oPage extends C8oBase{
     }
 
     /**
-     * Get attachment data url a requestable response to be displayed
-     *
-     * @param id             the DocumentID to get the attachment from
-     * @param attachmentName  name of the attachment to display (eg: image.jpg)
-     * @param placeholderURL  the url to display while we get the attachment (This is an Async process)
-     * @param databaseName    the Qname of a FS database (ex project.fsdatabase) to get the attachment from.
-     *
+     * Javascript method charCodeAt 0
+     * @param {String} index: the index
+     * @returns {String}
      */
-    public getAttachmentUrl(id: string, attachmentName: string, placeholderURL : string, databaseName?: string): Object{
-        return this.router.getAttachmentUrl(id, attachmentName, placeholderURL, this.imgCache, databaseName);
-    }
-
-     /**
-     * Reset Image Cache.
-     *
-     *
-     *
-     * @param cacheEntry : the name of the Entry to clear. If not provided, clears all the entries
-     *
-     */
-    public resetImageCache(cacheEntry: string= null ) {
-        if (cacheEntry) {
-            delete this.imgCache[cacheEntry]
-            return;
-        }
-        this.imgCache = []
-    }
-
     public getNextLetter(char: String): String {
-        let code: number = char.charCodeAt(0);
-        code ++;
-        return String.fromCharCode(code);
+      let code: number = char.charCodeAt(0);
+      code ++;
+      return String.fromCharCode(code);
     }
 
     public wordPlusOne(word: string): any {
@@ -163,48 +114,6 @@ export class C8oPage extends C8oBase{
     }
     public merge(firstObj: Object, secondObj): Object{
         return Object.assign(firstObj, secondObj);
-    }
-
-    public getPageByTitle(pageTitle: string) {
-        for (let p of this.routerProvider.pagesArray){
-            if (p["title"] == pageTitle) {
-                return p.component;
-            }
-        }
-    }
-
-    public getPageByName(pageName: string) {
-        for (let p of this.routerProvider.pagesArray){
-            if (p["component"].nameStatic == pageName || p["component"].name == pageName) {
-                return p.component;
-            }
-        }
-    }
-
-    public safeEval(key: any, origin: string) {
-        let val;
-        try {
-            val=eval(ts.transpile(key));
-        }
-        catch(e){
-
-        }
-        return val;
-    }
-
-    /**
-     * Handles automatically Errors coming from called promises
-     * @param p The promise returned by a CAF function eg : (click)="resolveError(actionBeans.CallSequenceAction(this,{cacheTtl: 3000, ...},{}))
-     */
-    public resolveError(p: Promise<any>):Promise<any> {
-        return new Promise((resolve, reject) => {
-          p.then((res) => {
-             resolve(res);
-          }).catch((err) => {
-             this.c8o.log.error("[MB] Resolve Error : " + err)
-             resolve(err);
-          });
-        });
     }
 
    /**

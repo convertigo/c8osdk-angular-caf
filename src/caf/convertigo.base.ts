@@ -1,23 +1,62 @@
-import {InjectionToken, Injector, Type} from "@angular/core";
+import {ApplicationRef, ChangeDetectorRef, InjectionToken, Injector, Type} from "@angular/core";
 import {C8oRouter} from "./convertigo.router";
 import {LoadingController} from "ionic-angular";
+import {Loading} from "ionic-angular/components/loading/loading";
+import {C8o} from "c8osdkangular";
+import * as ts from 'typescript';
 
-export class C8oBase {
+export class C8oPageBase {
 
-  // Data attached to the main for of teh page if its existing
+  // Data attached to the main form of the page if its existing
   public form = {};
+  // A local Object to be used
+  public local: any;
+  // A shortcut to window
+  public window: Window;
+  // A shortcut to use routerProvider
+  public router: C8oRouter;
+  // A shortcut to use router's shared Object
+  public global: any;
+  // A shortcut to use router's C8o Object
+  public c8o : C8o;
+  // An application Ref instance
+  public appRef: ApplicationRef;
+  // A flag that is set to true if the Current page has been leaved
+  public didleave: boolean = false;
   // A flag that is set to true if a loader is displayed
   private shown: boolean = false;
   // A flag that is set to true if the current main call is finished
   private finish: boolean = false;
   // A flag that helps to count how much call are running at the same time
   private count: number = 0;
+  // A unique loader object for the page that is instantiate whenever we made a call
+  private loader: Loading;
+  // An object containing cache for images loaded
+  private imgCache: Object;
 
-  private loader;
+  constructor(public injector: Injector, public routerProvider : C8oRouter, public loadingCtrl: LoadingController, public ref: ChangeDetectorRef){
 
-  constructor(public injector: Injector, public routerProvider : C8oRouter, public loadingCtrl: LoadingController){
+    // Getting additional Injectors
+    this.appRef = this.getInstance(ApplicationRef);
 
+    // Instantiating shortcuts
+    this.router = this.routerProvider;
+    this.global = this.routerProvider.sharedObject;
+    this.c8o = this.routerProvider.c8o;
+    this.local = new Object();
+
+    // Instantiating image cache object
+    this.imgCache = new Object();
+
+    // Instantiating window
+    this.window = window;
   }
+
+  // Detach mark from view to avoid error (linked to tick function)
+  ngOnDestroy() {
+    this.ref.detach();
+  }
+
   /**
    * Retrieves an instance from the injector based on the provided token.
    * If not found:
@@ -48,7 +87,6 @@ export class C8oBase {
    */
   public listen(requestables : string[]) : any {
     return this.routerProvider.getResponseForView(this.constructor.name, requestables);
-    //this.router.getResponseForView('_C80_GeneralView', ['fs://fs_monmobile.view');
   }
 
 
@@ -80,8 +118,7 @@ export class C8oBase {
     setTimeout(()=> {
       if(this.finish == false){
         if(this.shown != true){
-          this.loader = this.loadingCtrl.create({
-          });
+          this.loader = this.loadingCtrl.create({});
           this.loader.present();
           this.shown = true;
         }
@@ -109,33 +146,86 @@ export class C8oBase {
             this.loader.dismiss();
           }
         }
-        reject(error)
+        reject(error);
       });
     });
-
   }
 
   /**
    * Calls a Convertigo requestable with parameters as Object from a given form
    *
-   * @param	requestable the requestable to call (examples : "Myproject.MySequence" or "fs://MyLocalDataBase.get")
-   * @param	id , the id of the form
+   * @param	requestable, the requestable to call (examples : "Myproject.MySequence" or "fs://MyLocalDataBase.get")
+   * @param	id, the id of the form
    *
    */
-  callForm(requestable:string, id: string){
+  public callForm(requestable:string, id: string) {
     this.call(requestable, this.form[id]);
   }
 
+  /**
+   * Mark, the current view in to check state, then detect changes and tick the application ref
+   *
+   */
+  public tick(){
+    this.ref.markForCheck();
+    if (!this.ref["destroyed"]) {
+      this.ref.detectChanges();
+      this.appRef.tick();
+    }
+  }
 
+  /**
+   * Get attachment data url a requestable response to be displayed
+   *
+   * @param id             the DocumentID to get the attachment from
+   * @param attachmentName  name of the attachment to display (eg: image.jpg)
+   * @param placeholderURL  the url to display while we get the attachment (This is an Async process)
+   * @param databaseName    the Qname of a FS database (ex project.fsdatabase) to get the attachment from.
+   *
+   */
+  public getAttachmentUrl(id: string, attachmentName: string, placeholderURL : string, databaseName?: string): Object{
+    return this.routerProvider.getAttachmentUrl(id, attachmentName, placeholderURL, this.imgCache, databaseName);
+  }
 
+  /**
+   * Reset Image Cache.
+   *
+   * @param cacheEntry : Name of the Entry to clear. If not provided, clears all the entries
+   *
+   */
+  public resetImageCache(cacheEntry: string= null ) {
+    if (cacheEntry) {
+      delete this.imgCache[cacheEntry]
+      return;
+    }
+    this.imgCache = []
+  }
 
+  /**
+   * safeEval a string expression
+   * @param key
+   */
+  public safeEval(key: any) {
+    let val;
+    try {
+      val=eval(ts.transpile(key));
+    }
+    catch(e){}
+    return val;
+  }
 
-
-
-
-
-
-
-
-
+  /**
+   * Handles automatically Errors coming from called promises
+   * @param p The promise returned by a CAF function eg : (click)="resolveError(actionBeans.CallSequenceAction(this,{cacheTtl: 3000, ...},{}))
+   */
+  public resolveError(p: Promise<any>):Promise<any> {
+    return new Promise((resolve, reject) => {
+      p.then((res) => {
+        resolve(res);
+      }).catch((err) => {
+        this.c8o.log.error("[MB] Resolve Error : " + err)
+        resolve(err);
+      });
+    });
+  }
 }

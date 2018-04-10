@@ -6,6 +6,7 @@ import { C8oRouteListener }                                 from './convertigo.r
 import {C8o, C8oLogLevel, C8oException, C8oLocalCache, Priority}                   from "c8osdkangular";
 import {C8oPage} from "./convertigo.page";
 import {DomSanitizer} from "@angular/platform-browser";
+import {C8oBase, C8oPageBase} from "./convertigo.base";
 
 
 
@@ -214,7 +215,7 @@ export class C8oRouter{
      * @param data for the call
      *
      */
-    c8oCall(requestable:string, parameters?: Object, navParams?:any, page?: C8oPage): Promise<any>{
+    c8oCall(requestable:string, parameters?: Object, navParams?:any, page?: C8oPageBase): Promise<any>{
         return new Promise((resolve, reject)=>{
             if(parameters["__localCache_priority"] != undefined && (parameters["__localCache_priority"] == "priority_server" || parameters["__localCache_priority"] == "priority_local")){
                 let localCache_priority;
