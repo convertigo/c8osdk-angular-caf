@@ -14,7 +14,9 @@
     "clean": "rimraf bundles coverage src/**/*.d.ts src/**/*.metadata.json src/**/*.js src/**/*.js.map src/**/*.ngsummary.json",
     "prepare": "npm run clean && ngc && npm run build",
     "build": "webpack && cp bundles/index.umd.js bundles/index.js",
-    "build-dev": "tsc -p ."
+    "build-dev": "tsc -p .",
+    "docs": "npm run typedoc -- --options typedoc.json --exclude '**/*.spec.ts' ./src/caf/",
+    "typedoc": "typedoc"
   },
   "repository": {
     "type": "git",
@@ -72,7 +74,8 @@
     "tslint-loader": "3.5.3",
     "typings": "2.1.1",
     "webpack": "3.0.0",
-    "typescript": "2.4.2"
+    "typescript": "2.4.2",
+    "typedoc": "0.11.1"
   },
   "bugs": {
     "url": "https://github.com/convertigo/c8ocaf/issues"

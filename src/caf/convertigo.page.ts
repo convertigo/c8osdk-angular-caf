@@ -4,136 +4,50 @@ import { DomSanitizer }                                 from '@angular/platform-
 import {ApplicationRef, ChangeDetectorRef, InjectionToken, Injector, Type} from "@angular/core";
 import { C8o } from "c8osdkangular";
 import * as ts from 'typescript';
+import {C8oBase} from "./convertigo.base";
 
 
 
-export class C8oPage {
-    private loader;
+export class C8oPage extends C8oBase{
     public router: C8oRouter;
     private didLoad;
     private imgCache : Object = new Object();
     private prefixId : string;
-    public form = {};
+
     public c8o : C8o;
     public menuId : string;
-    private shown: boolean = false;
-    private finish: boolean = false;
-    private count: number = 0;
+
     public didleave: boolean = false;
     public window: Window;
     public global;
     private local: any = {};
     private appRef: ApplicationRef;
 
-    constructor(public routerProvider : C8oRouter, public navParams: NavParams, public loadingCtrl: LoadingController, public sanitizer : DomSanitizer, public ref: ChangeDetectorRef, public injector: Injector, public menuCtrl: MenuController){
+    constructor(public injector: Injector, public routerProvider : C8oRouter, public loadingCtrl: LoadingController, public navParams: NavParams,  public sanitizer : DomSanitizer, public ref: ChangeDetectorRef, public menuCtrl: MenuController){
+
+        super(injector, routerProvider, loadingCtrl);
+
+
         this.c8o = this.routerProvider.c8o;
         this.routerProvider.storeResponseForView(this.constructor.name, navParams.get("requestable"), navParams.get("data"), this.navParams, navParams.get("didEnter") ,navParams.get("didLeave"));
         this.prefixId = "_C8o" + new Date().getTime().toString();
-        //shortcut
+
+        //shortcuts
         this.router = this.routerProvider;
         this.window = window
         this.appRef = this.getInstance(ApplicationRef);
-        //shortcut
         this.global = this.router.sharedObject;
         this.appRef = this.getInstance(ApplicationRef);
     }
 
-    /**
-     * Retrieves an instance from the injector based on the provided token.
-     * If not found:
-     * - Throws an error if no `notFoundValue` that is not equal to
-     * Injector.THROW_IF_NOT_FOUND is given
-     * - Returns the `notFoundValue` otherwise
-     *
-     * @param token: Type<T>|InjectionToken<T>,  A token with the needed type
-     * @param notFoundValue: T
-     *
-     * @return An instance of the given token, or an error if not found
-     */
-    public getInstance<T>(token: Type<T>|InjectionToken<T>, notFoundValue?: T): T{
-        return this.injector.get(token, notFoundValue);
-    }
 
-    /**
-     * Gets the data from previous called requestable list. can be used in an Angular 2 directive such as
-     *
-     *   *ngFor="let category of listen(['fs://.view']).rows" or
-     *   *ngFor="let Page2 of listen(['fs://.view', 'fs://.view#search']).rows"
-     *
-     * The data for the first requestable to match is returned
-     *
-     * @return the data for one of the requestables in the list.
-     */
-    public listen(requestables : string[]) : any {
-        return this.routerProvider.getResponseForView(this.constructor.name, requestables);
-        //this.router.getResponseForView('_C80_GeneralView', ['fs://fs_monmobile.view');
-    }
 
-    /**
-     * Gets the data from previous called requestable list. can be used in an Angular 2 directive such as
-     *
-     *   *ngFor="let category of listen(['fs://.view']).rows" or
-     *   *ngFor="let Page2 of listen(['fs://.view', 'fs://.view#search']).rows"
-     *
-     * The data for the first requestable to match is returned
-     *
-     * @return the data for one of the requestables in the list.
-     */
-    public listenNavParams(requestable : string) : any {
-        return(this.routerProvider.getParamForView(this.constructor.name, requestable));
-    }
 
-    callForm(requestable:string, id: string){
-        this.call(requestable, this.form[id]);
-    }
-    /**
-     * Calls a Convertigo requestable with parameters as Object
-     *
-     * @param	requestable the requestable to call (examples : "Myproject.MySequence" or "fs://MyLocalDataBase.get")
-     * @param	data , the data to send to the requestable (for example {"var1" : "value1, ..., "var2" : "value2})
-     *
-     */
-    public call(requestable, data: any = null, navParams : any = null, timeout : number = 3000): Promise<any> {
-        if(this.form != {} && data == null){
-            data = this.form;
-        }
-        setTimeout(()=> {
-            if(this.finish == false){
-                if(this.shown != true){
-                    this.loader = this.loadingCtrl.create({
-                    });
-                    this.loader.present();
-                    this.shown = true;
-                }
-                this.count ++;
-            }
-        }, timeout);
 
-        return new Promise((resolve, reject) => {
-            this.routerProvider.c8oCall(requestable, data, navParams, this).then((response) => {
-                this.finish = true;
-                if (this.shown == true) {
-                    this.count--;
-                    if (this.count == 0) {
-                        this.shown = false;
-                        this.loader.dismiss();
-                    }
-                }
-                resolve(response);
-            }).catch((error) => {
-                this.finish = true;
-                if (this.shown == true) {
-                    this.count--;
-                    if (this.count == 0) {
-                        this.shown = false;
-                        this.loader.dismiss();
-                    }
-                }
-                reject(error)
-            });
-        });
 
-    }
+
+
+
     public tick(){
         this.ref.markForCheck();
         if (!this.ref["destroyed"]) {
@@ -295,7 +209,7 @@ export class C8oPage {
 
    /**
      * Creates a new Date Object, useful when called from a template as new operator is not allowed
-     */ 
+     */
     public Date(year :any, month:any, day:any, hours:any, minutes:any, seconds:any, milliseconds:any) {
         if (year && month && day && hours && minutes && seconds && milliseconds)
             // all arguments are there , so use the Complete Date() constructor with 7 arguments
