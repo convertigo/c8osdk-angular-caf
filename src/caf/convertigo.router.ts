@@ -299,38 +299,63 @@ export class C8oRouter{
         }
     }
 
-    /**
-     * When a page(view) is displayed it will call this method to retreive the data that was stored for this view
-     *
-     *   @param         the view we must restore data from
-     *   @requestables  an array of requestables from where the data was responded
-     *
-     *   @return        the data
-     */
+  /**
+   * When a page(view) is displayed it will call this method to retreive the data that was stored for this view
+   *
+   * @param view: the view we must restore data from
+   * @param {string[]} requestables: an array of requestables from where the data was responded
+   * @returns {any}: data to fetch
+   */
     public  getResponseForView(view :any, requestables: string[]) : any {
         try{
             if(requestables != undefined){
-                for (var requestable of requestables) {
-                    for(var item of this.c8oResponses) {
-                        if (item["view"] == view && item["requestable"] == requestable)
-                            return (item["data"])
+                for (let requestable of requestables) {
+                    for(let item of this.c8oResponses) {
+                      if (item["view"] == view && item["requestable"] == requestable){
+                        return (item["data"]);
+                      }
+                      if (item["requestable"] == requestable) {
+                        return (item["data"]);
+                      }
                     }
-                    for(var item of this.c8oResponses) {
-                        if (item["requestable"] == requestable)
-                            return (item["data"])
-                    }
-
                 }
-                return(new Object())
+                return(new Object());
             }
         }
         catch(error){
             console.log(error)
         }
-
-
-
     }
+
+  /**
+   * When a page(view) is displayed it will call this method to delete the data that was stored for this view
+   *
+   * @param view: the view we must restore data from
+   * @param {string[]} requestables: an array of requestables from where the data was responded
+   * @returns {boolean} true if a value has been deleted.
+   */
+  public deleteResponseForView(view :any, requestables: string[]) : boolean {
+    try{
+      if(requestables != undefined){
+        requestables.forEach((requestable)=> {
+          this.c8oResponses.forEach((item, index)=> {
+            if (item["view"] == view && item["requestable"] == requestable){
+              delete this.c8oResponses[index];
+              return true;
+            }
+            if (item["requestable"] == requestable) {
+              delete this.c8oResponses[index];
+              return true;
+            }
+          });
+        });
+        return false;
+      }
+    }
+    catch(error){
+      console.log(error)
+    }
+  }
 
     /**
      * When a page(view) is displayed it will call this method to retreive the data that was stored for this view

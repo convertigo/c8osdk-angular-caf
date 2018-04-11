@@ -97,6 +97,18 @@ export class C8oPageBase {
   public listen(requestables : string[]) : any {
     return this.routerProvider.getResponseForView(this.constructor.name, requestables);
   }
+  /**
+   Delete the data from previous called requestable list. can be used in an Angular 5 directive such as
+   *
+   *   *ngFor="let category of listen(['fs://.view']).rows" or
+   *   *ngFor="let Page2 of listen(['fs://.view', 'fs://.view#search']).rows"
+   *
+   * @param {string[]} requestables: an array of requestables (string)
+   * @returns {boolean}: true if succeed
+   */
+  public deleteListen(requestables : string[]) : any {
+    return this.routerProvider.deleteResponseForView(this.constructor.name, requestables);
+  }
 
 
   /**
