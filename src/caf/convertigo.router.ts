@@ -340,7 +340,7 @@ export class C8oRouter{
         requestables.forEach((requestable)=> {
           this.c8oResponses.forEach((item, index)=> {
             if (item["view"] == view && item["requestable"] == requestable){
-              delete this.c8oResponses[index];
+              delete this.c8oResponses[index]["data"];
               return true;
             }
             if (item["requestable"] == requestable) {
