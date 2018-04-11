@@ -98,7 +98,10 @@ export class C8oPage extends C8oPageBase {
    */
   public ionViewCanEnter(): boolean {
     if(!(this.navParams.get("CanEnter") == null || this.navParams.get("CanEnter") == undefined || this.navParams.get("CanEnter") == '')){
-      this.navParams.get("CanEnter")(this, this.routerProvider.c8o);
+      let val =  this.navParams.get("CanEnter")(this, this.routerProvider.c8o);
+      if(val == undefined || val == null){
+        return true;
+      }
     }
     else{
       return true;
@@ -111,7 +114,10 @@ export class C8oPage extends C8oPageBase {
    */
   public ionViewCanLeave(): boolean {
     if(!(this.navParams.get("CanLeave") == null || this.navParams.get("CanLeave") == undefined || this.navParams.get("CanLeave") == '')){
-      this.navParams.get("CanLeave")(this, this.routerProvider.c8o);
+      let val =  this.navParams.get("CanLeave")(this, this.routerProvider.c8o);
+      if(val == undefined || val == null){
+        return true;
+      }
     }
     else{
       return true;
