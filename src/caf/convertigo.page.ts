@@ -94,33 +94,22 @@ export class C8oPage extends C8oPageBase {
 
   /**
    * Runs before the view can enter. This can be used as a sort of "guard" in authenticated views where you need to check permissions before the view can enter
-   * @returns {boolean} default is true
+   * Returning true or false allow or not to enter to the view
    */
-  public ionViewCanEnter(): boolean {
+  public ionViewCanEnter() {
     if(!(this.navParams.get("CanEnter") == null || this.navParams.get("CanEnter") == undefined || this.navParams.get("CanEnter") == '')){
-      let val =  this.navParams.get("CanEnter")(this, this.routerProvider.c8o);
-      if(val == undefined || val == null){
-        return true;
-      }
+     return this.navParams.get("CanEnter")(this, this.routerProvider.c8o);
     }
-    else{
-      return true;
-    }
+
   }
 
   /**
    * Runs before the view can leave. This can be used as a sort of "guard" in authenticated views where you need to check permissions before the view can leave
-   * @returns {boolean} default is false
+   * Returning true or false allow or not to leave the view
    */
-  public ionViewCanLeave(): boolean {
+  public ionViewCanLeave() {
     if(!(this.navParams.get("CanLeave") == null || this.navParams.get("CanLeave") == undefined || this.navParams.get("CanLeave") == '')){
-      let val =  this.navParams.get("CanLeave")(this, this.routerProvider.c8o);
-      if(val == undefined || val == null){
-        return true;
-      }
-    }
-    else{
-      return true;
+      return  this.navParams.get("CanLeave")(this, this.routerProvider.c8o);
     }
   }
 
