@@ -1,12 +1,11 @@
 import { C8oRouter }                                    from './convertigo.router'
 import {NavParams, LoadingController, MenuController}                from 'ionic-angular';
 import { DomSanitizer }                                 from '@angular/platform-browser';
-import {ApplicationRef, ChangeDetectorRef, InjectionToken, Injector, Type} from "@angular/core";
+import {ChangeDetectorRef, Injector} from "@angular/core";
 import {C8oPageBase} from "./convertigo.base";
+import {C8oCafUtils} from "./convertigo.utils";
 
-
-
-export class C8oPage extends C8oPageBase{
+export class C8oPage extends C8oPageBase {
 
     public menuId : string;
     private didLoad;
@@ -66,68 +65,50 @@ export class C8oPage extends C8oPageBase{
         }
     }
 
-    public getPageByTitle(pageTitle: string) {
-      for (let p of this.routerProvider.pagesArray){
-        if (p["title"] == pageTitle) {
-          return p.component;
-        }
-      }
-    }
 
-    public getPageByName(pageName: string) {
-      for (let p of this.routerProvider.pagesArray){
-        if (p["component"].nameStatic == pageName || p["component"].name == pageName) {
-          return p.component;
-        }
-      }
-    }
 
-    public virtualListen(arg: any){
-        if(arg == undefined){
-            return [];
-        }
-        else{
-            return arg;
-        }
-    }
-
-    /**
-     * Javascript method charCodeAt 0
-     * @param {String} index: the index
-     * @returns {String}
-     */
-    public getNextLetter(char: String): String {
-      let code: number = char.charCodeAt(0);
-      code ++;
-      return String.fromCharCode(code);
-    }
-
+  /**
+   * @deprecated: Please use C8oCafUtils.wordPlusOne(word: string) instead
+   *
+   * Concat two words
+   * @param {string} word
+   * @returns {any}
+   */
     public wordPlusOne(word: string): any {
-        if (word != undefined) {
-            let word1 = word.slice(0, -1)
-            let word2 = this.getNextLetter(word)
-            return word1 + word2;
-        }
-        else {
-            return {};
-        }
+      this.c8o.log.warn("[CAF] @Deprecated: This method will be removed in future versions, please use static method: C8oCafUtils.wordPlusOne(word) instead");
+      C8oCafUtils.wordPlusOne(word);
     }
+
+  /**
+   * @deprecated: Please use C8oCafUtils.merge(firstObj: Object, secondObj) instead
+   *
+   * Merge two objects
+   * @param {Object} firstObj
+   * @param secondObj
+   * @returns {Object}
+   */
     public merge(firstObj: Object, secondObj): Object{
-        return Object.assign(firstObj, secondObj);
+        this.c8o.log.warn("[CAF] @Deprecated: This method will be removed in future versions, please use static method: C8oCafUtils.merge(firstObj: Object, secondObj) instead");
+        return C8oCafUtils.merge(firstObj, secondObj);
     }
 
-   /**
-     * Creates a new Date Object, useful when called from a template as new operator is not allowed
-     */
+  /**
+   * @deprecated: Please use C8oCafUtils.Date(year :any, month:any, day:any, hours:any, minutes:any, seconds:any, milliseconds:any) instead
+   *
+   * Creates a new Date Object, useful when called from a template as new operator is not allowed
+   *
+   * @param year
+   * @param month
+   * @param day
+   * @param hours
+   * @param minutes
+   * @param seconds
+   * @param milliseconds
+   * @returns {Date}
+   * @constructor
+   */
     public Date(year :any, month:any, day:any, hours:any, minutes:any, seconds:any, milliseconds:any) {
-        if (year && month && day && hours && minutes && seconds && milliseconds)
-            // all arguments are there , so use the Complete Date() constructor with 7 arguments
-            return new Date(year, month, day, hours, minutes, seconds, milliseconds)
-        if (year)
-            // Only one , so it can be Date(millisecs) or Date(DateString)
-            return new Date(year)
-
-        // No Arguments, so use Date()
-        return new Date()
+        this.c8o.log.warn("[CAF] @Deprecated: This method will be removed in future versions, please use static method: C8oCafUtils.Date(year :any, month:any, day:any, hours:any, minutes:any, seconds:any, milliseconds:any) instead");
+        return C8oCafUtils.Date(year, month, day, hours, minutes, seconds, milliseconds);
     }
 }

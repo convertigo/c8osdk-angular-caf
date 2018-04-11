@@ -34,6 +34,13 @@ export class C8oPageBase {
   // An object containing cache for images loaded
   private imgCache: Object;
 
+  /**
+   * C8oPageBase: Page Base for C8oPage and app component
+   * @param {Injector} injector
+   * @param {C8oRouter} routerProvider
+   * @param {LoadingController} loadingCtrl
+   * @param {ChangeDetectorRef} ref
+   */
   constructor(public injector: Injector, public routerProvider : C8oRouter, public loadingCtrl: LoadingController, public ref: ChangeDetectorRef){
 
     // Getting additional Injectors
@@ -67,23 +74,20 @@ export class C8oPageBase {
    * @param token: Type<T>|InjectionToken<T>,  A token with the needed type
    * @param notFoundValue: T
    *
-   * @return An instance of the given token, or an error if not found
+   * @returns An instance of the given token, or an error if not found
    */
   public getInstance<T>(token: Type<T>|InjectionToken<T>, notFoundValue?: T): T{
     return this.injector.get(token, notFoundValue);
   }
 
-
-
   /**
-   * Gets the data from previous called requestable list. can be used in an Angular 5 directive such as
+   Gets the data from previous called requestable list. can be used in an Angular 5 directive such as
    *
    *   *ngFor="let category of listen(['fs://.view']).rows" or
    *   *ngFor="let Page2 of listen(['fs://.view', 'fs://.view#search']).rows"
    *
-   * The data for the first requestable to match is returned
-   *
-   * @return the data for one of the requestables in the list.
+   * @param {string[]} requestables: an array of requestables (string)
+   * @returns {any}: the data for the first requestable to match is returned
    */
   public listen(requestables : string[]) : any {
     return this.routerProvider.getResponseForView(this.constructor.name, requestables);
@@ -106,10 +110,11 @@ export class C8oPageBase {
 
   /**
    * Calls a Convertigo requestable with parameters as Object
-   *
-   * @param	requestable the requestable to call (examples : "Myproject.MySequence" or "fs://MyLocalDataBase.get")
-   * @param	data , the data to send to the requestable (for example {"var1" : "value1, ..., "var2" : "value2})
-   *
+   * @param requestable: the requestable to call (examples : "Myproject.MySequence" or "fs://MyLocalDataBase.get")
+   * @param data: the data to send to the requestable (for example {"var1" : "value1, ..., "var2" : "value2}) (default value is null)
+   * @param navParams: the navParams to give (default value is null)
+   * @param {number} timeout: The timeout before trigger loading controller (default value is 3000)
+   * @returns {Promise<any>}
    */
   public call(requestable, data: any = null, navParams : any = null, timeout : number = 3000): Promise<any> {
     if(this.form != {} && data == null){
@@ -153,20 +158,19 @@ export class C8oPageBase {
 
   /**
    * Calls a Convertigo requestable with parameters as Object from a given form
-   *
-   * @param	requestable, the requestable to call (examples : "Myproject.MySequence" or "fs://MyLocalDataBase.get")
-   * @param	id, the id of the form
-   *
+   * @param {string} requestable: the requestable to call (examples : "Myproject.MySequence" or "fs://MyLocalDataBase.get")
+   * @param {string} id: the id of the form
+   * @returns {Promise<any>}
    */
-  public callForm(requestable:string, id: string) {
-    this.call(requestable, this.form[id]);
+  public callForm(requestable:string, id: string): Promise<any> {
+    return this.call(requestable, this.form[id]);
   }
 
   /**
    * Mark, the current view in to check state, then detect changes and tick the application ref
    *
    */
-  public tick(){
+  public tick(): void {
     this.ref.markForCheck();
     if (!this.ref["destroyed"]) {
       this.ref.detectChanges();
@@ -176,12 +180,11 @@ export class C8oPageBase {
 
   /**
    * Get attachment data url a requestable response to be displayed
-   *
-   * @param id             the DocumentID to get the attachment from
-   * @param attachmentName  name of the attachment to display (eg: image.jpg)
-   * @param placeholderURL  the url to display while we get the attachment (This is an Async process)
-   * @param databaseName    the Qname of a FS database (ex project.fsdatabase) to get the attachment from.
-   *
+   * @param {string} id: the DocumentID to get the attachment from
+   * @param {string} attachmentName: name of the attachment to display (eg: image.jpg)
+   * @param {string} placeholderURL: the url to display while we get the attachment (This is an Async process)
+   * @param {string} databaseName: the Qname of a FS database (ex project.fsdatabase) to get the attachment from.
+   * @returns {Object}
    */
   public getAttachmentUrl(id: string, attachmentName: string, placeholderURL : string, databaseName?: string): Object{
     return this.routerProvider.getAttachmentUrl(id, attachmentName, placeholderURL, this.imgCache, databaseName);
@@ -189,16 +192,14 @@ export class C8oPageBase {
 
   /**
    * Reset Image Cache.
-   *
-   * @param cacheEntry : Name of the Entry to clear. If not provided, clears all the entries
-   *
+   * @param {string} cacheEntry: Name of the Entry to clear. If not provided, clears all the entries
    */
-  public resetImageCache(cacheEntry: string= null ) {
+  public resetImageCache(cacheEntry: string = null ): void {
     if (cacheEntry) {
-      delete this.imgCache[cacheEntry]
+      delete this.imgCache[cacheEntry];
       return;
     }
-    this.imgCache = []
+    this.imgCache = [];
   }
 
   /**
@@ -216,16 +217,43 @@ export class C8oPageBase {
 
   /**
    * Handles automatically Errors coming from called promises
-   * @param p The promise returned by a CAF function eg : (click)="resolveError(actionBeans.CallSequenceAction(this,{cacheTtl: 3000, ...},{}))
+   * @param {Promise<any>} p The promise returned by a CAF function eg : (click)="resolveError(actionBeans.CallSequenceAction(this,{cacheTtl: 3000, ...},{}))
+   * @returns {Promise<any>}
    */
-  public resolveError(p: Promise<any>):Promise<any> {
+  public resolveError(p: Promise<any>): Promise<any> {
     return new Promise((resolve, reject) => {
       p.then((res) => {
         resolve(res);
       }).catch((err) => {
-        this.c8o.log.error("[MB] Resolve Error : " + err)
+        this.c8o.log.error("[CAF] Resolve Error : " + err)
         resolve(err);
       });
     });
+  }
+
+  /**
+   * Get page definition from it's title
+   * @param {string} pageTitle
+   * @returns {string}
+   */
+  public getPageByTitle(pageTitle: string): string {
+    for (let p of this.routerProvider.pagesArray){
+      if (p["title"] == pageTitle) {
+        return p.component;
+      }
+    }
+  }
+
+  /**
+   * Get page definition from it's name
+   * @param {string} pageName
+   * @returns {string}
+   */
+  public getPageByName(pageName: string): string {
+    for (let p of this.routerProvider.pagesArray){
+      if (p["component"].nameStatic == pageName || p["component"].name == pageName) {
+        return p.component;
+      }
+    }
   }
 }
