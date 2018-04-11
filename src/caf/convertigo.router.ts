@@ -344,7 +344,7 @@ export class C8oRouter{
               return true;
             }
             if (item["requestable"] == requestable) {
-              delete this.c8oResponses[index];
+              delete this.c8oResponses[index]["data"];
               return true;
             }
           });
