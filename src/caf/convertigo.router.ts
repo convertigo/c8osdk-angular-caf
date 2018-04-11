@@ -4,9 +4,8 @@ import {Injectable}                                         from '@angular/core'
 import { C8oRouteListener }                                 from './convertigo.routingtable';
 
 import {C8o, C8oLogLevel, C8oException, C8oLocalCache, Priority}                   from "c8osdkangular";
-import {C8oPage} from "./convertigo.page";
 import {DomSanitizer} from "@angular/platform-browser";
-import {C8oBase, C8oPageBase} from "./convertigo.base";
+import { C8oPageBase} from "./convertigo.base";
 
 
 
