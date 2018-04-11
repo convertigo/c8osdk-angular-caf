@@ -33,6 +33,8 @@ export class C8oPageBase {
   private loader: Loading;
   // An object containing cache for images loaded
   private imgCache: Object;
+  // A prefix id for this instance
+  private prefixId : string;
 
   /**
    * C8oPageBase: Page Base for C8oPage and app component
@@ -57,6 +59,9 @@ export class C8oPageBase {
 
     // Instantiating window
     this.window = window;
+
+    //Instantiating prefix ID
+    this.prefixId = "_C8o" + new Date().getTime().toString();
   }
 
   // Detach mark from view to avoid error (linked to tick function)
