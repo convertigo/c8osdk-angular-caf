@@ -4,6 +4,7 @@ import {LoadingController} from "ionic-angular";
 import {Loading} from "ionic-angular/components/loading/loading";
 import {C8o} from "c8osdkangular";
 import * as ts from 'typescript';
+import * as _ from 'lodash';
 
 export class C8oPageBase {
 
@@ -226,7 +227,7 @@ export class C8oPageBase {
   public safeEval(key: any) {
     let val;
     try {
-      val=eval(ts.transpile(key));
+      val=eval(ts.transpile(key)).call(this);
     }
     catch(e){}
     return val;
@@ -271,6 +272,26 @@ export class C8oPageBase {
       if (p["component"].nameStatic == pageName || p["component"].name == pageName) {
         return p.component;
       }
+    }
+  }
+
+
+  /**
+   * Helps to safe eval the value of an path into an object or an array
+   * @param object: the object to eval
+   * @param path: the path to search
+   * @returns {any}: the value fetched or undefined
+   */
+  public resolveArray(object: any, path: string = null): any{
+    try{
+      if(_.has(object, path)){
+        return _.get(object, path);
+      }else{
+        return undefined;
+      }
+    }
+    catch(err){
+      return undefined;
     }
   }
 }
