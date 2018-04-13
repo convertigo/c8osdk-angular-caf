@@ -1,6 +1,6 @@
 {
   "name": "c8ocaf",
-  "version": "1.0.101-beta102.9",
+  "version": "1.0.101-beta102.10",
   "description": "Convertigo Angular Framework",
   "main": "bundle/index.umd.js",
   "module": "src/index.js",
