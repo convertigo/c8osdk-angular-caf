@@ -4,7 +4,7 @@ import {LoadingController} from "ionic-angular";
 import {Loading} from "ionic-angular/components/loading/loading";
 import {C8o} from "c8osdkangular";
 import * as ts from 'typescript';
-import * as _ from 'lodash';
+import {C8oCafUtils} from "./convertigo.utils";
 
 export class C8oPageBase {
 
@@ -39,6 +39,7 @@ export class C8oPageBase {
 
   /**
    * C8oPageBase: Page Base for C8oPage and app component
+   *
    * @param {Injector} injector
    * @param {C8oRouter} routerProvider
    * @param {LoadingController} loadingCtrl
@@ -128,6 +129,7 @@ export class C8oPageBase {
 
   /**
    * Calls a Convertigo requestable with parameters as Object
+   *
    * @param requestable: the requestable to call (examples : "Myproject.MySequence" or "fs://MyLocalDataBase.get")
    * @param data: the data to send to the requestable (for example {"var1" : "value1, ..., "var2" : "value2}) (default value is null)
    * @param navParams: the navParams to give (default value is null)
@@ -176,6 +178,7 @@ export class C8oPageBase {
 
   /**
    * Calls a Convertigo requestable with parameters as Object from a given form
+   *
    * @param {string} requestable: the requestable to call (examples : "Myproject.MySequence" or "fs://MyLocalDataBase.get")
    * @param {string} id: the id of the form
    * @returns {Promise<any>}
@@ -198,6 +201,7 @@ export class C8oPageBase {
 
   /**
    * Get attachment data url a requestable response to be displayed
+   *
    * @param {string} id: the DocumentID to get the attachment from
    * @param {string} attachmentName: name of the attachment to display (eg: image.jpg)
    * @param {string} placeholderURL: the url to display while we get the attachment (This is an Async process)
@@ -210,6 +214,7 @@ export class C8oPageBase {
 
   /**
    * Reset Image Cache.
+   *
    * @param {string} cacheEntry: Name of the Entry to clear. If not provided, clears all the entries
    */
   public resetImageCache(cacheEntry: string = null ): void {
@@ -222,6 +227,7 @@ export class C8oPageBase {
 
   /**
    * safeEval a string expression
+   *
    * @param key
    */
   public safeEval(key: any) {
@@ -235,6 +241,7 @@ export class C8oPageBase {
 
   /**
    * Handles automatically Errors coming from called promises
+   *
    * @param {Promise<any>} p The promise returned by a CAF function eg : (click)="resolveError(actionBeans.CallSequenceAction(this,{cacheTtl: 3000, ...},{}))
    * @returns {Promise<any>}
    */
@@ -251,6 +258,7 @@ export class C8oPageBase {
 
   /**
    * Get page definition from it's title
+   *
    * @param {string} pageTitle
    * @returns {string}
    */
@@ -264,6 +272,7 @@ export class C8oPageBase {
 
   /**
    * Get page definition from it's name
+   *
    * @param {string} pageName
    * @returns {string}
    */
@@ -278,20 +287,13 @@ export class C8oPageBase {
 
   /**
    * Helps to safe eval the value of an path into an object or an array
+   * This is a shortcut to acess to static function of C8oCafUtils
+   *
    * @param object: the object to eval
    * @param path: the path to search
    * @returns {any}: the value fetched or undefined
    */
   public resolveArray(object: any, path: string = null): any{
-    try{
-      if(_.has(object, path)){
-        return _.get(object, path);
-      }else{
-        return undefined;
-      }
-    }
-    catch(err){
-      return undefined;
-    }
+      return C8oCafUtils.resolveArray(object, path);
   }
 }

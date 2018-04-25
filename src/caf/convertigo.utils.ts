@@ -1,3 +1,5 @@
+import * as _ from 'lodash';
+
 export class C8oCafUtils{
 
   /**
@@ -63,5 +65,24 @@ export class C8oCafUtils{
     code ++;
     return String.fromCharCode(code);
   }
+
+    /**
+     * Helps to safe eval the value of an path into an object or an array
+     * @param object: the object to eval
+     * @param path: the path to search
+     * @returns {any}: the value fetched or undefined
+     */
+    public static resolveArray(object: any, path: string = null): any{
+        try{
+            if(_.has(object, path)){
+                return _.get(object, path);
+            }else{
+                return undefined;
+            }
+        }
+        catch(err){
+            return undefined;
+        }
+    }
 
 }
