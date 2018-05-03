@@ -296,4 +296,44 @@ export class C8oPageBase {
   public resolveArray(object: any, path: string = null): any{
       return C8oCafUtils.resolveArray(object, path);
   }
+
+
+  /**
+  * Concat two words
+  * @param {string} word
+  * @returns {any}
+  */
+ public wordPlusOne(word: string): any {
+  //this.c8o.log.warn("[CAF] @Deprecated: This method will be removed in future versions, please use static method: C8oCafUtils.wordPlusOne(word) instead");
+  C8oCafUtils.wordPlusOne(word);
+ }
+
+  /**
+  * Merge two objects
+  * @param {Object} firstObj
+  * @param secondObj
+  * @returns {Object}
+  */
+  public merge(firstObj: Object, secondObj): Object{
+      //this.c8o.log.warn("[CAF] @Deprecated: This method will be removed in future versions, please use static method: C8oCafUtils.merge(firstObj: Object, secondObj) instead");
+      return C8oCafUtils.merge(firstObj, secondObj);
+  }
+
+  /**
+  * Creates a new Date Object, useful when called from a template as new operator is not allowed
+  *
+  * @param year
+  * @param month
+  * @param day
+  * @param hours
+  * @param minutes
+  * @param seconds
+  * @param milliseconds
+  * @returns {Date}
+  * @constructor
+  */
+  public Date(year :any, month:any, day:any, hours:any, minutes:any, seconds:any, milliseconds:any) {
+      //this.c8o.log.warn("[CAF] @Deprecated: This method will be removed in future versions, please use static method: C8oCafUtils.Date(year :any, month:any, day:any, hours:any, minutes:any, seconds:any, milliseconds:any) instead");
+      return C8oCafUtils.Date(year, month, day, hours, minutes, seconds, milliseconds);
+  }
 }
