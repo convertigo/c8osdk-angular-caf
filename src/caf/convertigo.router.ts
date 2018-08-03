@@ -147,8 +147,8 @@ export class C8oRouter{
                                     if (route.afterCall != undefined) {
                                         route.afterCall();
                                     }
-                                    // test to see if we are already on the target page
 
+                                    // test to see if we are already on the target page
                                     if(route.target.page != null) {
                                         if (this.findView(activeView, route.target.page["nameStatic"], requestable) && !route.target.alwaysNewPage) {
                                             this.log("Route for Requestable '" + item.requestable + "', the view is already displayed, using curent view");
@@ -167,6 +167,7 @@ export class C8oRouter{
                                             "didLeave": route.didLeave
                                         }, route.options);
                                         this.log("Page '" + route.target.page["nameStatic"] + "' Pushed");
+                                        return;
 
                                     }
                                     if (route.target.action.toString() == "setRoot" && ! parameters[C8o.ENGINE_PARAMETER_FROM_LIVE]) {
@@ -176,6 +177,7 @@ export class C8oRouter{
                                             "navParams": navParams
                                         }, route.options);
                                         this.log("Page '" + route.target.page["nameStatic"] + "' set to root");
+                                        return;
                                     }
                                     if (route.target.action.toString() == "toast") {
                                         let toast = this.toastCtrl.create(route.toastOptions);
