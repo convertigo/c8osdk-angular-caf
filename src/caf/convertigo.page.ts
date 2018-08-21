@@ -58,6 +58,11 @@ export class C8oPage extends C8oPageBase {
       if(!(this.navParams.get("didEnter") == null || this.navParams.get("didEnter") == undefined || this.navParams.get("didEnter") == '')){
           this.navParams.get("didEnter")(this, this.routerProvider.c8o);
       }
+      /* Handle Piwik Matomo if present */
+      if (window["_paq"]) {
+        window["_paq"].push(['setDocumentTitle', this.constructor.name]);
+        window["_paq"].push(['trackPageView']);
+      }
   }
 
   /**
