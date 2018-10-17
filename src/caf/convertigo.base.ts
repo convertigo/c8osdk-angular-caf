@@ -26,8 +26,6 @@ export class C8oPageBase {
   public didleave: boolean = false;
   // A flag that is set to true if a loader is displayed
   private shown: boolean = false;
-  // A flag that is set to true if the current main call is finished
-  private finish: boolean = false;
   // A flag that helps to count how much call are running at the same time
   private count: number = 0;
   // A unique loader object for the page that is instantiate whenever we made a call
@@ -137,11 +135,13 @@ export class C8oPageBase {
    * @returns {Promise<any>}
    */
   public call(requestable, data: any = null, navParams : any = null, timeout : number = 3000): Promise<any> {
+    // A flag that is set to true if the current main call is finished
+    let finish: boolean = false;
     if(this.form != {} && data == null){
       data = this.form;
     }
     setTimeout(()=> {
-      if(this.finish == false){
+      if(finish == false){
         if(this.shown != true){
           this.loader = this.loadingCtrl.create({});
           this.loader.present();
@@ -153,7 +153,7 @@ export class C8oPageBase {
 
     return new Promise((resolve, reject) => {
       this.routerProvider.c8oCall(requestable, data, navParams, this).then((response) => {
-        this.finish = true;
+        finish = true;
         if (this.shown == true) {
           this.count--;
           if (this.count == 0) {
@@ -163,7 +163,7 @@ export class C8oPageBase {
         }
         resolve(response);
       }).catch((error) => {
-        this.finish = true;
+        finish = true;
         if (this.shown == true) {
           this.count--;
           if (this.count == 0) {
