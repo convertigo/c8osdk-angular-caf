@@ -20,7 +20,12 @@
     "rewriteTsconfig": false
   },
   "files" :[
-    "src/index.ts"
+    "src/index.ts",
+    "src/caf/convertigo.base.ts",
+    "src/caf/convertigo.page.ts",
+    "src/caf/convertigo.router.ts",
+    "src/caf/convertigo.routingtable.ts",
+    "src/caf/convertigo.utils.ts"
   ],
   "exclude": [
     "node_modules",
