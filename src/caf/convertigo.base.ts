@@ -29,11 +29,13 @@ export class C8oPageBase {
   // A flag that helps to count how much call are running at the same time
   private count: number = 0;
   // A unique loader object for the page that is instantiate whenever we made a call
-  private loader: Loading;
+  public loader: Loading;
   // An object containing cache for images loaded
   private imgCache: Object;
   // A prefix id for this instance
   private prefixId : string;
+  // A flag to kwnow if window is closing
+  public closing: boolean = false;
 
   /**
    * C8oPageBase: Page Base for C8oPage and app component
@@ -64,9 +66,13 @@ export class C8oPageBase {
     this.prefixId = "_C8o" + new Date().getTime().toString();
   }
 
-  // Detach mark from view to avoid error (linked to tick function)
+  // Detach mark from view to avoid error (linked to tick function), and disable loader
   ngOnDestroy() {
+    this.closing = true;
     this.ref.detach();
+    if(this.loader != undefined){
+      this.loader.dismiss();
+    }
   }
 
   /**
@@ -144,8 +150,10 @@ export class C8oPageBase {
       if(finish == false){
         if(this.shown != true){
           this.loader = this.loadingCtrl.create({});
+          if(!this.closing){ 
           this.loader.present();
           this.shown = true;
+          }
         }
         this.count ++;
       }

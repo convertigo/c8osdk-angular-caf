@@ -112,6 +112,10 @@ export class C8oPage extends C8oPageBase {
    * Returning true or false allow or not to leave the view
    */
   public ionViewCanLeave() {
+    this.closing = true;
+    if(this.loader != undefined){
+        this.loader.dismiss();
+    }
     if(!(this.navParams.get("CanLeave") == null || this.navParams.get("CanLeave") == undefined || this.navParams.get("CanLeave") == '')){
       return  this.navParams.get("CanLeave")(this, this.routerProvider.c8o);
     }
