@@ -167,6 +167,7 @@ export class C8oRouter{
                                             "didLeave": route.didLeave
                                         }, route.options);
                                         this.log("Page '" + route.target.page["nameStatic"] + "' Pushed");
+                                        resolve();
                                         return;
 
                                     }
@@ -177,17 +178,20 @@ export class C8oRouter{
                                             "navParams": navParams
                                         }, route.options);
                                         this.log("Page '" + route.target.page["nameStatic"] + "' set to root");
+                                        resolve();
                                         return;
                                     }
                                     if (route.target.action.toString() == "toast") {
                                         let toast = this.toastCtrl.create(route.toastOptions);
                                         toast.present();
+                                        resolve();
                                     }
                                     if(activeView == null){
                                         this.log("Route for Requestable '" + item.requestable + "', the view is already displayed, using _C80_GeneralView view");
                                         this.storeResponseForView("_C80_GeneralView", requestable, response, navParams, route.didEnter, route.didLeave);
                                         resolve();
                                     }
+                                    resolve();
                                 }
                             }
                             catch (err) {
