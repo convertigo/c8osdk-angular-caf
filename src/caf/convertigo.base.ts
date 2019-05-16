@@ -1,10 +1,9 @@
-import {ApplicationRef, ChangeDetectorRef, InjectionToken, Injector, Type} from "@angular/core";
-import {C8oRouter} from "./convertigo.router";
-import {LoadingController} from "ionic-angular";
-import {Loading} from "ionic-angular/components/loading/loading";
-import {C8o} from "c8osdkangular";
+import { ApplicationRef, ChangeDetectorRef, InjectionToken, Injector, Type } from "@angular/core";
+import { C8oRouter } from "./convertigo.router";
+import { LoadingController, Loading } from "ionic-angular";
+import { C8o } from "c8osdkangular";
 import * as ts from 'typescript';
-import {C8oCafUtils} from "./convertigo.utils";
+import { C8oCafUtils } from "./convertigo.utils";
 
 export class C8oPageBase {
 
@@ -19,7 +18,7 @@ export class C8oPageBase {
   // A shortcut to use router's shared Object
   public global: any;
   // A shortcut to use router's C8o Object
-  public c8o : C8o;
+  public c8o: C8o;
   // An application Ref instance
   public appRef: ApplicationRef;
   // A flag that is set to true if the Current page has been leaved
@@ -33,7 +32,7 @@ export class C8oPageBase {
   // An object containing cache for images loaded
   private imgCache: Object;
   // A prefix id for this instance
-  private prefixId : string;
+  private prefixId: string;
   // A flag to kwnow if window is closing
   public closing: boolean = false;
 
@@ -45,7 +44,7 @@ export class C8oPageBase {
    * @param {LoadingController} loadingCtrl
    * @param {ChangeDetectorRef} ref
    */
-  constructor(public injector: Injector, public routerProvider : C8oRouter, public loadingCtrl: LoadingController, public ref: ChangeDetectorRef){
+  constructor(public injector: Injector, public routerProvider: C8oRouter, public loadingCtrl: LoadingController, public ref: ChangeDetectorRef) {
 
     // Getting additional Injectors
     this.appRef = this.getInstance(ApplicationRef);
@@ -70,7 +69,7 @@ export class C8oPageBase {
   ngOnDestroy() {
     this.closing = true;
     this.ref.detach();
-    if(this.loader != undefined){
+    if (this.loader != undefined) {
       this.loader.dismiss();
     }
   }
@@ -87,7 +86,7 @@ export class C8oPageBase {
    *
    * @returns An instance of the given token, or an error if not found
    */
-  public getInstance<T>(token: Type<T>|InjectionToken<T>, notFoundValue?: T): T{
+  public getInstance<T>(token: Type<T> | InjectionToken<T>, notFoundValue?: T): T {
     return this.injector.get(token, notFoundValue);
   }
 
@@ -100,7 +99,7 @@ export class C8oPageBase {
    * @param {string[]} requestables: an array of requestables (string)
    * @returns {any}: the data for the first requestable to match is returned
    */
-  public listen(requestables : string[]) : any {
+  public listen(requestables: string[]): any {
     return this.routerProvider.getResponseForView(this.constructor.name, requestables);
   }
   /**
@@ -112,7 +111,7 @@ export class C8oPageBase {
    * @param {string[]} requestables: an array of requestables (string)
    * @returns {boolean}: true if succeed
    */
-  public deleteListen(requestables : string[]) : any {
+  public deleteListen(requestables: string[]): any {
     return this.routerProvider.deleteResponseForView(this.constructor.name, requestables);
   }
 
@@ -127,8 +126,8 @@ export class C8oPageBase {
    *
    * @return the data for one of the requestables in the list.
    */
-  public listenNavParams(requestable : string) : any {
-    return(this.routerProvider.getParamForView(this.constructor.name, requestable));
+  public listenNavParams(requestable: string): any {
+    return (this.routerProvider.getParamForView(this.constructor.name, requestable));
   }
 
   /**
@@ -140,44 +139,54 @@ export class C8oPageBase {
    * @param {number} timeout: The timeout before trigger loading controller (default value is 3000)
    * @returns {Promise<any>}
    */
-  public call(requestable, data: any = null, navParams : any = null, timeout : number = 3000): Promise<any> {
+  public call(requestable, data: any = null, navParams: any = null, timeout: number = 3000, manualDismiss: boolean = false): Promise<any> {
     // A flag that is set to true if the current main call is finished
     let finish: boolean = false;
-    if(this.form != {} && data == null){
+    if (this.form != {} && data == null) {
       data = this.form;
     }
-    setTimeout(()=> {
-      if(finish == false){
-        if(this.shown != true){
+    setTimeout(() => {
+      if (finish == false) {
+        if (this.shown != true) {
           this.loader = this.loadingCtrl.create({});
-          if(!this.closing){ 
-          this.loader.present();
-          this.shown = true;
+          if (!this.closing) {
+            this.loader.present();
+            this.shown = true;
           }
         }
-        this.count ++;
+        this.count++;
       }
     }, timeout);
 
     return new Promise((resolve, reject) => {
       this.routerProvider.c8oCall(requestable, data, navParams, this).then((response) => {
-        finish = true;
-        if (this.shown == true) {
-          this.count--;
-          if (this.count == 0) {
-            this.shown = false;
-            this.loader.dismiss();
+        if (!manualDismiss) {
+          finish = true;
+          if (this.shown == true) {
+            this.count--;
+            if (this.count == 0) {
+              this.shown = false;
+              this.loader.dismiss();
+            }
           }
+        }
+        else{
+          this.router.log("Loader will not be dismissed sinced option manuald dismiss has been set")
         }
         resolve(response);
       }).catch((error) => {
-        finish = true;
-        if (this.shown == true) {
-          this.count--;
-          if (this.count == 0) {
-            this.shown = false;
-            this.loader.dismiss();
+        if (!manualDismiss) {
+          finish = true;
+          if (this.shown == true) {
+            this.count--;
+            if (this.count == 0) {
+              this.shown = false;
+              this.loader.dismiss();
+            }
           }
+        }
+        else{
+          this.router.log("Loader will not be dismissed sinced option manuald dismiss has been set")
         }
         reject(error);
       });
@@ -191,7 +200,7 @@ export class C8oPageBase {
    * @param {string} id: the id of the form
    * @returns {Promise<any>}
    */
-  public callForm(requestable:string, id: string): Promise<any> {
+  public callForm(requestable: string, id: string): Promise<any> {
     return this.call(requestable, this.form[id]);
   }
 
@@ -216,7 +225,7 @@ export class C8oPageBase {
    * @param {string} databaseName: the Qname of a FS database (ex project.fsdatabase) to get the attachment from.
    * @returns {Object}
    */
-  public getAttachmentUrl(id: string, attachmentName: string, placeholderURL : string, databaseName?: string): Object{
+  public getAttachmentUrl(id: string, attachmentName: string, placeholderURL: string, databaseName?: string): Object {
     return this.routerProvider.getAttachmentUrl(id, attachmentName, placeholderURL, this.imgCache, databaseName);
   }
 
@@ -225,7 +234,7 @@ export class C8oPageBase {
    *
    * @param {string} cacheEntry: Name of the Entry to clear. If not provided, clears all the entries
    */
-  public resetImageCache(cacheEntry: string = null ): void {
+  public resetImageCache(cacheEntry: string = null): void {
     if (cacheEntry) {
       delete this.imgCache[cacheEntry];
       return;
@@ -241,9 +250,9 @@ export class C8oPageBase {
   public safeEval(key: any) {
     let val;
     try {
-      val=eval(ts.transpile(key)).call(this);
+      val = eval(ts.transpile(key)).call(this);
     }
-    catch(e){}
+    catch (e) { }
     return val;
   }
 
@@ -271,7 +280,7 @@ export class C8oPageBase {
    * @returns {string}
    */
   public getPageByTitle(pageTitle: string): string {
-    for (let p of this.routerProvider.pagesArray){
+    for (let p of this.routerProvider.pagesArray) {
       if (p["title"] == pageTitle) {
         return p.component;
       }
@@ -285,7 +294,7 @@ export class C8oPageBase {
    * @returns {string}
    */
   public getPageByName(pageName: string): string {
-    for (let p of this.routerProvider.pagesArray){
+    for (let p of this.routerProvider.pagesArray) {
       if (p["component"].nameStatic == pageName || p["component"].name == pageName) {
         return p.component;
       }
@@ -301,8 +310,8 @@ export class C8oPageBase {
    * @param path: the path to search
    * @returns {any}: the value fetched or undefined
    */
-  public resolveArray(object: any, path: string = null): any{
-      return C8oCafUtils.resolveArray(object, path);
+  public resolveArray(object: any, path: string = null): any {
+    return C8oCafUtils.resolveArray(object, path);
   }
 
 
@@ -311,10 +320,10 @@ export class C8oPageBase {
   * @param {string} word
   * @returns {any}
   */
- public wordPlusOne(word: string): any {
-  //this.c8o.log.warn("[CAF] @Deprecated: This method will be removed in future versions, please use static method: C8oCafUtils.wordPlusOne(word) instead");
-  C8oCafUtils.wordPlusOne(word);
- }
+  public wordPlusOne(word: string): any {
+    //this.c8o.log.warn("[CAF] @Deprecated: This method will be removed in future versions, please use static method: C8oCafUtils.wordPlusOne(word) instead");
+    C8oCafUtils.wordPlusOne(word);
+  }
 
   /**
   * Merge two objects
@@ -322,9 +331,9 @@ export class C8oPageBase {
   * @param secondObj
   * @returns {Object}
   */
-  public merge(firstObj: Object, secondObj): Object{
-      //this.c8o.log.warn("[CAF] @Deprecated: This method will be removed in future versions, please use static method: C8oCafUtils.merge(firstObj: Object, secondObj) instead");
-      return C8oCafUtils.merge(firstObj, secondObj);
+  public merge(firstObj: Object, secondObj): Object {
+    //this.c8o.log.warn("[CAF] @Deprecated: This method will be removed in future versions, please use static method: C8oCafUtils.merge(firstObj: Object, secondObj) instead");
+    return C8oCafUtils.merge(firstObj, secondObj);
   }
 
   /**
@@ -340,8 +349,8 @@ export class C8oPageBase {
   * @returns {Date}
   * @constructor
   */
-  public Date(year :any, month:any, day:any, hours:any, minutes:any, seconds:any, milliseconds:any) {
-      //this.c8o.log.warn("[CAF] @Deprecated: This method will be removed in future versions, please use static method: C8oCafUtils.Date(year :any, month:any, day:any, hours:any, minutes:any, seconds:any, milliseconds:any) instead");
-      return C8oCafUtils.Date(year, month, day, hours, minutes, seconds, milliseconds);
+  public Date(year: any, month: any, day: any, hours: any, minutes: any, seconds: any, milliseconds: any) {
+    //this.c8o.log.warn("[CAF] @Deprecated: This method will be removed in future versions, please use static method: C8oCafUtils.Date(year :any, month:any, day:any, hours:any, minutes:any, seconds:any, milliseconds:any) instead");
+    return C8oCafUtils.Date(year, month, day, hours, minutes, seconds, milliseconds);
   }
 }
