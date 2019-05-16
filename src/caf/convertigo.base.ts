@@ -24,7 +24,7 @@ export class C8oPageBase {
   // A flag that is set to true if the Current page has been leaved
   public didleave: boolean = false;
   // A flag that is set to true if a loader is displayed
-  private shown: boolean = false;
+  public shown: boolean = false;
   // A flag that helps to count how much call are running at the same time
   private count: number = 0;
   // A unique loader object for the page that is instantiate whenever we made a call
@@ -139,57 +139,56 @@ export class C8oPageBase {
    * @param {number} timeout: The timeout before trigger loading controller (default value is 3000)
    * @returns {Promise<any>}
    */
-  public call(requestable, data: any = null, navParams: any = null, timeout: number = 3000, manualDismiss: boolean = false): Promise<any> {
+  public call(requestable, data: any = null, navParams: any = null, timeout: number = 3000, noLaoding: boolean = false): Promise<any> {
     // A flag that is set to true if the current main call is finished
     let finish: boolean = false;
     if (this.form != {} && data == null) {
       data = this.form;
     }
-    setTimeout(() => {
-      if (finish == false) {
-        if (this.shown != true) {
-          this.loader = this.loadingCtrl.create({});
-          if (!this.closing) {
-            this.loader.present();
-            this.shown = true;
+    if (!noLaoding) {
+      setTimeout(() => {
+        if (finish == false) {
+          if (this.shown != true) {
+            this.loader = this.loadingCtrl.create({});
+            if (!this.closing) {
+              this.loader.present();
+              this.shown = true;
+            }
           }
+          this.count++;
         }
-        this.count++;
-      }
-    }, timeout);
+      }, timeout);
+    }
+
 
     return new Promise((resolve, reject) => {
-      this.routerProvider.c8oCall(requestable, data, navParams, this).then((response) => {
-        if (!manualDismiss) {
-          finish = true;
-          if (this.shown == true) {
-            this.count--;
-            if (this.count == 0) {
-              this.shown = false;
-              this.loader.dismiss();
+      this.routerProvider.c8oCall(requestable, data, navParams, this)
+        .then((response) => {
+          if (!noLaoding) {
+            finish = true;
+            if (this.shown == true) {
+              this.count--;
+              if (this.count == 0) {
+                this.shown = false;
+                this.loader.dismiss();
+              }
             }
           }
-        }
-        else{
-          this.router.log("Loader will not be dismissed sinced option manuald dismiss has been set")
-        }
-        resolve(response);
-      }).catch((error) => {
-        if (!manualDismiss) {
-          finish = true;
-          if (this.shown == true) {
-            this.count--;
-            if (this.count == 0) {
-              this.shown = false;
-              this.loader.dismiss();
+          resolve(response);
+
+        }).catch((error) => {
+          if (!noLaoding) {
+            finish = true;
+            if (this.shown == true) {
+              this.count--;
+              if (this.count == 0) {
+                this.shown = false;
+                this.loader.dismiss();
+              }
             }
           }
-        }
-        else{
-          this.router.log("Loader will not be dismissed sinced option manuald dismiss has been set")
-        }
-        reject(error);
-      });
+          reject(error);
+        });
     });
   }
 
