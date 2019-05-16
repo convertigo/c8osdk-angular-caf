@@ -20,7 +20,7 @@ export class C8oRouter {
      * An array holding for a view index the data attached to this view.
      */
     private c8oResponses: Array<Object> = null;
-    private _routerLogLevel: any;
+    private _routerLogLevel: C8oLogLevel;
     private static C8OCAF_SESSION_STORAGE_DATA = "_c8ocafsession_storage_data";
     private static C8OCAF_SESSION_STORAGE_MODE = "_c8ocafsession_storage_mode";
     private static C8OCAF_SESSION_STORAGE_CLEAR = "_c8ocafsession_storage_clear";
@@ -32,7 +32,7 @@ export class C8oRouter {
 
     constructor(private _c8o: C8o, private app: App, public toastCtrl: ToastController, public sanitizer: DomSanitizer) {
         //detect if we are in mobile builder mode and get the mode of storage to use
-        this._routerLogLevel = "_DEBUG";
+        this._routerLogLevel = C8oLogLevel.DEBUG;
         switch (sessionStorage.getItem(C8oRouter.C8OCAF_SESSION_STORAGE_MODE)) {
             case "local":
                 this.storage = localStorage;
@@ -67,9 +67,11 @@ export class C8oRouter {
     }
 
     public log(message: string) {
-        if (this._routerLogLevel.name != "none") {
+        let lvl = "_"+this._routerLogLevel.name;
+
+        if (lvl != "_none") {
             let msg = "[caf] " + message;
-            this.c8o.log[this._routerLogLevel.name](msg)
+            this.c8o.log[lvl](msg)
         }
     }
 
