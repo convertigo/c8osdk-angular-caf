@@ -170,7 +170,9 @@ export class C8oPageBase {
               this.count--;
               if (this.count == 0) {
                 this.shown = false;
-                this.loader.dismiss();
+                if(this.loader != undefined){
+                  this.loader.dismiss();
+                }
               }
             }
           }
@@ -183,7 +185,9 @@ export class C8oPageBase {
               this.count--;
               if (this.count == 0) {
                 this.shown = false;
-                this.loader.dismiss();
+                if(this.loader != undefined){
+                  this.loader.dismiss();
+                }
               }
             }
           }
