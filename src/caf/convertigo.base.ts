@@ -70,7 +70,12 @@ export class C8oPageBase {
     this.closing = true;
     this.ref.detach();
     if (this.loader != undefined) {
-      this.loader.dismiss();
+      this.loader.dismiss()
+      .then((res)=>{
+
+      }).catch((err)=>{
+        // catching error of dismissing
+      })
     }
   }
 
@@ -151,7 +156,7 @@ export class C8oPageBase {
           if (this.shown != true) {
             this.loader = this.loadingCtrl.create({});
             if (!this.closing) {
-              this.loader.present();
+              this.loader.present()
               this.shown = true;
             }
           }
@@ -171,7 +176,12 @@ export class C8oPageBase {
               if (this.count == 0) {
                 this.shown = false;
                 if(this.loader != undefined){
-                  this.loader.dismiss();
+                  this.loader.dismiss()
+                  .then((res)=>{
+
+                  }).catch((err)=>{
+                    // catching error of dismissing
+                  })
                 }
               }
             }
@@ -186,7 +196,12 @@ export class C8oPageBase {
               if (this.count == 0) {
                 this.shown = false;
                 if(this.loader != undefined){
-                  this.loader.dismiss();
+                  this.loader.dismiss()
+                  .then((res)=>{
+
+                  }).catch((err)=>{
+                    // catching error of dismissing
+                  })
                 }
               }
             }
