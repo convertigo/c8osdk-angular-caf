@@ -418,7 +418,7 @@ export class C8oRouter {
     public push(view: any, data: any, options: Object): Promise<any> {
         let optionsTrans: NativeTransitionOptions = {
             direction: 'right',
-            duration: 800
+            duration: 300
            };
         this.nativePageTransitions.slide(optionsTrans);
         return this.app.getActiveNavs()[0].push(view, data, options);
@@ -431,7 +431,7 @@ export class C8oRouter {
     public pop(): Promise<any> {
         let optionsTrans: NativeTransitionOptions = {
             direction: 'left',
-            duration: 800
+            duration: 300
            };
         this.nativePageTransitions.slide(optionsTrans);
         return this.app.getActiveNavs()[0].pop();
@@ -446,7 +446,7 @@ export class C8oRouter {
     public setRoot(view: any, data: any, options: Object): Promise<any> {
         let optionsTrans: NativeTransitionOptions = {
             direction: 'right',
-            duration: 800
+            duration: 300
            };
         this.nativePageTransitions.slide(optionsTrans);
         return this.app.getActiveNavs()[0].setRoot(view, data, options);
