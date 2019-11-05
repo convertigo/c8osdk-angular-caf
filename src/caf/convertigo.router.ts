@@ -155,7 +155,7 @@ export class C8oRouter {
 
                                     // test to see if we are already on the target page
                                     if (route.target.page != null) {
-                                        if (this.findView(activeView, route.target.page["nameStatic"], requestable) && !route.target.alwaysNewPage) {
+                                        if (this.findView(activeView, route.target.page, requestable) && !route.target.alwaysNewPage) {
                                             this.log("Route for Requestable '" + item.requestable + "', the view is already displayed, using curent view");
                                             this.storeResponseForView(activeView, requestable, response, navParams, route.didEnter, route.didLeave);
                                             resolve();
@@ -171,7 +171,7 @@ export class C8oRouter {
                                             "didEnter": route.didEnter,
                                             "didLeave": route.didLeave
                                         }, route.options);
-                                        this.log("Page '" + route.target.page["nameStatic"] + "' Pushed");
+                                        this.log("Page '" + route.target.pagename() + "' pushed");
                                         resolve();
                                         return;
 
@@ -182,7 +182,7 @@ export class C8oRouter {
                                             "data": response,
                                             "navParams": navParams
                                         }, route.options);
-                                        this.log("Page '" + route.target.page["nameStatic"] + "' set to root");
+                                        this.log("Page '" + route.target.pagename() + "' set to root");
                                         resolve();
                                         return;
                                     }
@@ -398,7 +398,7 @@ export class C8oRouter {
      */
     public findView(view: any, targetView: any, requestable: string): boolean {
         if (targetView != undefined) {
-            if (view == targetView) {
+            if (view == targetView || view == targetView["nameStatic"]) {
                 return true;
             }
             return false;
