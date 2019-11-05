@@ -7,7 +7,7 @@ import { C8o, C8oLogLevel, C8oException, C8oLocalCache, Priority } from "c8osdka
 import { DomSanitizer } from "@angular/platform-browser";
 import { C8oPageBase } from "./convertigo.base";
 
-import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/native-page-transitions';
+//import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/native-page-transitions';
 
 
 
@@ -32,7 +32,7 @@ export class C8oRouter {
     public sharedObject: any = {};
 
 
-    constructor(private _c8o: C8o, private app: App, public toastCtrl: ToastController, public sanitizer: DomSanitizer, private nativePageTransitions: NativePageTransitions = null) {
+    constructor(private _c8o: C8o, private app: App, public toastCtrl: ToastController, public sanitizer: DomSanitizer,/* private nativePageTransitions: NativePageTransitions = null*/) {
         //detect if we are in mobile builder mode and get the mode of storage to use
         this._routerLogLevel = C8oLogLevel.DEBUG;
         switch (sessionStorage.getItem(C8oRouter.C8OCAF_SESSION_STORAGE_MODE)) {
@@ -416,11 +416,11 @@ export class C8oRouter {
      * @options     transition options
      */
     public push(view: any, data: any, options: Object): Promise<any> {
-        let optionsTrans: NativeTransitionOptions = {
+        /*let optionsTrans: NativeTransitionOptions = {
             direction: 'right',
             duration: 300
            };
-        this.nativePageTransitions.slide(optionsTrans);
+        this.nativePageTransitions.slide(optionsTrans);*/
         return this.app.getActiveNavs()[0].push(view, data, options);
     }
 
@@ -429,11 +429,11 @@ export class C8oRouter {
      *
      */
     public pop(): Promise<any> {
-        let optionsTrans: NativeTransitionOptions = {
+        /*let optionsTrans: NativeTransitionOptions = {
             direction: 'left',
             duration: 300
            };
-        this.nativePageTransitions.slide(optionsTrans);
+        this.nativePageTransitions.slide(optionsTrans);*/
         return this.app.getActiveNavs()[0].pop();
     }
 
@@ -444,11 +444,11 @@ export class C8oRouter {
      * @param       data to be passed to the view
      */
     public setRoot(view: any, data: any, options: Object): Promise<any> {
-        let optionsTrans: NativeTransitionOptions = {
+        /*let optionsTrans: NativeTransitionOptions = {
             direction: 'right',
             duration: 300
            };
-        this.nativePageTransitions.slide(optionsTrans);
+        this.nativePageTransitions.slide(optionsTrans);*/
         return this.app.getActiveNavs()[0].setRoot(view, data, options);
     }
 
