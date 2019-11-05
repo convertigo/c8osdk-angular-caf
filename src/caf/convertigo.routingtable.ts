@@ -18,7 +18,7 @@ export class C8oRouteOptions{
   protected _canLeave: C8oLifeCycleFunctionBoolean;
 
   //target
-  protected _page : typeof C8oPage;
+  protected _page : C8oPage | string;
   protected _action : C8oAction;
   protected _alwaysNewPage : boolean;
 
@@ -88,7 +88,7 @@ export class C8oRouteOptions{
    * @returns             The instance of this Object
    *
    */
-  public setTarget(action : C8oAction, page : typeof C8oPage = null, alwaysNewPage: boolean = false): C8oRouteOptions{
+  public setTarget(action : C8oAction, page : C8oPage | string = null, alwaysNewPage: boolean = false): C8oRouteOptions{
       this._page = page;
       this._action = action
       this._alwaysNewPage = alwaysNewPage
@@ -724,14 +724,14 @@ export class C8oRouteListener{
  *
  */
 export class C8oTarget {
-    _page : typeof C8oPage
+    _page : C8oPage | string
     _action : C8oAction
     _alwaysNewPage : boolean
     _options : C8oNavOptions
     /**
      * C8oTarget constructor
      *
-     * @param page                  The C8oPage to navigate
+     * @param page                  The C8oPage to navigate to or its name
      * @param action                The condition to trigger route (examples : (data :any )=>{
      *                                                                      if(data.rows != undefined){
      *                                                                      return true;
@@ -743,7 +743,7 @@ export class C8oTarget {
      * @param alwaysNewPage	        (optional: false by default) The current alwaysNewPage parameter
      * @param options               (optional: empty by default) the current C8oNavOptions parameter
      */
-    constructor(page : typeof C8oPage, action : C8oAction, alwaysNewPage : boolean = false, options : C8oNavOptions = new C8oNavOptions()){
+    constructor(page : C8oPage | string, action : C8oAction, alwaysNewPage : boolean = false, options : C8oNavOptions = new C8oNavOptions()){
         this._page = page
         this._action = action
         this._alwaysNewPage = alwaysNewPage
@@ -758,7 +758,7 @@ export class C8oTarget {
      * @returns     The current Page
      *
      */
-    public get page():typeof C8oPage{
+    public get page(): C8oPage | string {
         return this._page;
     }
 
@@ -769,7 +769,7 @@ export class C8oTarget {
      * @returns             The instance of this Object
      *
      */
-    public setPage(page: typeof C8oPage): C8oTarget{
+    public setPage(page: C8oPage | string): C8oTarget{
         this._page = page;
         return this;
     }
@@ -844,6 +844,13 @@ export class C8oTarget {
     public setOptions(navOptions: C8oNavOptions) : C8oTarget{
         this._options = navOptions;
         return this
+    }
+    
+    public pagename() : string {
+        if (typeof this._page === "string") {
+            return this._page;
+        }
+        return this._page["nameStatic"];
     }
 }
 
