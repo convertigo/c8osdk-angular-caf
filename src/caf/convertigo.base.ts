@@ -285,7 +285,7 @@ export class C8oPageBase {
       p.then((res) => {
         resolve(res);
       }).catch((err) => {
-        this.c8o.log.error("[CAF] Resolve Error : " + err)
+        this.c8o.log.error("[CAF] Resolve Error : " ,err)
         resolve(err);
       });
     });
