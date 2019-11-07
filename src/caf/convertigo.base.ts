@@ -371,4 +371,28 @@ export class C8oPageBase {
     //this.c8o.log.warn("[CAF] @Deprecated: This method will be removed in future versions, please use static method: C8oCafUtils.Date(year :any, month:any, day:any, hours:any, minutes:any, seconds:any, milliseconds:any) instead");
     return C8oCafUtils.Date(year, month, day, hours, minutes, seconds, milliseconds);
   }
+
+  /**
+   * This functions is helpfull to know if a string version is greater than another
+   * @param v1 string version
+   * @param v2 string version
+   * @param separator separator between subversions default value is "."
+   * 
+   * @returns true if v1 < v2 otherwise returns false
+   */
+  public compare(v1:string, v2: string, separator: string = "."){
+    let v1Tab: Array<string> = v1.split(separator);
+    let v2Tab: Array<string> = v2.split(separator);
+    for(let i in v1Tab){
+      let v1Num = +v1Tab[i];
+      let v2Num = +v2Tab[i];
+      if(v1Num < v2Num){
+        return true;
+      }
+      else if(v1Num > v2Num){
+        return false;
+      }
+    }
+    return false;
+  }
 }
