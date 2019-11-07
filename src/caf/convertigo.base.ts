@@ -386,7 +386,7 @@ export class C8oPageBase {
     for(let i in v1Tab){
       let v1Num = +v1Tab[i];
       let v2Num = +v2Tab[i];
-      if(v1Num < v2Num){
+      if(v1Num <= v2Num){
         return true;
       }
       else if(v1Num > v2Num){
