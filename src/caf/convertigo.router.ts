@@ -578,7 +578,8 @@ export class C8oRouter {
      */
     public getAttachmentUrl(id: string, attachmentName: string, placeholderURL: string, imgCache: Object, databaseName?: string): Object {
         if (id != null && attachmentName && databaseName) {
-            databaseName = databaseName.split('.')[1]
+
+            databaseName = databaseName.indexOf(".") != -1 ? databaseName.split('.')[1] :  databaseName;
             // If no place holder has been defined, define one White 1x1 pixel.
             placeholderURL = placeholderURL ? placeholderURL : "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII="
             if (imgCache[id + "/" + attachmentName] == undefined) {
