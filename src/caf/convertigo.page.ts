@@ -101,6 +101,7 @@ export class C8oPage extends C8oPageBase {
    * Returning true or false allow or not to enter to the view
    */
   public ionViewCanEnter() {
+    this.closing = false;
     if(!(this.navParams.get("CanEnter") == null || this.navParams.get("CanEnter") == undefined || this.navParams.get("CanEnter") == '')){
      return this.navParams.get("CanEnter")(this, this.routerProvider.c8o);
     }
