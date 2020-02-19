@@ -275,21 +275,26 @@ export class C8oRouter {
      *   @data          the data
      */
     public storeResponseForView(view: any, requestable: string, data: any, navParams: any, didEnter: any, didLeave: any) {
+        let pushFlag = true;
         for (var i = 0; i < this.c8oResponses.length; i++) {
             if (this.c8oResponses[i]["view"] == view && this.c8oResponses[i]["requestable"] == requestable) {
                 this.c8oResponses[i]["data"] = data;
                 this.c8oResponses[i]["navParams"] = navParams;
                 this.c8oResponses[i]["DidEnter"] = didEnter;
                 this.c8oResponses[i]["DidLeave"] = didLeave;
-                return
+                pushFlag = false;
+                break;
             }
         }
-        this.c8oResponses.push({
-            "view": view,
-            "requestable": requestable,
-            "data": data,
-            "navParams": navParams
-        });
+        if(pushFlag){
+            this.c8oResponses.push({
+                "view": view,
+                "requestable": requestable,
+                "data": data,
+                "navParams": navParams
+            });
+        }
+        
         // if we are in mobile builder mode
         if (this.storage !== null) {
             //delete rootNavCtrl present in navParams to prevent from cyclic JSON issues
