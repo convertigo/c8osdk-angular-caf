@@ -34,7 +34,7 @@ export class C8oPage extends C8oPageBase {
       this.closing = false;
       let pageMenu = this.menuCtrl.get(this.menuId);
       if(pageMenu){
-          this.menuCtrl.enable(true, pageMenu["id"]);
+          this.menuCtrl.enable(true, this.menuId);
       }
   }
 
