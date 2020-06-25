@@ -14,7 +14,17 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "c8osdk-angular-caf": [
+        "dist/c8osdk-angular-caf/c8osdk-angular-caf",
+        "dist/c8osdk-angular-caf"
+      ],
+      "c8ocaf": [
+        "dist/c8ocaf/c8ocaf",
+        "dist/c8ocaf"
+      ]
+    }
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
