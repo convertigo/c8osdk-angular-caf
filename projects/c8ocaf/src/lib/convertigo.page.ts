@@ -7,7 +7,8 @@ import {C8oPageBase} from "./convertigo.base";
 export class C8oPage extends C8oPageBase {
 
   // A Menu ID for this instance
-  public menuId : string;
+  public startMenuId :string;
+  public endMenuId :string;
   private didLoad;
 
   /**
@@ -27,15 +28,28 @@ export class C8oPage extends C8oPageBase {
       //this.routerProvider.storeResponseForView(this.constructor.name, navParams.get("requestable"), navParams.get("data"), this.navParams, navParams.get("didEnter") ,navParams.get("didLeave"));
     }
 
+ 	async closeMenu(that) {
+		await that.menuCtrl.close()
+			.then(() => {that.menuCtrl.isOpen()})
+	}
+	
+  async enableMenus(that) {
+		if (!(that.startMenuId == null || that.startMenuId == undefined || that.startMenuId == '')) {
+			await that.menuCtrl.enable(true, that.startMenuId);
+		}
+		if (!(that.endMenuId == null || that.endMenuId == undefined || that.endMenuId == '')) {
+			await that.menuCtrl.enable(true, that.endMenuId);
+		}
+		return true;
+  }
+
   /**
    * Runs when the page is about to enter and become the active page.
    */
   public ionViewWillEnter(){
       this.closing = false;
-      let pageMenu = this.menuCtrl.get(this.menuId);
-      if(pageMenu){
-          this.menuCtrl.enable(true, this.menuId);
-      }
+      this.closeMenu(this);
+      this.enableMenus(this);
   }
 
   /**
@@ -54,10 +68,7 @@ export class C8oPage extends C8oPageBase {
    * Runs when the page is about to leave and no longer be the active page.
    */
   public ionViewWillLeave(){
-      if(!(this.menuId == null || this.menuId == undefined || this.menuId == '')) {
-          this.menuCtrl.enable(false, this.menuId);
-      }
-      
+    
   }
 
   /**
