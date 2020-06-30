@@ -95,40 +95,13 @@ export class C8oRouter {
      * @param exception     optional exception if it is a failed requestable call
      *
      */
-    execute_route(response: any, parameters: Object, exception: Error = null): Promise<any> {
+    execute_route(response: any, parameters: Object, pageName: string = ""): Promise<any> {
         return new Promise((resolve) => {
-            let isException = exception == null ? false : true;
             let requestable: string = (parameters["__project"] == undefined ? "" : parameters["__project"]) + "." + parameters["__sequence"];
-            let errors: any = null;
-            let activeView: any = null;
-            try {
-                this.route.snapshot.routeConfig.component["nameStatic"];
-            }
-            catch (e) {
-                errors = e;
-            }
-            if (errors == null) {
-                if (this.route.snapshot.routeConfig.component != undefined) {
-                    if (this.route.snapshot.routeConfig.component.name === "ModalCmp") {
-                        activeView = this.route.snapshot.routeConfig.component["nameStatic"];
-                    }
-                    else {
-                        activeView = this.route.snapshot.routeConfig.component["nameStatic"]
-                    }
-                }
-                else {
-                    activeView = null;
-                }
-            }
-            let navParams: any = (parameters["_navParams"] == {}) ? "" : parameters["_navParams"]
+            let activeView: any = pageName;
             
-
-            /* No route found so we stay in the same page
-             * We store the response in the current page..
-             */
-            if (activeView != null) {
-                this.storeResponseForView(activeView, requestable, response, navParams, null, null);
-            }
+            let navParams: any = (parameters["_navParams"] == {}) ? "" : parameters["_navParams"]
+            this.storeResponseForView(activeView, requestable, response, navParams, null, null);
             resolve();
         });
     }
@@ -157,7 +130,8 @@ export class C8oRouter {
             this.c8o.callJsonObject(requestable, parameters)
                 .then((response: any, parameters: Object) => {
                     parameters['_navParams'] = navParams;
-                    this.execute_route(response, parameters)
+                    const pageName = page.constructor["nameStatic"] != undefined ? page.constructor["nameStatic"] : "AppComponent";
+                    this.execute_route(response, parameters, pageName)
                         .then(() => {
                             // check for live tag in order to order to page to reload new results ..
                             page.tick()
@@ -167,13 +141,6 @@ export class C8oRouter {
                 })
                 .fail((exception: C8oException, parametersF: Object) => {
                     this.c8o.log.error("Error occured when calling " + requestable + ":" + exception.stack)
-                    this.execute_route(requestable, parametersF, exception)
-                        .then(() => {
-                            reject(exception);
-                        })
-                        .catch(() => {
-                            reject(exception);
-                        });
                 });
         });
 
@@ -245,6 +212,8 @@ export class C8oRouter {
                         if (item["view"] == view && item["requestable"] == requestable) {
                             return (item["data"]);
                         }
+                    }
+                    for (let item of this.c8oResponses) {
                         if (item["requestable"] == requestable) {
                             return (item["data"]);
                         }
