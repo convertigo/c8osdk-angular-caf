@@ -144,17 +144,17 @@ export class C8oPageBase {
    * @param {number} timeout: The timeout before trigger loading controller (default value is 3000)
    * @returns {Promise<any>}
    */
-  public call(requestable, data: any = null, navParams: any = null, timeout: number = 3000, noLaoding: boolean = false): Promise<any> {
+  public async call(requestable, data: any = null, navParams: any = null, timeout: number = 3000, noLaoding: boolean = false): Promise<any> {
     // A flag that is set to true if the current main call is finished
     let finish: boolean = false;
     if (this.form != {} && data == null) {
       data = this.form;
     }
     if (!noLaoding) {
-      setTimeout(() => {
+      setTimeout( async () => {
         if (finish == false) {
           if (this.shown != true) {
-            this.loader = this.loadingCtrl.create({});
+            this.loader = await this.loadingCtrl.create({});
             if (!this.closing) {
               this.loader.present()
               this.shown = true;
