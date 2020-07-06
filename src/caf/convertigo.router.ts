@@ -311,7 +311,13 @@ export class C8oRouter {
 
             }
             // storage for c8ocaf refresh keep state data
-            this.storage.setItem(C8oRouter.C8OCAF_SESSION_STORAGE_DATA, JSON.stringify(this.c8oResponses));
+            try {
+                this.storage.setItem(C8oRouter.C8OCAF_SESSION_STORAGE_DATA, JSON.stringify(this.c8oResponses));
+            }
+            catch(e){
+                
+            }
+            
         }
     }
 
