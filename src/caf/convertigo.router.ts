@@ -488,6 +488,11 @@ export class C8oRouter {
      */
     public doOAuthLogin(url: String, redirectUri: String, loginSequence: string, checkTokenSequence: string): Promise<any> {
         return new Promise((resolve, reject) => {
+            let win;
+            var isABoringBrowser = navigator.vendor && navigator.vendor.indexOf('Apple') > -1 && navigator.userAgent && navigator.userAgent.indexOf('CriOS') == -1 && navigator.userAgent.indexOf('FxiOS') == -1;
+            if(isABoringBrowser && window["cordova"] == undefined){
+                win = window.open('about:blank',"cafLogin", "location=no, clearsessioncache=yes, clearcache=yes");
+            }
             this.c8o.callJson(checkTokenSequence).then((data, params) => {
                 if (data["notoken"] == "true") {
                     this.openOAuthLogin(url, redirectUri).then((parsedResponse) => {
@@ -510,6 +515,9 @@ export class C8oRouter {
                     })
                 }
                 else {
+                    if(isABoringBrowser){
+                        win.close();
+                    }
                     resolve(data);
                     return null;
                 }
@@ -521,7 +529,7 @@ export class C8oRouter {
         });
     }
 
-    public openOAuthLogin(url: String, redirectUri: String): Promise<any> {
+    public openOAuthLogin(url: String, redirectUri: String, isABoringBrowser?, win?): Promise<any> {
         return new Promise((resolve, reject) => {
             if (window["cordova"] != undefined) {
                 url += "&redirect_uri=" + redirectUri
@@ -561,16 +569,20 @@ export class C8oRouter {
                 });
             }
             else {
-                //const redirectUri = "http://mb.convertigo.net/cems/projects/lib_OAuth/getToken.html";
                 url += "&redirect_uri=" + redirectUri;
-                window.open(url.toString(), "cafLogin", "location=no, clearsessioncache=yes, clearcache=yes");
+                if(isABoringBrowser){
+                    win.location = url;
+                }
+                else{
+                    window.open(url.toString(), "cafLogin", "location=no, clearsessioncache=yes, clearcache=yes");
+                }
                 window.addEventListener('message', (parsedResponse) => {
                     if (parsedResponse.data["access_token"] != undefined &&
                         parsedResponse.data["access_token"] != null) {
                         resolve(parsedResponse.data);
                     }
                     /* 
-                    Disabled because of bug with captchas
+                    Disabled because of bug with captchas (ref #27)
                     else {
                         this.c8o.log.error("oAuthClient : oAuth authentication error");
                         reject("oAuth authentication error");
