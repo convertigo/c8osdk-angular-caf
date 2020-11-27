@@ -568,10 +568,13 @@ export class C8oRouter {
                     if (parsedResponse.data["access_token"] != undefined &&
                         parsedResponse.data["access_token"] != null) {
                         resolve(parsedResponse.data);
-                    } else {
+                    }
+                    /* 
+                    Disabled because of bug with captchas
+                    else {
                         this.c8o.log.error("oAuthClient : oAuth authentication error");
                         reject("oAuth authentication error");
-                    }
+                    }*/
                 });
             }
         });
