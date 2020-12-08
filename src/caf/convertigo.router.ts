@@ -125,15 +125,20 @@ export class C8oRouter {
                 errors = e;
             }
             if (errors == null) {
-                if (this.app.getActiveNavs()[0].getViews() != undefined) {
-                    if (this.app.getActiveNavs()[0].getViews().slice(-1)[0].component.name === "ModalCmp") {
-                        activeView = this.app.getActiveNavs()[0].getViews().slice(-1)[0].data.component["nameStatic"];
+                try{
+                    if (this.app.getActiveNavs()[0].getViews() != undefined && this.app.getActiveNavs()[0].getViews().slice(-1)[0] != undefined) {
+                        if (this.app.getActiveNavs()[0].getViews().slice(-1)[0].component.name === "ModalCmp") {
+                            activeView = this.app.getActiveNavs()[0].getViews().slice(-1)[0].data.component["nameStatic"];
+                        }
+                        else {
+                            activeView = this.app.getActiveNavs()[0].getViews().slice(-1)[0].component["nameStatic"];
+                        }
                     }
                     else {
-                        activeView = this.app.getActiveNavs()[0].getViews().slice(-1)[0].component["nameStatic"];
+                        activeView = null;
                     }
                 }
-                else {
+                catch(e){
                     activeView = null;
                 }
             }
