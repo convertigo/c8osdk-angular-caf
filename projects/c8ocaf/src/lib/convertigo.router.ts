@@ -159,7 +159,9 @@ export class C8oRouter {
     public storeResponseForView(view: any, requestable: string, data: any, navParams: any, didEnter: any, didLeave: any) {
         let pushFlag = true;
         for (var i = 0; i < this.c8oResponses.length; i++) {
-            if (this.c8oResponses[i]["view"] == view && this.c8oResponses[i]["requestable"] == requestable) {
+            // removed view parameters to support ngx shared components
+            //if(this.c8oResponses[i]["view"] == view && this.c8oResponses[i]["requestable"] == requestable){
+            if (this.c8oResponses[i]["requestable"] == requestable) {
                 this.c8oResponses[i]["data"] = data;
                 this.c8oResponses[i]["navParams"] = navParams;
                 this.c8oResponses[i]["DidEnter"] = didEnter;

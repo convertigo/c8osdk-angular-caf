@@ -105,7 +105,8 @@ export class C8oPageBase {
    * @returns {any}: the data for the first requestable to match is returned
    */
   public listen(requestables: string[]): any {
-    return this.routerProvider.getResponseForView(this.constructor.name, requestables);
+    // removed view parameters to support ngx shared components
+    return this.routerProvider.getResponseForView("", requestables);//(this.constructor.name, requestables);
   }
   /**
    Delete the data from previous called requestable list. can be used in an Angular 5 directive such as
