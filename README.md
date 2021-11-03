@@ -1,5 +1,3 @@
-[![NPM](https://nodei.co/npm/c8ocaf.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/c8ocaf/)
-
 # Workspace Convertigo Angular Framework (CAF) [![npm version](https://img.shields.io/npm/v/c8ocaf/ionic5)](https://www.npmjs.com/package/c8ocaf) #
 
 
