@@ -1,6 +1,6 @@
 {
     "name": "c8ocaf",
-    "version": "2.0.0-beta10",
+    "version": "2.0.0-beta11",
     "peerDependencies": {
         "@angular/common": ">= 8.0.0",
         "@angular/core": ">= 8.0.0",
