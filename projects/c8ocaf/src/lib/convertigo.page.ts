@@ -65,7 +65,6 @@ export class C8oPage extends C8oPageBase {
    * Runs when the page is about to enter and become the active page.
    */
   public ionViewWillEnter(){
-      this.closing = false;
       this.closeMenu(this);
       this.enableMenus(this);
   }
@@ -87,6 +86,19 @@ export class C8oPage extends C8oPageBase {
    */
   public ionViewDidLeave(){
     this.didleave = true;
+  }
+
+  /**
+   * Fired once during component initialization. This event can be used to initialize local members and make calls into services that only need to be done once.
+   */
+  ngOnInit() {
+    this.closing = false;
+  } 
+
+  /**
+   * Fired right before Angular destroys the view. Useful for cleanup like unsubscribing from observables.
+   */
+  ngOnDestroy() {
     this.closing = true;
   }
 }
