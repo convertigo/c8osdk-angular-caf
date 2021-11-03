@@ -23,24 +23,42 @@ export class C8oPage extends C8oPageBase {
    */
   constructor(routerProvider : C8oRouter, loadingCtrl: LoadingController, sanitizer: DomSanitizer,
               ref: ChangeDetectorRef,injector: Injector, public menuCtrl: MenuController){
-
       super(injector, routerProvider, loadingCtrl, ref);
-      //this.routerProvider.storeResponseForView(this.constructor.name, navParams.get("requestable"), navParams.get("data"), this.navParams, navParams.get("didEnter") ,navParams.get("didLeave"));
     }
 
+  /**
+   * Closes menu in a given page instance
+   * @param that instance of the page
+   */
  	async closeMenu(that) {
-		await that.menuCtrl.close()
-			.then(() => {that.menuCtrl.isOpen()})
+    try{
+      await that.menuCtrl.close();
+      that.menuCtrl.isOpen()
+    }
+    catch(e){
+      this.c8o.log.error("[CAF] closeMenu has encountered an error  : ", e);
+    }
 	}
 	
+  /**
+   * Enables menu in a given page instance
+   * @param that instance of the page
+   * @returns success: boolean
+   */
   async enableMenus(that) {
-		if (!(that.startMenuId == null || that.startMenuId == undefined || that.startMenuId == '')) {
-			await that.menuCtrl.enable(true, that.startMenuId);
-		}
-		if (!(that.endMenuId == null || that.endMenuId == undefined || that.endMenuId == '')) {
-			await that.menuCtrl.enable(true, that.endMenuId);
-		}
-		return true;
+    try{
+      if (!(that.startMenuId == null || that.startMenuId == undefined || that.startMenuId == '')) {
+        await that.menuCtrl.enable(true, that.startMenuId);
+      }
+      if (!(that.endMenuId == null || that.endMenuId == undefined || that.endMenuId == '')) {
+        await that.menuCtrl.enable(true, that.endMenuId);
+      }
+      return true;
+    }
+    catch(e){
+      this.c8o.log.error("[CAF] enableMenus has encountered an error  : ", e);
+      return false;
+    }
   }
 
   /**
@@ -62,13 +80,6 @@ export class C8oPage extends C8oPageBase {
         window["_paq"].push(['setDocumentTitle', this.constructor.name]);
         window["_paq"].push(['trackPageView']);
       }
-  }
-
-  /**
-   * Runs when the page is about to leave and no longer be the active page.
-   */
-  public ionViewWillLeave(){
-    
   }
 
   /**
