@@ -1,0 +1,22 @@
+{
+  "name": "c8ocaf",
+  "version": "2.0.0-beta13",
+  "peerDependencies": {
+    "@angular/core": "=> 13.0.0",
+    "@angular/router":"=> 13.0.0",
+    "@angular/platform-browser":"=> 13.0.0",
+    "c8osdkangular": ">= 4.0.16-beta53",
+    "@ionic/angular": "=> 6.0.0",
+    "lodash":"4.17.21"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "devDependencies": {
+    "@angular/core": "^13.2.0",
+    "@angular/router":"^13.2.0",
+    "@angular/platform-browser":"^13.2.0",
+    "c8osdkangular": "4.0.16-beta53",
+    "@ionic/angular": "6.0.0"
+  }
+}
