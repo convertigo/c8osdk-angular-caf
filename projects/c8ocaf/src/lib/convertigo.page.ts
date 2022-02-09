@@ -90,6 +90,12 @@ export class C8oPage extends C8oPageBase {
   }
 
   /**
+   * Runs when the page has finished leaving and is no longer the active page.
+   */
+  public ionViewWillLeave(){
+  }
+
+  /**
    * Fired once during component initialization. This event can be used to initialize local members and make calls into services that only need to be done once.
    */
   ngOnInit() {
