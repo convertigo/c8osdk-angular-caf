@@ -1,9 +1,11 @@
-# Workspace Convertigo Angular Framework (CAF) [![npm version](https://img.shields.io/npm/v/c8ocaf/ionic6)](https://www.npmjs.com/package/c8ocaf) #
+# Workspace Convertigo Angular Framework (CAF)
+
+[![npm version](https://img.shields.io/npm/v/c8ocaf/ionic6)](https://www.npmjs.com/package/c8ocaf)
 
 
-- [Workspace Convertigo Angular Framework (CAF) ![npm version](https://www.npmjs.com/package/c8ocaf/ionic6)](#workspace-convertigo-angular-framework-caf-img-srchttpsimgshieldsionpmvc8ocafsvg-altnpm-version)
+- [Workspace Convertigo Angular Framework (CAF)](#workspace-convertigo-angular-framework-caf)
   - [Documentation](#documentation)
-    - [CAF Forms](#caf-forms)
+    - [Overview](#overview)
   - [Technical Documentation](#technical-documentation)
     - [c8o-sdkangular-caf](#c8o-sdkangular-caf)
     - [Build c8o-sdkangular-caf](#build-c8o-sdkangular-caf)
