@@ -1,11 +1,18 @@
 {
   "name": "c8ocaf",
+  "author": "Charles GRIMONT",
+  "description": "Convertigo Angular Framework",
   "license": "Apache-2.0",
-  "version": "2.0.1",
+  "version": "2.0.2",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/convertigo/c8osdk-angular-caf"
+  },
+  "homepage": "https://www.convertigo.com/",
   "peerDependencies": {
-    "@angular/core": "=> 13.0.0",
-    "@angular/router":"=> 13.0.0",
-    "@angular/platform-browser":"=> 13.0.0",
+    "@angular/core": ">= 13.0.0",
+    "@angular/router":">= 13.0.0",
+    "@angular/platform-browser":">= 13.0.0",
     "c8osdkangular": ">= 4.0.16-beta53",
     "@ionic/angular": "=> 6.0.0",
     "lodash":"4.17.21"
