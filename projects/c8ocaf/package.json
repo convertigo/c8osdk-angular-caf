@@ -3,7 +3,7 @@
   "author": "Charles GRIMONT",
   "description": "Convertigo Angular Framework",
   "license": "Apache-2.0",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/convertigo/c8osdk-angular-caf"
@@ -14,7 +14,7 @@
     "@angular/router":">= 13.0.0",
     "@angular/platform-browser":">= 13.0.0",
     "c8osdkangular": ">= 4.0.16-beta53",
-    "@ionic/angular": "=> 6.0.0",
+    "@ionic/angular": ">= 6.0.0",
     "lodash":"4.17.21"
   },
   "dependencies": {
