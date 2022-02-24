@@ -1,4 +1,4 @@
-//import { App, Nav } from 'ionic-angular';
+import { NavController } from '@ionic/angular';
 import { Injectable } from '@angular/core';
 
 import { C8o, C8oLogLevel, C8oException, C8oLocalCache, Priority } from "c8osdkangular";
@@ -20,7 +20,7 @@ export class C8oRouter {
     /**
      * An array holding for a view index the data attached to this view.
      */
-    private c8oResponses: Array<Object>;
+    private c8oResponses: Array<any>;
     private _routerLogLevel: C8oLogLevel;
     private static C8OCAF_SESSION_STORAGE_DATA = "_c8ocafsession_storage_data";
     private static C8OCAF_SESSION_STORAGE_MODE = "_c8ocafsession_storage_mode";
@@ -31,7 +31,8 @@ export class C8oRouter {
     public sharedObject: any = {};
 
 
-    constructor(private _c8o: C8o, private route: ActivatedRoute, public sanitizer: DomSanitizer,/* private nativePageTransitions: NativePageTransitions = null*/) {
+    constructor(private _c8o: C8o, private route: ActivatedRoute, public sanitizer: DomSanitizer, public navController: NavController/* private nativePageTransitions: NativePageTransitions = null*/) {
+        this.c8oResponses = new Array<Object>();
         //detect if we are in mobile builder mode and get the mode of storage to use
         this._routerLogLevel = C8oLogLevel.DEBUG;
         switch (sessionStorage.getItem(C8oRouter.C8OCAF_SESSION_STORAGE_MODE)) {
@@ -68,7 +69,7 @@ export class C8oRouter {
     }
 
     public log(message: string) {
-        let lvl = "_"+this._routerLogLevel.name;
+        let lvl: any = "_" + this._routerLogLevel.name;
 
         if (lvl != "_none") {
             let msg = "[caf] " + message;
@@ -95,7 +96,7 @@ export class C8oRouter {
      * @param exception     optional exception if it is a failed requestable call
      *
      */
-    execute_route(response: any, parameters: Object, pageName: string = ""): Promise<any> {
+    execute_route(response: any, parameters: any, pageName: string = ""): Promise<any> {
         return new Promise((resolve) => {
             let requestable: string = (parameters["__project"] == undefined ? "" : parameters["__project"]) + "." + parameters["__sequence"];
             let activeView: any = pageName;
@@ -113,7 +114,7 @@ export class C8oRouter {
      * @param data for the call
      *
      */
-    c8oCall(requestable: string, parameters?: Object, navParams?: any, page?: C8oPageBase): Promise<any> {
+    c8oCall(requestable: string, parameters?: any, navParams?: any, page?: C8oPageBase): Promise<any> {
         return new Promise((resolve, reject) => {
             if (parameters != undefined && parameters["__localCache_priority"] != undefined && (parameters["__localCache_priority"] == "priority_server" || parameters["__localCache_priority"] == "priority_local")) {
                 let localCache_priority;
@@ -272,11 +273,10 @@ export class C8oRouter {
      */
     public getParamForView(view: any, requestable: string): any {
 
-        for (var item of this.c8oResponses) {
+        for (var item of (this.c8oResponses as any)) {
             if (item["view"] == view && item["requestable"] == requestable)
                 return (item["navParams"]);
         }
-
         return (new Object());
     }
 
@@ -303,47 +303,106 @@ export class C8oRouter {
     }
 
     /**
-     * Utility routine to push on the nav stack a view with data to be passed to the view
-     *
-     * @param       the view
-     * @param       data to be passed to the view
-     * @options     transition options
+     * Utility routine to push / navigateForward on the nav stack a view with data to be passed to the view
+     * It's an alias to router.push function 
+     * 
+     * @param view the page to be pushed
+     * @param data the data to be pushed
+     * @param options options to use
+     * @returns Promise<boolean> 
      */
-    /*public push(view: any, data: any, options: Object): Promise<any> {
-        /*let optionsTrans: NativeTransitionOptions = {
-            direction: 'right',
-            duration: 300
-           };
-        this.nativePageTransitions.slide(optionsTrans);*/
-    /*    return this.app.getActiveNavs()[0].push(view, data, options);
+    public push(view: any, data: any, options: Object): Promise<boolean> {
+        let path = this.getPageSegment(view);
+        let queryParams = data;
+        let url: string = ""
+        let segments = path.split("/")
+        segments.forEach((segment: any)=> {
+            let segval = segment
+            if (segment.startsWith(":")) {
+                let key = segment.substring(1)
+                if (data[key]) {
+                    segval = data[key]
+                    delete queryParams[key]
+                }
+            }
+            url = url + "/" + segval
+        });
+        let internalOpts: any = { queryParams: queryParams };
+        let optionsMerged: any = {...internalOpts, ...options};
+        return this.navController.navigateForward(url, optionsMerged);
+    }
+    /**
+     * Utility routine to push / navigateForward on the nav stack a view with data to be passed to the view
+     * It's an alias to router.push function 
+     * 
+     * @param view the page to be pushed
+     * @param data the data to be pushed
+     * @param options options to use
+     * @returns Promise<boolean> 
+     */
+    public navigateForward(view: any, data: any, options: Object): Promise<boolean> {
+        return this.push(view, data, options);
     }
 
     /**
-     * Utility routine to pop on the nav stack a view with data to be passed to the view
+     * This methods goes back in the context of Ionic's stack navigation.
      *
+     * It recursively finds the top active `ion-router-outlet` and calls `pop()`.
+     * This is the recommended way to go back when you are using `ion-router-outlet`.
+     * @returns Promise<void>
      */
-    /*public pop(): Promise<any> {
-        /*let optionsTrans: NativeTransitionOptions = {
-            direction: 'left',
-            duration: 300
-           };
-        this.nativePageTransitions.slide(optionsTrans);*/
-    /*    return this.app.getActiveNavs()[0].pop();
+    public pop(): Promise<void> {
+        return this.navController.pop()
     }
 
     /**
-     * Utility routine to root a view on the nav stack with data to be passed to the view
-     *
-     * @param       the view
-     * @param       data to be passed to the view
+     * Utility routine to root / navigateRoot a view / page on the nav stack with data to be passed to the view / page
+     * 
+     * @param view the page to be rooted
+     * @param data the data to be rooted
+     * @param options options to use
+     * @returns Promise<boolean> 
      */
-    /*public setRoot(view: any, data: any, options: Object): Promise<any> {
-        /*let optionsTrans: NativeTransitionOptions = {
-            direction: 'right',
-            duration: 300
-           };
-        this.nativePageTransitions.slide(optionsTrans);*/
-    /*    return this.app.getActiveNavs()[0].setRoot(view, data, options);
+    public setRoot(view: any, data: any, options: Object): Promise<boolean> {
+        let path = this.getPageSegment(view);
+        let queryParams = data;
+        let url: string = ""
+        let segments = path.split("/")
+        segments.forEach((segment: any)=> {
+            let segval = segment
+            if (segment.startsWith(":")) {
+                let key = segment.substring(1)
+                if (data[key]) {
+                    segval = data[key]
+                    delete queryParams[key]
+                }
+            }
+            url = url + "/" + segval
+        });
+        let internalOpts: any = { queryParams: queryParams };
+        let optionsMerged: any = {...internalOpts, ...options};
+        return this.navController.navigateRoot(url, optionsMerged);
+    }
+    /**
+     * Utility routine to root / navigateRoot a view / page on the nav stack with data to be passed to the view / page
+     * It's an alias to router.setRoot function 
+     * 
+     * @param view the page to be rooted
+     * @param data  the data to be passed to root
+     * @param options the options to be used to root 
+     */
+    public navigateRoot(view: any, data: any, options: Object): Promise<any> {
+        return this.setRoot(view, data, options);
+    }
+
+    public getPageSegment(pageName: string){
+        let appPages: Array<any> = this.pagesArray;
+        for (let i=0; i < appPages.length; i++) {
+            if (appPages[i].name == pageName) {
+                return appPages[i].url
+            }
+        }
+        return "/"
     }
 
     /**
