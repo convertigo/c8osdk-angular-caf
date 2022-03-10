@@ -141,7 +141,8 @@ export class C8oRouter {
                     return null;
                 })
                 .fail((exception: C8oException, parametersF: Object) => {
-                    this.c8o.log.error("Error occured when calling " + requestable + ":" + exception.stack)
+                    this.c8o.log.error("Error occured when calling " + requestable + ":" + exception.stack);
+                    reject(exception);
                 });
         });
 
