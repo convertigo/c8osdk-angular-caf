@@ -1,7 +1,7 @@
 import { ApplicationRef, ChangeDetectorRef, Injectable, InjectionToken, Injector, Type } from "@angular/core";
 import { C8oRouter } from "./convertigo.router";
 import { LoadingController } from "@ionic/angular";
-import { C8o } from "c8osdkangular";
+import { C8o, Semaphore } from "c8osdkangular";
 import * as ts from 'typescript';
 import { C8oCafUtils } from "./convertigo.utils";
 
@@ -36,6 +36,8 @@ export class C8oPageBase {
   private prefixId: string;
   // A flag to kwnow if window is closing
   public closing: boolean = false;
+  // private semaphore for auto loaders
+  private _semaphore: Semaphore = new Semaphore(1);
 
   /**
    * C8oPageBase: Page Base for C8oPage and app component
@@ -154,8 +156,10 @@ export class C8oPageBase {
     }
     if (!noLaoding) {
       setTimeout( async () => {
+        await this._semaphore.acquire();
         if (finish == false) {
           if (this.shown != true) {
+            
             this.loader = await this.loadingCtrl.create({});
             if (!this.closing) {
               this.loader.present()
@@ -164,6 +168,7 @@ export class C8oPageBase {
           }
           this.count++;
         }
+        this._semaphore.release();
       }, timeout);
     }
 
@@ -229,10 +234,16 @@ export class C8oPageBase {
    *
    */
   public tick(): void {
-    this.ref.markForCheck();
-    if (!this.ref["destroyed"]) {
-      this.ref.detectChanges();
-      this.appRef.tick();
+    // try catch page.tick because if errors exists in page, this will throw an error and block execution
+    try{
+      this.ref.markForCheck();
+      if (!this.ref["destroyed"]) {
+        this.ref.detectChanges();
+        this.appRef.tick();
+      }
+    }
+    catch(e){
+
     }
   }
 
