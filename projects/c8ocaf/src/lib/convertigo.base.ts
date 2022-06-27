@@ -175,27 +175,9 @@ export class C8oPageBase {
 
     return new Promise((resolve, reject) => {
       this.routerProvider.c8oCall(requestable, data, navParams, this)
-        .then((response) => {
-          if (!noLaoding) {
-            finish = true;
-            if (this.shown == true) {
-              this.count--;
-              if (this.count == 0) {
-                this.shown = false;
-                if(this.loader != undefined){
-                  this.loader.dismiss()
-                  .then((res)=>{
-
-                  }).catch((err)=>{
-                    // catching error of dismissing
-                  })
-                }
-              }
-            }
-          }
+        .then(async(response) => {
           resolve(response);
-
-        }).catch((error) => {
+          await this._semaphore.acquire();
           if (!noLaoding) {
             finish = true;
             if (this.shown == true) {
@@ -213,7 +195,31 @@ export class C8oPageBase {
               }
             }
           }
+          this._semaphore.release();
+          
+
+        }).catch(async(error) => {
           reject(error);
+          await this._semaphore.acquire();
+          if (!noLaoding) {
+            finish = true;
+            if (this.shown == true) {
+              this.count--;
+              if (this.count == 0) {
+                this.shown = false;
+                if(this.loader != undefined){
+                  this.loader.dismiss()
+                  .then((res)=>{
+
+                  }).catch((err)=>{
+                    // catching error of dismissing
+                  })
+                }
+              }
+            }
+          }
+          this._semaphore.release();
+          
         });
     });
   }
