@@ -96,13 +96,13 @@ export class C8oRouter {
      * @param exception     optional exception if it is a failed requestable call
      *
      */
-    execute_route(response: any, parameters: any, pageName: string = ""): Promise<any> {
+    execute_route(response: any, parameters: any, pageName: string = "", instanceID: string): Promise<any> {
         return new Promise((resolve) => {
             let requestable: string = (parameters["__project"] == undefined ? "" : parameters["__project"]) + "." + parameters["__sequence"];
             let activeView: any = pageName;
             
             let navParams: any = (parameters["_navParams"] == {}) ? "" : parameters["_navParams"]
-            this.storeResponseForView(activeView, requestable, response, navParams, null, null);
+            this.storeResponseForView(activeView, requestable, response, navParams, null, null, instanceID);
             resolve(null);
         });
     }
@@ -132,7 +132,7 @@ export class C8oRouter {
                 .then((response: any, parameters: Object) => {
                     parameters['_navParams'] = navParams;
                     const pageName = page.constructor["nameStatic"] != undefined ? page.constructor["nameStatic"] : "AppComponent";
-                    this.execute_route(response, parameters, pageName)
+                    this.execute_route(response, parameters, pageName, page.instanceID)
                         .then(() => {
                             // check for live tag in order to order to page to reload new results ..
                             page.tick()
@@ -158,12 +158,12 @@ export class C8oRouter {
      *   @requestable   the requestable from where this data was responded
      *   @data          the data
      */
-    public storeResponseForView(view: any, requestable: string, data: any, navParams: any, didEnter: any, didLeave: any) {
+    public storeResponseForView(view: any, requestable: string, data: any, navParams: any, didEnter: any, didLeave: any, instanceID: any) {
         let pushFlag = true;
         for (var i = 0; i < this.c8oResponses.length; i++) {
             // removed view parameters to support ngx shared components
-            //if(this.c8oResponses[i]["view"] == view && this.c8oResponses[i]["requestable"] == requestable){
-            if (this.c8oResponses[i]["requestable"] == requestable) {
+            if(this.c8oResponses[i]["view"] == view && this.c8oResponses[i]["requestable"] == requestable && this.c8oResponses[i]["instanceID"] == instanceID){
+            //if (this.c8oResponses[i]["requestable"] == requestable) {
                 this.c8oResponses[i]["data"] = data;
                 this.c8oResponses[i]["navParams"] = navParams;
                 this.c8oResponses[i]["DidEnter"] = didEnter;
@@ -175,6 +175,7 @@ export class C8oRouter {
         if(pushFlag){
             this.c8oResponses.push({
                 "view": view,
+                "instanceID": instanceID,
                 "requestable": requestable,
                 "data": data,
                 "navParams": navParams
@@ -208,10 +209,15 @@ export class C8oRouter {
      * @param {string[]} requestables: an array of requestables from where the data was responded
      * @returns {any}: data to fetch
      */
-    public getResponseForView(view: any, requestables: string[]): any {
+    public getResponseForView(view: any, requestables: string[], instanceID: string): any {
         try {
             if (requestables != undefined) {
                 for (let requestable of requestables) {
+                    for (let item of this.c8oResponses) {
+                        if (item["view"] == view && item["requestable"] == requestable && item["instanceID"] == instanceID) {
+                            return (item["data"]);
+                        }
+                    }
                     for (let item of this.c8oResponses) {
                         if (item["view"] == view && item["requestable"] == requestable) {
                             return (item["data"]);

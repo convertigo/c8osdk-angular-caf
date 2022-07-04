@@ -39,6 +39,7 @@ export class C8oPageBase {
   // private semaphore for auto loaders
   private _semaphore: Semaphore = new Semaphore(1);
 
+  public instanceID : string;
   /**
    * C8oPageBase: Page Base for C8oPage and app component
    *
@@ -66,6 +67,8 @@ export class C8oPageBase {
 
     //Instantiating prefix ID
     this.prefixId = "_C8o" + new Date().getTime().toString();
+
+    this.instanceID = ("" + Math.random()).substring(1);
   }
 
   // Detach mark from view to avoid error (linked to tick function), and disable loader
@@ -74,9 +77,9 @@ export class C8oPageBase {
     this.ref.detach();
     if (this.loader != undefined) {
       this.loader.dismiss()
-      .then((res)=>{
+      .then(()=>{
 
-      }).catch((err)=>{
+      }).catch(()=>{
         // catching error of dismissing
       })
     }
@@ -109,7 +112,7 @@ export class C8oPageBase {
    */
   public listen(requestables: string[]): any {
     // removed view parameters to support ngx shared components
-    return this.routerProvider.getResponseForView("", requestables);//(this.constructor.name, requestables);
+    return this.routerProvider.getResponseForView(this.constructor.name, requestables, this.instanceID);//(this.constructor.name, requestables);
   }
   /**
    Delete the data from previous called requestable list. can be used in an Angular 5 directive such as
@@ -148,7 +151,7 @@ export class C8oPageBase {
    * @param {number} timeout: The timeout before trigger loading controller (default value is 3000)
    * @returns {Promise<any>}
    */
-  public async call(requestable, data: any = null, navParams: any = null, timeout: number = 3000, noLaoding: boolean = false): Promise<any> {
+  public async call(requestable: string, data: any = null, navParams: any = null, timeout: number = 3000, noLaoding: boolean = false): Promise<any> {
     // A flag that is set to true if the current main call is finished
     let finish: boolean = false;
     if (this.form != {} && data == null) {
@@ -186,9 +189,9 @@ export class C8oPageBase {
                 this.shown = false;
                 if(this.loader != undefined){
                   this.loader.dismiss()
-                  .then((res)=>{
+                  .then(()=>{
 
-                  }).catch((err)=>{
+                  }).catch(()=>{
                     // catching error of dismissing
                   })
                 }
@@ -209,9 +212,9 @@ export class C8oPageBase {
                 this.shown = false;
                 if(this.loader != undefined){
                   this.loader.dismiss()
-                  .then((res)=>{
+                  .then(()=>{
 
-                  }).catch((err)=>{
+                  }).catch(()=>{
                     // catching error of dismissing
                   })
                 }
@@ -232,7 +235,7 @@ export class C8oPageBase {
    * @returns {Promise<any>}
    */
   public callForm(requestable: string, id: string): Promise<any> {
-    return this.call(requestable, this.form[id]);
+    return this.call(requestable, (this.form as any)[id]);
   }
 
   /**
@@ -243,7 +246,7 @@ export class C8oPageBase {
     // try catch page.tick because if errors exists in page, this will throw an error and block execution
     try{
       this.ref.markForCheck();
-      if (!this.ref["destroyed"]) {
+      if (!(this.ref as any)["destroyed"]) {
         this.ref.detectChanges();
         this.appRef.tick();
       }
