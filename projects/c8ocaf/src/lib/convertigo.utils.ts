@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { get, has } from 'lodash-es';
 
 export class C8oCafUtils{
 
@@ -34,7 +34,7 @@ export class C8oCafUtils{
    * @param secondObj
    * @returns {Object}
    */
-  public static merge(firstObj: Object, secondObj): Object{
+  public static merge(firstObj: Object, secondObj: any): Object{
     return Object.assign(firstObj, secondObj);
   }
 
@@ -74,8 +74,8 @@ export class C8oCafUtils{
      */
     public static resolveArray(object: any, path: string = null): any{
         try{
-            if(_.has(object, path)){
-                return _.get(object, path);
+            if(has(object, path)){
+                return get(object, path);
             }else{
                 return undefined;
             }

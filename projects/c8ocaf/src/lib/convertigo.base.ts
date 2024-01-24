@@ -2,7 +2,6 @@ import { ApplicationRef, ChangeDetectorRef, Injectable, InjectionToken, Injector
 import { C8oRouter } from "./convertigo.router";
 import { LoadingController } from "@ionic/angular";
 import { C8o, Semaphore } from "c8osdkangular";
-import * as ts from 'typescript';
 import { C8oCafUtils } from "./convertigo.utils";
 
 @Injectable()
@@ -280,20 +279,6 @@ export class C8oPageBase {
       return;
     }
     this.imgCache = [];
-  }
-
-  /**
-   * safeEval a string expression
-   *
-   * @param key
-   */
-  public safeEval(key: any) {
-    let val;
-    try {
-      val = eval(ts.transpile(key)).call(this);
-    }
-    catch (e) { }
-    return val;
   }
 
   /**
