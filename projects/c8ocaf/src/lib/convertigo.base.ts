@@ -162,7 +162,7 @@ export class C8oPageBase {
         if (finish == false) {
           if (this.shown != true) {
             
-            this.loader = await this.loadingCtrl.create({});
+            this.loader = await this.loadingCtrl.create({spinner: this.router.loadingFamily});
             if (!this.closing) {
               this.loader.present()
               this.shown = true;

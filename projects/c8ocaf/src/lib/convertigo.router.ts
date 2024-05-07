@@ -29,6 +29,7 @@ export class C8oRouter {
     public pagesArray = [];
     public pagesKeyValue = {};
     public sharedObject: any = {};
+    public loadingFamily: "crescent" | "bubbles" | "circles" | "circular" | "dots" | "lines" | "lines-small" | "lines-sharp" | "lines-sharp-small" | null | undefined = "crescent";
 
 
     constructor(private _c8o: C8o, private route: ActivatedRoute, public sanitizer: DomSanitizer, public navController: NavController/* private nativePageTransitions: NativePageTransitions = null*/) {
