@@ -77,7 +77,7 @@ export class C8oPage extends C8oPageBase {
       this.didLoad = true;
       /* Handle Piwik Matomo if present */
       if (window["_paq"]) {
-        window["_paq"].push(['setDocumentTitle', this.constructor.name]);
+        window["_paq"].push(['setDocumentTitle', (this.constructor as any).nameStatic ?? "AppComponent"]);
         window["_paq"].push(['trackPageView']);
       }
   }

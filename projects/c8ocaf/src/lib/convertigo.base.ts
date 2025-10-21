@@ -6,7 +6,7 @@ import { C8oCafUtils } from "./convertigo.utils";
 
 @Injectable()
 export class C8oPageBase {
-
+  
   // Data attached to the main form of the page if its existing
   public form = {};
   // A local Object to be used
@@ -111,7 +111,7 @@ export class C8oPageBase {
    */
   public listen(requestables: string[]): any {
     // removed view parameters to support ngx shared components
-    return this.routerProvider.getResponseForView(this.constructor.name, requestables, this.instanceID);//(this.constructor.name, requestables);
+    return this.routerProvider.getResponseForView((this.constructor as any).nameStatic ?? "AppComponent", requestables, this.instanceID);
   }
   /**
    Delete the data from previous called requestable list. can be used in an Angular 5 directive such as
@@ -123,7 +123,7 @@ export class C8oPageBase {
    * @returns {boolean}: true if succeed
    */
   public deleteListen(requestables: string[]): any {
-    return this.routerProvider.deleteResponseForView(this.constructor.name, requestables);
+    return this.routerProvider.deleteResponseForView((this.constructor as any).nameStatic ?? "AppComponent", requestables);
   }
 
 
@@ -138,7 +138,7 @@ export class C8oPageBase {
    * @return the data for one of the requestables in the list.
    */
   public listenNavParams(requestable: string): any {
-    return (this.routerProvider.getParamForView(this.constructor.name, requestable));
+    return (this.routerProvider.getParamForView((this.constructor as any).nameStatic ?? "AppComponent", requestable));
   }
 
   /**
